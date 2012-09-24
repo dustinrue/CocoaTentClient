@@ -17,6 +17,7 @@
 
 - (IBAction)doThing:(id)sender;
 - (IBAction)performDiscover:(id)sender;
+
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;
 

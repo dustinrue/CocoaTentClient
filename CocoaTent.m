@@ -78,8 +78,7 @@
     [parameters setValue:@"http://example.com/icon.png" forKey:@"icon"];
     [parameters setValue:[NSArray arrayWithObject:@"https://app.example.com/tent/callback"] forKey:@"redirect_uris"];
     [parameters setValue:[NSDictionary dictionaryWithObjectsAndKeys:@"Uses an app profile section to describe foos", @"write_profile", @"Calculates foos based on your followings", @"read_followings", nil] forKey:@"scopes"];
-    
-    //NSLog(@"paramets %@", [parameters JSONString]);
+
     
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"/apps" parameters:nil];
     [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
