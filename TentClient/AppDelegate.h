@@ -8,8 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class CocoaTent;
+
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
+@property (strong) CocoaTent *cocoaTent;
+
+- (IBAction)doThing:(id)sender;
+- (IBAction)performDiscover:(id)sender;
+- (void) receivedProfileData:(NSNotification *) notification;
+- (void) dataReceiveFailure:(NSNotification *) notification;
 
 @end
