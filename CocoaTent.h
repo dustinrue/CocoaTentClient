@@ -13,13 +13,14 @@
 @property (strong) NSString *tentVersion;
 @property (strong) NSString *tentServer;
 @property (strong) NSString *tentMimeType;
-@property (strong) NSString *mac_algorithm;
-@property (strong) NSString *mac_key;
-@property (strong) NSString *mac_key_id;
-@property (strong) NSString *app_id;
+
+// this should really be class
+@property (strong) NSMutableDictionary *appInfo;
 
 - (void) getUserProfile;
 - (void) discover;
 - (void) doRegister;
+- (void) parseOAuthData:(id) data;
+- (void) authenticate;
 
 @end
