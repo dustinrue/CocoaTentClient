@@ -25,6 +25,17 @@
                                                object:nil];
     
     self.cocoaTent = [[CocoaTent alloc] init];
+    
+    [self registerForURLScheme];
+}
+
+- (void)registerForURLScheme {
+    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+}
+
+- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
+    NSString *url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue]; // Now you can parse the URL and perform whatever action is needed
+    NSLog(@"got URL %@", url);
 }
 
 - (IBAction)doThing:(id)sender {
@@ -43,5 +54,6 @@
 - (void) dataReceiveFailure:(NSNotification *) notification {
     NSLog(@"failed to get some data");
 }
+
 
 @end

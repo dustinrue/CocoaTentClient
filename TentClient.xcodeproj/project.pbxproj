@@ -398,6 +398,7 @@
 				DA511D0A160F716D00A814D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

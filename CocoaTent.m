@@ -28,7 +28,7 @@
     [self.appInfo setValue:@"Does amazing foos with your data" forKey:@"description"];
     [self.appInfo setValue:@"http://example.com" forKey:@"url"];
     [self.appInfo setValue:@"http://example.com/icon.png" forKey:@"icon"];
-    [self.appInfo setValue:[NSArray arrayWithObject:@"https://app.example.com/tent/callback"] forKey:@"redirect_uris"];
+    [self.appInfo setValue:[NSArray arrayWithObject:@"cocoatentclient://oauth"] forKey:@"redirect_uris"];
     [self.appInfo setValue:[NSDictionary dictionaryWithObjectsAndKeys:@"Uses an app profile section to describe foos", @"write_profile", @"Calculates foos based on your followings", @"read_followings", nil] forKey:@"scopes"];
     
     return self;
@@ -101,6 +101,14 @@
     [self.appInfo setValue:[data valueForKey:@"id"] forKey:@"app_id"];
     
     NSLog(@"app_info %@", self.appInfo);
+    
+    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.appInfo valueForKey:@"app_id"]];
+    
+    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.tentServer, @"oauth/authorize", params];
+    NSLog(@"fullParms %@", fullParams);
+    NSURL *url = [NSURL URLWithString:fullParams];
+    NSLog(@"opening %@", url);
+	[[NSWorkspace sharedWorkspace] openURL:url];
 }
 
 - (void) authenticate {
