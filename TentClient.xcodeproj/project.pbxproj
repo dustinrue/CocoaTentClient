@@ -352,8 +352,6 @@
 		DA511D09160F716D00A814D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TentClient/TentClient.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Dustin Rue";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TentClient/TentClient-Prefix.pch";
@@ -367,8 +365,6 @@
 		DA511D0A160F716D00A814D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TentClient/TentClient.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Dustin Rue";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TentClient/TentClient-Prefix.pch";

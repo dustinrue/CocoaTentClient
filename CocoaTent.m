@@ -20,7 +20,7 @@
         return self;
     
     self.tentVersion  = @"0.1.0";
-    self.tentServer   = @"http://localhost:3000";
+    self.tentServer   = @"http://localhost:3001";
     self.tentMimeType = @"application/vnd.tent.v0+json";
     
     self.appInfo = [[NSMutableDictionary alloc] init];
@@ -36,6 +36,7 @@
 
 - (void) getUserProfile {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", self.tentServer, @"profile"]];
+    NSLog(@"connecting to %@", url);
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
@@ -98,11 +99,11 @@
     [self.appInfo setValue:[data valueForKey:@"mac_algorithm"] forKey:@"mac_algorithm"];
     [self.appInfo setValue:[data valueForKey:@"mac_key"] forKey:@"mac_key"];
     [self.appInfo setValue:[data valueForKey:@"mac_key_id"] forKey:@"mac_key_id"];
-    [self.appInfo setValue:[data valueForKey:@"id"] forKey:@"app_id"];
+    [self.appInfo setValue:[data valueForKey:@"id"] forKey:@"id"];
     
-    NSLog(@"app_info %@", self.appInfo);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"appInfoDidChange" object:nil userInfo:self.appInfo];
     
-    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.appInfo valueForKey:@"app_id"]];
+    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.appInfo valueForKey:@"id"]];
     
     NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.tentServer, @"oauth/authorize", params];
     NSLog(@"fullParms %@", fullParams);
