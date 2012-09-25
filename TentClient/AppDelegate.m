@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "CocoaTent.h"
+#import "NSString+ParseQueryString.h"
 
 @implementation AppDelegate
 
@@ -99,8 +100,9 @@
 }
 
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
-    NSString *url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue]; // Now you can parse the URL and perform whatever action is needed
-    NSLog(@"got URL %@", url);
+    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]]; // Now you can parse the URL and perform whatever action is needed
+    
+    [self.cocoaTent OAuthCallbackData:url];
 }
 
 - (IBAction)doThing:(id)sender
@@ -138,6 +140,7 @@
     [[NSUserDefaults standardUserDefaults] setValue:[[notification userInfo] valueForKey:@"mac_key_id"]     forKey:@"mac_key_id"];
     [[NSUserDefaults standardUserDefaults] setValue:[[notification userInfo] valueForKey:@"id"]             forKey:@"id"];
 }
+
 
 
 @end

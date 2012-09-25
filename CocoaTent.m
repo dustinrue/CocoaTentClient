@@ -5,11 +5,16 @@
 //  Created by Dustin Rue on 9/23/12.
 //  Copyright (c) 2012 Dustin Rue. All rights reserved.
 //
+// References:
+//   HTTP Mac
+//   http://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01#section-3.1
 
 #import "CocoaTent.h"
 #import "AFNetworking/AFJSONRequestOperation.h"
 #import "AFNetworking/AFHTTPClient.h"
 #import "JSONKit.h"
+#import "HMAC256.h"
+#import "NSString+ParseQueryString.h"
 
 @implementation CocoaTent
 
@@ -112,7 +117,57 @@
 	[[NSWorkspace sharedWorkspace] openURL:url];
 }
 
-- (void) authenticate {
+- (void) OAuthCallbackData:(NSURL *) callBackData
+{
+    NSDictionary *data = [[callBackData query] explodeToDictionaryInnerGlue:@"=" outterGlue:@"&"];
     
+    self.code = [data valueForKey:@"code"];
+    self.state = [data valueForKey:@"state"];
+    [self getAccessToken];
+}
+
+/**
+ * Builds the URL/request to exchange a code for an access token
+ */
+- (void) getAccessToken
+{
+    NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+    NSString *ts = [[NSNumber numberWithDouble: timestamp] stringValue];
+    
+    NSString *nonce = @"random";
+    
+    NSString *app_id = [self.appInfo valueForKey:@"id"];
+    
+    NSString *mac = [HMAC256 HMAC256:[self.appInfo valueForKey:@"mac_key"] withKey:[self.appInfo valueForKey:@"mac_key_id"]];
+
+    
+    NSString *authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", app_id, [ts integerValue], nonce, mac];
+    
+    NSLog(@"will be sending %@", authorizationHeader);
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@", self.tentServer]];
+    
+    AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:url];
+    
+    NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
+    [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
+    
+    NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:[NSString stringWithFormat:@"apps/%@/authorizations", [self.appInfo valueForKey:@"id"]] parameters:nil];
+    [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
+    
+    [request setValue:authorizationHeader forHTTPHeaderField:@"Authorization"];
+    
+    NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:[self code], @"code", @"mac", @"token_type", nil];
+    [request setHTTPBody:[httpBody JSONData]];
+    
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"authorization response %@", JSON);
+        
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
+    }];
+    
+    [operation start];
 }
 @end

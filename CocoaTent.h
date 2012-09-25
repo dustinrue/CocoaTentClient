@@ -14,6 +14,10 @@
 @property (strong) NSString *tentServer;
 @property (strong) NSString *tentMimeType;
 
+// used during the OAuth2 exchange
+@property (strong) NSString *code;
+@property (strong) NSString *state;
+
 // this should really be class
 @property (strong) NSMutableDictionary *appInfo;
 
@@ -21,6 +25,7 @@
 - (void) discover;
 - (void) doRegister;
 - (void) parseOAuthData:(id) data;
-- (void) authenticate;
+- (void) OAuthCallbackData:(NSURL *) callBackData;
+- (void) getAccessToken;
 
 @end

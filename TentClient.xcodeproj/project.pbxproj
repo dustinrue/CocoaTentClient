@@ -24,6 +24,8 @@
 		DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */; };
 		DA511D3D160FD13A00A814D7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D2A160FBCC700A814D7 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DA511D40160FD45700A814D7 /* CocoaTent.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D3F160FD45700A814D7 /* CocoaTent.m */; };
+		DAD1B84F16114814001CC0DE /* HMAC256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD1B84E16114814001CC0DE /* HMAC256.m */; };
+		DAD1B85616114F25001CC0DE /* NSString+ParseQueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD1B85516114F24001CC0DE /* NSString+ParseQueryString.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +66,10 @@
 		DA511D2A160FBCC700A814D7 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		DA511D3E160FD45700A814D7 /* CocoaTent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaTent.h; sourceTree = "<group>"; };
 		DA511D3F160FD45700A814D7 /* CocoaTent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTent.m; sourceTree = "<group>"; };
+		DAD1B84D16114814001CC0DE /* HMAC256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HMAC256.h; path = TentClient/HMAC256.h; sourceTree = "<group>"; };
+		DAD1B84E16114814001CC0DE /* HMAC256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HMAC256.m; path = TentClient/HMAC256.m; sourceTree = "<group>"; };
+		DAD1B85416114F24001CC0DE /* NSString+ParseQueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ParseQueryString.h"; sourceTree = "<group>"; };
+		DAD1B85516114F24001CC0DE /* NSString+ParseQueryString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ParseQueryString.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,8 +186,12 @@
 		DA511D41160FD45F00A814D7 /* CocoaTent */ = {
 			isa = PBXGroup;
 			children = (
+				DAD1B84D16114814001CC0DE /* HMAC256.h */,
+				DAD1B84E16114814001CC0DE /* HMAC256.m */,
 				DA511D3E160FD45700A814D7 /* CocoaTent.h */,
 				DA511D3F160FD45700A814D7 /* CocoaTent.m */,
+				DAD1B85416114F24001CC0DE /* NSString+ParseQueryString.h */,
+				DAD1B85516114F24001CC0DE /* NSString+ParseQueryString.m */,
 			);
 			name = CocoaTent;
 			sourceTree = "<group>";
@@ -263,6 +273,8 @@
 				DA511D26160F723F00A814D7 /* AFXMLRequestOperation.m in Sources */,
 				DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */,
 				DA511D40160FD45700A814D7 /* CocoaTent.m in Sources */,
+				DAD1B84F16114814001CC0DE /* HMAC256.m in Sources */,
+				DAD1B85616114F25001CC0DE /* NSString+ParseQueryString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
