@@ -28,6 +28,7 @@
 		DAB0754C16121EDF0079BE7D /* CocoaTent.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754816121EDF0079BE7D /* CocoaTent.m */; };
 		DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE05151612952C008CABF5 /* NSString+Random.m */; };
 		DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */; };
+		DAEE051E1612AF2A008CABF5 /* NSString+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051D1612AF2A008CABF5 /* NSString+hmac_sha_256.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,8 @@
 		DAEE05151612952C008CABF5 /* NSString+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Random.m"; path = "CocoaTent/NSString+Random.m"; sourceTree = "<group>"; };
 		DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+hmac_sha_256.h"; path = "CocoaTent/NSData+hmac_sha_256.h"; sourceTree = "<group>"; };
 		DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+hmac_sha_256.m"; path = "CocoaTent/NSData+hmac_sha_256.m"; sourceTree = "<group>"; };
+		DAEE051C1612AF2A008CABF5 /* NSString+hmac_sha_256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+hmac_sha_256.h"; path = "CocoaTent/NSString+hmac_sha_256.h"; sourceTree = "<group>"; };
+		DAEE051D1612AF2A008CABF5 /* NSString+hmac_sha_256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+hmac_sha_256.m"; path = "CocoaTent/NSString+hmac_sha_256.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +212,8 @@
 				DAEE05151612952C008CABF5 /* NSString+Random.m */,
 				DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */,
 				DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */,
+				DAEE051C1612AF2A008CABF5 /* NSString+hmac_sha_256.h */,
+				DAEE051D1612AF2A008CABF5 /* NSString+hmac_sha_256.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -294,6 +299,7 @@
 				DAB0754C16121EDF0079BE7D /* CocoaTent.m in Sources */,
 				DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */,
 				DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */,
+				DAEE051E1612AF2A008CABF5 /* NSString+hmac_sha_256.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

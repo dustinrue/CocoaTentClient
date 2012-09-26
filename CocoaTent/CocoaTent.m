@@ -36,6 +36,7 @@
 #import "AFHTTPClient.h"
 #import "JSONKit.h"
 #import "NSData+hmac_sha_256.h"
+#import "NSString+hmac_sha_256.h"
 #import "NSString+ParseQueryString.h"
 #import "NSString+Random.h"
 
@@ -139,6 +140,7 @@
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"/apps" parameters:nil];
     [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
     [request setHTTPBody:[[self.cocoaTentApp dictionary] JSONData]];
+
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self parseOAuthData:JSON];
