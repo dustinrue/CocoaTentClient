@@ -70,6 +70,7 @@
     [self.cocoaTentApp setMac_algorithm:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_algorithm"]];
     [self.cocoaTentApp setMac_key:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]];
     [self.cocoaTentApp setMac_key_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]];
+    [self.cocoaTentApp setAccess_token:[[NSUserDefaults standardUserDefaults] valueForKey:@"access_token"]];
     
     // we need to know if any of these values change so it can be saved out to the preferences file
     [self.cocoaTentApp addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
