@@ -5,6 +5,7 @@
 //  Created by Dustin Rue on 9/24/12.
 //  Copyright (c) 2012 Dustin Rue. All rights reserved.
 //
+//  Thanks to http://stackoverflow.com/questions/1967399/parse-nsurl-path-and-query-iphoneos
 
 #import "NSString+ParseQueryString.h"
 

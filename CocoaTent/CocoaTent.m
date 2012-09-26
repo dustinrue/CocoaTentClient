@@ -9,16 +9,39 @@
 //   HTTP Mac
 //   http://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01#section-3.1
 
+/*
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 #import "CocoaTent.h"
-#import "AFNetworking/AFJSONRequestOperation.h"
-#import "AFNetworking/AFHTTPClient.h"
+#import "CocoaTentApp.h"
+#import "AFJSONRequestOperation.h"
+#import "AFHTTPClient.h"
 #import "JSONKit.h"
-#import "HMAC256.h"
+#import "NSData+hmac_sha_256.h"
 #import "NSString+ParseQueryString.h"
+#import "NSString+Random.h"
 
 @implementation CocoaTent
 
-- (id) init {
+- (id) initWithApp:(CocoaTentApp *) cocoaTentApp {
     self = [super init];
     
     if (!self)
@@ -28,15 +51,33 @@
     self.tentServer   = @"http://localhost:3001";
     self.tentMimeType = @"application/vnd.tent.v0+json";
     
-    self.appInfo = [[NSMutableDictionary alloc] init];
-    [self.appInfo setValue:@"Cocoa Tent Client" forKey:@"name"];
-    [self.appInfo setValue:@"Does amazing foos with your data" forKey:@"description"];
-    [self.appInfo setValue:@"http://example.com" forKey:@"url"];
-    [self.appInfo setValue:@"http://example.com/icon.png" forKey:@"icon"];
-    [self.appInfo setValue:[NSArray arrayWithObject:@"cocoatentclient://oauth"] forKey:@"redirect_uris"];
-    [self.appInfo setValue:[NSDictionary dictionaryWithObjectsAndKeys:@"Uses an app profile section to describe foos", @"write_profile", @"Calculates foos based on your followings", @"read_followings", nil] forKey:@"scopes"];
+    self.cocoaTentApp = cocoaTentApp;
+    
+    [self.cocoaTentApp addObserver:self forKeyPath:@"name"          options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"description"   options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"url"           options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"icon"          options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"redirect_uris" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"scopes"        options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"app_id"        options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_agorithm"  options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key"       options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id"    options:NSKeyValueObservingOptionNew context:nil];
+    
+    [self registerForURLScheme];
     
     return self;
+}
+
+- (void)registerForURLScheme
+{
+    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+}
+
+- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
+    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]]; // Now you can parse the URL and perform whatever action is needed
+    
+    [self OAuthCallbackData:url];
 }
 
 - (void) getUserProfile {
@@ -87,7 +128,7 @@
     
     NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:@"/apps" parameters:nil];
     [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
-    [request setHTTPBody:[self.appInfo JSONData]];
+    [request setHTTPBody:[[self.cocoaTentApp dictionary] JSONData]];
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self parseOAuthData:JSON];
@@ -101,14 +142,13 @@
 }
 
 - (void) parseOAuthData:(NSDictionary *) data {
-    [self.appInfo setValue:[data valueForKey:@"mac_algorithm"] forKey:@"mac_algorithm"];
-    [self.appInfo setValue:[data valueForKey:@"mac_key"] forKey:@"mac_key"];
-    [self.appInfo setValue:[data valueForKey:@"mac_key_id"] forKey:@"mac_key_id"];
-    [self.appInfo setValue:[data valueForKey:@"id"] forKey:@"id"];
+    [self.cocoaTentApp setMac_algorithm:[data valueForKey:@"mac_algorithm"]];
+    [self.cocoaTentApp setMac_key:[data valueForKey:@"mac_key"]];
+    [self.cocoaTentApp setMac_key_id:[data valueForKey:@"mac_key_id"]];
+    [self.cocoaTentApp setApp_id:[data valueForKey:@"id"]];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"appInfoDidChange" object:nil userInfo:self.appInfo];
     
-    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.appInfo valueForKey:@"id"]];
+    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.cocoaTentApp app_id]];
     
     NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.tentServer, @"oauth/authorize", params];
     NSLog(@"fullParms %@", fullParams);
@@ -134,11 +174,13 @@
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     NSString *ts = [[NSNumber numberWithDouble: timestamp] stringValue];
     
-    NSString *nonce = @"random";
+    NSString *nonce = [NSString randomizedString];
     
-    NSString *app_id = [self.appInfo valueForKey:@"id"];
+    NSString *app_id = [self.cocoaTentApp app_id];
     
-    NSString *mac = [HMAC256 HMAC256:[self.appInfo valueForKey:@"mac_key"] withKey:[self.appInfo valueForKey:@"mac_key_id"]];
+    NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:[self code], @"code", @"mac", @"token_type", nil];
+    
+    NSString *mac = [[httpBody JSONData] hmac_sha_256:[self.cocoaTentApp mac_key]];
 
     
     NSString *authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", app_id, [ts integerValue], nonce, mac];
@@ -152,12 +194,13 @@
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
     [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
     
-    NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:[NSString stringWithFormat:@"apps/%@/authorizations", [self.appInfo valueForKey:@"id"]] parameters:nil];
+    NSMutableURLRequest *request = [client requestWithMethod:@"POST" path:[NSString stringWithFormat:@"apps/%@/authorizations", [self.cocoaTentApp app_id]] parameters:nil];
+    
     [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
     
     [request setValue:authorizationHeader forHTTPHeaderField:@"Authorization"];
     
-    NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:[self code], @"code", @"mac", @"token_type", nil];
+    
     [request setHTTPBody:[httpBody JSONData]];
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -169,5 +212,10 @@
     }];
     
     [operation start];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
 }
 @end

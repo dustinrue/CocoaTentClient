@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "CocoaTent.h"
-#import "NSString+ParseQueryString.h"
+#import "CocoaTentApp.h"
 
 @implementation AppDelegate
 
@@ -57,7 +57,34 @@
     
 	[[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     
-    self.cocoaTent = [[CocoaTent alloc] init];
+    self.cocoaTentApp = [[CocoaTentApp alloc] init];
+    
+    // some of this data should be stored in KeyChain and NOT in a plain text file
+    [self.cocoaTentApp setName:[[NSUserDefaults standardUserDefaults] valueForKey:@"name"]];
+    [self.cocoaTentApp setDescription:[[NSUserDefaults standardUserDefaults] valueForKey:@"description"]];
+    [self.cocoaTentApp setUrl:[[NSUserDefaults standardUserDefaults] valueForKey:@"url"]];
+    [self.cocoaTentApp setIcon:[[NSUserDefaults standardUserDefaults] valueForKey:@"icon"]];
+    [self.cocoaTentApp setRedirect_uris:[[NSUserDefaults standardUserDefaults] valueForKey:@"redirect_uris"]];
+    [self.cocoaTentApp setScopes:[[NSUserDefaults standardUserDefaults] valueForKey:@"scopes"]];
+    [self.cocoaTentApp setApp_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"app_id"]];
+    [self.cocoaTentApp setMac_algorithm:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_algorithm"]];
+    [self.cocoaTentApp setMac_key:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]];
+    [self.cocoaTentApp setMac_key_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]];
+    
+    // we need to know if any of these values change so it can be saved out to the preferences file
+    [self.cocoaTentApp addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"description" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"url" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"icon" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"redirect_uris" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"scopes" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"app_id" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_agorithm" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id" options:NSKeyValueObservingOptionNew context:nil];
+    
+    
+    self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
     
     // very explicitely and verbosely set all of the tent parameters in an effort to expose
     // the tent protocol for others. Realistically this could be done much smarter.
@@ -65,45 +92,10 @@
                                    [[NSUserDefaults standardUserDefaults] valueForKey:@"httpProtocol"],
                                    [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityHost"],
                                    [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityPort"]]];
-    
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"name"]
-                              forKey:@"name"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"description"]
-                              forKey:@"description"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"url"]
-                              forKey:@"url"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"url"]
-                              forKey:@"url"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"icon"]
-                              forKey:@"icon"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"redirect_uris"]
-                              forKey:@"redirect_uris"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"scopes"]
-                              forKey:@"scopes"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"id"]
-                              forKey:@"id"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_algorithm"]
-                              forKey:@"mac_algorithm"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]
-                              forKey:@"mac_key"];
-    [self.cocoaTent.appInfo setValue:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]
-                              forKey:@"mac_key_id"];
-    
-    // during the OAuth2 process we need to be able to react to a specially crafted URL
-    // we register for that URL here.  The URL Scheme is defined in this app's info.plist.
-    [self registerForURLScheme];
+
 }
 
-- (void)registerForURLScheme
-{
-    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-}
 
-- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
-    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]]; // Now you can parse the URL and perform whatever action is needed
-    
-    [self.cocoaTent OAuthCallbackData:url];
-}
 
 - (IBAction)doThing:(id)sender
 {
@@ -141,6 +133,11 @@
     [[NSUserDefaults standardUserDefaults] setValue:[[notification userInfo] valueForKey:@"id"]             forKey:@"id"];
 }
 
-
-
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
+    if ([object class] == [self.cocoaTentApp class]) {
+        [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
+    }
+}
 @end

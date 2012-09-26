@@ -22,10 +22,12 @@
 		DA511D25160F723F00A814D7 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1A160F723F00A814D7 /* AFURLConnectionOperation.m */; };
 		DA511D26160F723F00A814D7 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1C160F723F00A814D7 /* AFXMLRequestOperation.m */; };
 		DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */; };
-		DA511D3D160FD13A00A814D7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D2A160FBCC700A814D7 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		DA511D40160FD45700A814D7 /* CocoaTent.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D3F160FD45700A814D7 /* CocoaTent.m */; };
-		DAD1B84F16114814001CC0DE /* HMAC256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD1B84E16114814001CC0DE /* HMAC256.m */; };
-		DAD1B85616114F25001CC0DE /* NSString+ParseQueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD1B85516114F24001CC0DE /* NSString+ParseQueryString.m */; };
+		DAB0753F16121E590079BE7D /* CocoaTentApp.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0753E16121E590079BE7D /* CocoaTentApp.m */; };
+		DAB0754916121EDF0079BE7D /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754216121EDF0079BE7D /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		DAB0754B16121EDF0079BE7D /* NSString+ParseQueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */; };
+		DAB0754C16121EDF0079BE7D /* CocoaTent.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754816121EDF0079BE7D /* CocoaTent.m */; };
+		DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE05151612952C008CABF5 /* NSString+Random.m */; };
+		DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,14 +64,18 @@
 		DA511D1D160F723F00A814D7 /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
 		DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		DA511D28160F7E4600A814D7 /* TentClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TentClient.entitlements; sourceTree = "<group>"; };
-		DA511D29160FBCC700A814D7 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		DA511D2A160FBCC700A814D7 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		DA511D3E160FD45700A814D7 /* CocoaTent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaTent.h; sourceTree = "<group>"; };
-		DA511D3F160FD45700A814D7 /* CocoaTent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTent.m; sourceTree = "<group>"; };
-		DAD1B84D16114814001CC0DE /* HMAC256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HMAC256.h; path = TentClient/HMAC256.h; sourceTree = "<group>"; };
-		DAD1B84E16114814001CC0DE /* HMAC256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HMAC256.m; path = TentClient/HMAC256.m; sourceTree = "<group>"; };
-		DAD1B85416114F24001CC0DE /* NSString+ParseQueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ParseQueryString.h"; sourceTree = "<group>"; };
-		DAD1B85516114F24001CC0DE /* NSString+ParseQueryString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ParseQueryString.m"; sourceTree = "<group>"; };
+		DAB0753D16121E590079BE7D /* CocoaTentApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentApp.h; path = CocoaTent/CocoaTentApp.h; sourceTree = "<group>"; };
+		DAB0753E16121E590079BE7D /* CocoaTentApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentApp.m; path = CocoaTent/CocoaTentApp.m; sourceTree = "<group>"; };
+		DAB0754116121EDF0079BE7D /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = CocoaTent/JSONKit.h; sourceTree = "<group>"; };
+		DAB0754216121EDF0079BE7D /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = CocoaTent/JSONKit.m; sourceTree = "<group>"; };
+		DAB0754516121EDF0079BE7D /* NSString+ParseQueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+ParseQueryString.h"; path = "CocoaTent/NSString+ParseQueryString.h"; sourceTree = "<group>"; };
+		DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ParseQueryString.m"; path = "CocoaTent/NSString+ParseQueryString.m"; sourceTree = "<group>"; };
+		DAB0754716121EDF0079BE7D /* CocoaTent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTent.h; path = CocoaTent/CocoaTent.h; sourceTree = "<group>"; };
+		DAB0754816121EDF0079BE7D /* CocoaTent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTent.m; path = CocoaTent/CocoaTent.m; sourceTree = "<group>"; };
+		DAEE05141612952C008CABF5 /* NSString+Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Random.h"; path = "CocoaTent/NSString+Random.h"; sourceTree = "<group>"; };
+		DAEE05151612952C008CABF5 /* NSString+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Random.m"; path = "CocoaTent/NSString+Random.m"; sourceTree = "<group>"; };
+		DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+hmac_sha_256.h"; path = "CocoaTent/NSData+hmac_sha_256.h"; sourceTree = "<group>"; };
+		DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+hmac_sha_256.m"; path = "CocoaTent/NSData+hmac_sha_256.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,9 +93,8 @@
 		DA511CDF160F716D00A814D7 = {
 			isa = PBXGroup;
 			children = (
-				DA511D41160FD45F00A814D7 /* CocoaTent */,
-				DA511D2C160FBCD400A814D7 /* JSONKit */,
 				DA511D0B160F723F00A814D7 /* AFNetworking */,
+				DA511D41160FD45F00A814D7 /* CocoaTent */,
 				DA511CF4160F716D00A814D7 /* TentClient */,
 				DA511CED160F716D00A814D7 /* Frameworks */,
 				DA511CEB160F716D00A814D7 /* Products */,
@@ -173,27 +178,39 @@
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
-		DA511D2C160FBCD400A814D7 /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				DA511D29160FBCC700A814D7 /* JSONKit.h */,
-				DA511D2A160FBCC700A814D7 /* JSONKit.m */,
-			);
-			name = JSONKit;
-			path = TentClient;
-			sourceTree = "<group>";
-		};
 		DA511D41160FD45F00A814D7 /* CocoaTent */ = {
 			isa = PBXGroup;
 			children = (
-				DAD1B84D16114814001CC0DE /* HMAC256.h */,
-				DAD1B84E16114814001CC0DE /* HMAC256.m */,
-				DA511D3E160FD45700A814D7 /* CocoaTent.h */,
-				DA511D3F160FD45700A814D7 /* CocoaTent.m */,
-				DAD1B85416114F24001CC0DE /* NSString+ParseQueryString.h */,
-				DAD1B85516114F24001CC0DE /* NSString+ParseQueryString.m */,
+				DAEE051816129642008CABF5 /* Categories */,
+				DAB0754D16121EE90079BE7D /* JSONKit */,
+				DAB0754716121EDF0079BE7D /* CocoaTent.h */,
+				DAB0754816121EDF0079BE7D /* CocoaTent.m */,
+				DAB0753D16121E590079BE7D /* CocoaTentApp.h */,
+				DAB0753E16121E590079BE7D /* CocoaTentApp.m */,
 			);
 			name = CocoaTent;
+			sourceTree = "<group>";
+		};
+		DAB0754D16121EE90079BE7D /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				DAB0754116121EDF0079BE7D /* JSONKit.h */,
+				DAB0754216121EDF0079BE7D /* JSONKit.m */,
+			);
+			name = JSONKit;
+			sourceTree = "<group>";
+		};
+		DAEE051816129642008CABF5 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				DAB0754516121EDF0079BE7D /* NSString+ParseQueryString.h */,
+				DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */,
+				DAEE05141612952C008CABF5 /* NSString+Random.h */,
+				DAEE05151612952C008CABF5 /* NSString+Random.m */,
+				DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */,
+				DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,7 +277,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA511D3D160FD13A00A814D7 /* JSONKit.m in Sources */,
 				DA511CFB160F716D00A814D7 /* main.m in Sources */,
 				DA511D02160F716D00A814D7 /* AppDelegate.m in Sources */,
 				DA511D1F160F723F00A814D7 /* AFHTTPClient.m in Sources */,
@@ -272,9 +288,12 @@
 				DA511D25160F723F00A814D7 /* AFURLConnectionOperation.m in Sources */,
 				DA511D26160F723F00A814D7 /* AFXMLRequestOperation.m in Sources */,
 				DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */,
-				DA511D40160FD45700A814D7 /* CocoaTent.m in Sources */,
-				DAD1B84F16114814001CC0DE /* HMAC256.m in Sources */,
-				DAD1B85616114F25001CC0DE /* NSString+ParseQueryString.m in Sources */,
+				DAB0753F16121E590079BE7D /* CocoaTentApp.m in Sources */,
+				DAB0754916121EDF0079BE7D /* JSONKit.m in Sources */,
+				DAB0754B16121EDF0079BE7D /* NSString+ParseQueryString.m in Sources */,
+				DAB0754C16121EDF0079BE7D /* CocoaTent.m in Sources */,
+				DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */,
+				DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,7 +388,6 @@
 				GCC_PREFIX_HEADER = "TentClient/TentClient-Prefix.pch";
 				INFOPLIST_FILE = "TentClient/TentClient-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -382,7 +400,6 @@
 				GCC_PREFIX_HEADER = "TentClient/TentClient-Prefix.pch";
 				INFOPLIST_FILE = "TentClient/TentClient-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
