@@ -118,7 +118,17 @@
     [operation start];
 }
 
+
+/*
+ * STEP 1: Tell tentd that we exist and it'll respond with:
+ *   an id for our app (id)
+ *   the id for our key (mac_key_id)
+ *   the shared key (mac_key)
+ *   the algorithm used (mac_algorithm)
+ */
 - (void) doRegister {
+    
+    
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@", self.tentServer]];
     
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:url];
@@ -141,6 +151,9 @@
     [operation start];
 }
 
+/*
+ * Take the data from doRegister and store it then perform auth request (STEP 2)
+ */
 - (void) parseOAuthData:(NSDictionary *) data {
     [self.cocoaTentApp setMac_algorithm:[data valueForKey:@"mac_algorithm"]];
     [self.cocoaTentApp setMac_key:[data valueForKey:@"mac_key"]];
@@ -151,12 +164,15 @@
     NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.cocoaTentApp app_id]];
     
     NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.tentServer, @"oauth/authorize", params];
-    NSLog(@"fullParms %@", fullParams);
+    
     NSURL *url = [NSURL URLWithString:fullParams];
-    NSLog(@"opening %@", url);
+    
 	[[NSWorkspace sharedWorkspace] openURL:url];
 }
 
+/*
+ * Store the code and state (we're supposed to set the state value and verify it here..but we don't yet)
+ */
 - (void) OAuthCallbackData:(NSURL *) callBackData
 {
     NSDictionary *data = [[callBackData query] explodeToDictionaryInnerGlue:@"=" outterGlue:@"&"];
@@ -167,23 +183,24 @@
 }
 
 /**
+ * STEP 3: get our permanent access token using the code we just got
  * Builds the URL/request to exchange a code for an access token
  */
 - (void) getAccessToken
 {
+    
+    
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     NSString *ts = [[NSNumber numberWithDouble: timestamp] stringValue];
     
     NSString *nonce = [NSString randomizedString];
-    
-    NSString *app_id = [self.cocoaTentApp app_id];
     
     NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:[self code], @"code", @"mac", @"token_type", nil];
     
     NSString *mac = [[httpBody JSONData] hmac_sha_256:[self.cocoaTentApp mac_key]];
 
     
-    NSString *authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", app_id, [ts integerValue], nonce, mac];
+    NSString *authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", [self.cocoaTentApp mac_key_id], [ts integerValue], nonce, mac];
     
     NSLog(@"will be sending %@", authorizationHeader);
     
@@ -204,7 +221,55 @@
     [request setHTTPBody:[httpBody JSONData]];
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"authorization response %@", JSON);
+        [self parseAccessToken:JSON];
+        
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
+    }];
+    
+    [operation start];
+}
+
+- (void) parseAccessToken:(id) JSON
+{
+    [self.cocoaTentApp setAccess_token:[JSON valueForKey:@"access_token"]];
+}
+
+- (void) getFollowings
+{
+    NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+    NSString *ts = [[NSNumber numberWithDouble: timestamp] stringValue];
+    
+    NSString *nonce = [NSString randomizedString];
+    
+    NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:[self code], @"code", @"mac", @"token_type", nil];
+    
+    NSString *mac = [[httpBody JSONData] hmac_sha_256:[self.cocoaTentApp mac_key]];
+    
+    
+    NSString *authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", [self.cocoaTentApp mac_key_id], [ts integerValue], nonce, mac];
+    
+    NSLog(@"will be sending %@", authorizationHeader);
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@", self.tentServer]];
+    
+    AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:url];
+    
+    NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
+    [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
+    
+    NSMutableURLRequest *request = [client requestWithMethod:@"GET" path:[NSString stringWithFormat:@"followings"] parameters:nil];
+    
+    [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
+    
+    [request setValue:authorizationHeader forHTTPHeaderField:@"Authorization"];
+    
+    
+    [request setHTTPBody:[httpBody JSONData]];
+    
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"got followings %@", JSON);
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];

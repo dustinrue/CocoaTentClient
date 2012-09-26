@@ -51,5 +51,7 @@
 - (void) parseOAuthData:(id) data;
 - (void) OAuthCallbackData:(NSURL *) callBackData;
 - (void) getAccessToken;
+- (void) parseAccessToken:(id) JSON;
+- (void) getFollowings;
 
 @end

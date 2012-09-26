@@ -39,6 +39,7 @@
 @property (strong) NSString *mac_key_id;
 @property (strong) NSString *mac_key;
 @property (strong) NSString *mac_algorithm;
+@property (strong) NSString *access_token;
 @property (strong) NSArray  *redirect_uris;
 @property (strong) NSDictionary *scopes;
 

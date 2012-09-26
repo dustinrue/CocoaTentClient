@@ -82,6 +82,7 @@
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_agorithm" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"access_token" options:NSKeyValueObservingOptionNew context:nil];
     
     
     self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
@@ -106,6 +107,10 @@
 - (IBAction)performDiscover:(id)sender
 {
     [self.cocoaTent discover];
+}
+
+- (IBAction)performAuthorizedAction:(id)sender {
+    [self.cocoaTent getFollowings];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
