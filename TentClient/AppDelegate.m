@@ -90,10 +90,10 @@
     
     // very explicitely and verbosely set all of the tent parameters in an effort to expose
     // the tent protocol for others. Realistically this could be done much smarter.
-    [self.cocoaTent setTentServer:[NSString stringWithFormat:@"%@://%@:%@",
+    [self.cocoaTent setTentHost:[NSString stringWithFormat:@"%@://%@",
                                    [[NSUserDefaults standardUserDefaults] valueForKey:@"httpProtocol"],
-                                   [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityHost"],
-                                   [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityPort"]]];
+                                   [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityHost"]]];
+    [self.cocoaTent setTentHostPort:[[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityPort"]];
 
 }
 

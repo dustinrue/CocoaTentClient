@@ -30,12 +30,15 @@
 #import <Foundation/Foundation.h>
 
 @class CocoaTentApp;
+@class AFJSONRequestOperation;
 
 @interface CocoaTent : NSObject
 
 @property (strong) NSString *tentVersion;
-@property (strong) NSString *tentServer;
+@property (strong) NSString *tentHost;
+@property (strong) NSString *tentHostPort;
 @property (strong) NSString *tentMimeType;
+@property (strong) NSString *urlScheme;
 
 // used during the OAuth2 exchange
 @property (strong) NSString *code;
@@ -45,6 +48,12 @@
 @property (strong) CocoaTentApp *cocoaTentApp;
 
 - (id) initWithApp:(CocoaTentApp *) cocoaTentApp;
+- (AFJSONRequestOperation *) newJSONRequestOperationWithMethod:(NSString *)method
+                                          pathWithLeadingSlash:(NSString *) path
+                                                      HTTPBody:(NSDictionary *) httpBody
+                                                          sign:(BOOL) isSigned
+                                                       success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
+                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure;
 - (void) getUserProfile;
 - (void) discover;
 - (void) doRegister;
