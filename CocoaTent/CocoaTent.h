@@ -54,13 +54,13 @@
                                                           sign:(BOOL) isSigned
                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure;
+
+
+- (void) registerWithTentServer;
+
+
 - (void) getUserProfile;
 - (void) discover;
-- (void) doRegister;
-- (void) parseOAuthData:(id) data;
-- (void) OAuthCallbackData:(NSURL *) callBackData;
-- (void) getAccessToken;
-- (void) parseAccessToken:(id) JSON;
 - (void) getFollowings;
 
 @end

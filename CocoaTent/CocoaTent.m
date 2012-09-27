@@ -40,6 +40,17 @@
 #import "NSString+ParseQueryString.h"
 #import "NSString+Random.h"
 
+
+@interface CocoaTent (Private)
+
+- (void) saveResponseDataAndRedirectToAuthorizationURL:(id) data;
+- (void) saveAuthorizationCodeFromAuthorizationURL:(NSURL *) callBackData;
+- (void) getPermanentAccessToken;
+- (void) savePermanentAccessToken:(id) JSON;
+
+@end
+
+
 @implementation CocoaTent
 
 - (id) initWithApp:(CocoaTentApp *) cocoaTentApp {
@@ -81,9 +92,12 @@
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
     NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]]; // Now you can parse the URL and perform whatever action is needed
     
-    [self OAuthCallbackData:url];
+    [self saveAuthorizationCodeFromAuthorizationURL:url];
 }
 
+
+#pragma mark -
+#pragma mark communications
 - (AFJSONRequestOperation *) newJSONRequestOperationWithMethod:(NSString *)method
                                           pathWithLeadingSlash:(NSString *) path
                                                       HTTPBody:(NSDictionary *) httpBody
@@ -176,7 +190,7 @@
     
     if ([method isEqualToString:@"POST"])
     {
-        [request setValue:@"application/vnd.tent.v0+json" forHTTPHeaderField:@"content-type"];
+        [request setValue:self.tentMimeType forHTTPHeaderField:@"content-type"];
     }
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -191,32 +205,9 @@
 
 
 
-- (void) getUserProfile {
-    AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"didReceiveProfileData" object:nil userInfo:JSON];
-        ;
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        NSLog(@"failure, %@", error);
-    }];
-    
-    [operation start];
-}
 
-- (void) discover {
-    
-    AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"HEAD" pathWithLeadingSlash:@"/" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
-        [self doRegister];
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        NSLog(@"failure, %@", error);
-    }];
-    
-    [operation start];
-}
-
-
+#pragma mark -
+#pragma mark OAuth2 registration steps
 /*
  * STEP 1: Tell tentd that we exist and it'll respond with:
  *   an id for our app (id)
@@ -224,10 +215,10 @@
  *   the shared key (mac_key)
  *   the algorithm used (mac_algorithm)
  */
-- (void) doRegister {
+- (void) registerWithTentServer {
     
     AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"/apps" HTTPBody:[self.cocoaTentApp dictionary] sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        [self parseOAuthData:JSON];
+        [self saveResponseDataAndRedirectToAuthorizationURL:JSON];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
@@ -241,7 +232,7 @@
  * STEP 2
  * Take the data from doRegister and store it then perform auth request
  */
-- (void) parseOAuthData:(NSDictionary *) data {
+- (void) saveResponseDataAndRedirectToAuthorizationURL:(NSDictionary *) data {
     [self.cocoaTentApp setMac_algorithm:[data valueForKey:@"mac_algorithm"]];
     [self.cocoaTentApp setMac_key:[data valueForKey:@"mac_key"]];
     [self.cocoaTentApp setMac_key_id:[data valueForKey:@"mac_key_id"]];
@@ -260,26 +251,26 @@
 /*
  * Store the code and state (we're supposed to set the state value and verify it here..but we don't yet)
  */
-- (void) OAuthCallbackData:(NSURL *) callBackData
+- (void) saveAuthorizationCodeFromAuthorizationURL:(NSURL *) callBackData
 {
     NSDictionary *data = [[callBackData query] explodeToDictionaryInnerGlue:@"=" outterGlue:@"&"];
     
     self.code = [data valueForKey:@"code"];
     self.state = [data valueForKey:@"state"];
-    [self getAccessToken];
+    [self getPermanentAccessToken];
 }
 
 /**
  * STEP 3: get our permanent access token using the code we just got
  * Builds the URL/request to exchange a code for an access token
  */
-- (void) getAccessToken
+- (void) getPermanentAccessToken
 {
     
     NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:[self code], @"code", @"mac", @"token_type", nil];
     
     AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:[NSString stringWithFormat:@"/apps/%@/authorizations", [self.cocoaTentApp app_id]] HTTPBody:httpBody sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        [self parseAccessToken:JSON];
+        [self savePermanentAccessToken:JSON];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
@@ -289,10 +280,38 @@
     [operation start];
 }
 
-- (void) parseAccessToken:(id) JSON
+- (void) savePermanentAccessToken:(id) JSON
 {
     [self.cocoaTentApp setAccess_token:[JSON valueForKey:@"access_token"]];
 }
+
+#pragma mark -
+#pragma mark other things
+- (void) getUserProfile {
+    AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"didReceiveProfileData" object:nil userInfo:JSON];
+        ;
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@", error);
+    }];
+    
+    [operation start];
+}
+
+- (void) discover {
+    
+    AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"HEAD" pathWithLeadingSlash:@"/" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
+        [self registerWithTentServer];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@", error);
+    }];
+    
+    [operation start];
+}
+
 
 - (void) getFollowings
 {
