@@ -238,8 +238,9 @@
     [self.cocoaTentApp setMac_key_id:[data valueForKey:@"mac_key_id"]];
     [self.cocoaTentApp setApp_id:[data valueForKey:@"id"]];
     
+    self.state = [NSString randomizedString];
     
-    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=87351cc2f6737bfc8ba&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.cocoaTentApp app_id]];
+    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=%@&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.cocoaTentApp app_id], self.state];
     
     NSString *fullParams = [NSString stringWithFormat:@"%@:%@/%@?%@", self.tentHost, self.tentHostPort, @"oauth/authorize", params];
     
@@ -249,15 +250,17 @@
 }
 
 /*
- * Store the code and state (we're supposed to set the state value and verify it here..but we don't yet)
+ * Store the code and state
  */
 - (void) saveAuthorizationCodeFromAuthorizationURL:(NSURL *) callBackData
 {
     NSDictionary *data = [[callBackData query] explodeToDictionaryInnerGlue:@"=" outterGlue:@"&"];
     
     self.code = [data valueForKey:@"code"];
-    self.state = [data valueForKey:@"state"];
-    [self getPermanentAccessToken];
+    if ([self.state isEqualToString:[data valueForKey:@"state"]])
+        [self getPermanentAccessToken];
+    
+    // we just don't do anything if the state values aren't the same
 }
 
 /**
