@@ -35,6 +35,7 @@
 @interface CocoaTent : NSObject
 
 @property (strong) NSString *tentVersion;
+@property (strong) NSString *tentHostProtocol;
 @property (strong) NSString *tentHost;
 @property (strong) NSString *tentHostPort;
 @property (strong) NSString *tentMimeType;
@@ -62,5 +63,7 @@
 - (void) getUserProfile;
 - (void) discover;
 - (void) getFollowings;
+- (void) pushProfileInfo;
+- (void) newFollowing;
 
 @end

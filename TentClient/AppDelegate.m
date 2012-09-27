@@ -51,7 +51,16 @@
     [appDefaults setValue:@"https://github.com/dustinrue/CocoaTentClient"      forKey:@"url"];
     [appDefaults setValue:@"http://example.com/icon.png"                       forKey:@"icon"];
     [appDefaults setValue:[NSArray arrayWithObject:@"cocoatentclient://oauth"] forKey:@"redirect_uris"];
-    [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:@"Uses an app profile section to describe foos", @"write_profile", @"Calculates foos based on your followings", @"read_followings", nil]  forKey:@"scopes"];
+    [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
+                           @"Uses an app profile section to describe foos", @"write_profile",
+                           @"Calculates foos based on your followings", @"read_followings",
+                           @"read_profile", @"read_profile",
+                           @"read_followers", @"read_followers",
+                           @"write_followers", @"write_followers",
+                           @"read_followings", @"read_followings",
+                           @"write_followings", @"write_followings",
+                           @"read_posts", @"read_posts",
+                           @"write_posts", @"write_posts", nil]  forKey:@"scopes"];
     
     
     
@@ -90,8 +99,7 @@
     
     // very explicitely and verbosely set all of the tent parameters in an effort to expose
     // the tent protocol for others. Realistically this could be done much smarter.
-    [self.cocoaTent setTentHost:[NSString stringWithFormat:@"%@://%@",
-                                   [[NSUserDefaults standardUserDefaults] valueForKey:@"httpProtocol"],
+    [self.cocoaTent setTentHost:[NSString stringWithFormat:@"%@",
                                    [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityHost"]]];
     [self.cocoaTent setTentHostPort:[[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityPort"]];
 
@@ -112,6 +120,10 @@
 
 - (IBAction)performAuthorizedAction:(id)sender {
     [self.cocoaTent getFollowings];
+}
+
+- (IBAction)pushProfileInfo:(id)sender {
+    [self.cocoaTent newFollowing];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
@@ -141,7 +153,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
+    //NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
     if ([object class] == [self.cocoaTentApp class]) {
         [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
     }

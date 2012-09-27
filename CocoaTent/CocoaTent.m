@@ -59,11 +59,12 @@
     if (!self)
         return self;
     
-    self.tentVersion  = @"0.1.0";
-    self.tentHost     = @"http://localhost";
-    self.tentHostPort = @"3000";
-    self.tentMimeType = @"application/vnd.tent.v0+json";
-    self.urlScheme    = @"cocoatentclient";
+    self.tentVersion      = @"0.1.0";
+    self.tentHostProtocol = @"http";
+    self.tentHost         = @"localhost";
+    self.tentHostPort     = @"3000";
+    self.tentMimeType     = @"application/vnd.tent.v0+json";
+    self.urlScheme        = @"cocoatentclient";
     
     self.cocoaTentApp = cocoaTentApp;
     
@@ -105,9 +106,10 @@
                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success
                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure
 {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@", self.tentHost, self.tentHostPort]];
 
-    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@:%@", self.tentHostProtocol, self.tentHost, self.tentHostPort]];
+
+    NSLog(@"url %@", url);
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:url];
     
     NSMutableURLRequest *request = [client requestWithMethod:method path:path parameters:nil];
@@ -157,8 +159,11 @@
                                              self.tentHost,
                                              self.tentHostPort];
         
-        // NSLog(@"signing %@", normalizedRequestString);
+        NSLog(@"signing %@\n with %@", normalizedRequestString, [self.cocoaTentApp mac_key]);
         
+        // can't sign anything if we don't have a key
+        if (![self.cocoaTentApp mac_key])
+            return nil;
         
         NSString *mac = [normalizedRequestString hmac_sha_256:[self.cocoaTentApp mac_key]];
         
@@ -166,10 +171,12 @@
         NSString *authorizationHeader = nil;
         if ([self.cocoaTentApp access_token])
         {
+            NSLog(@"signed with access_token");
             authorizationHeader = [NSString stringWithFormat:@"MAC id='%@', ts='%ld', nonce='%@', mac='%@'", [self.cocoaTentApp access_token], [ts integerValue], nonce, mac];
         }
         else if ([self.cocoaTentApp mac_key_id])
         {
+            NSLog(@"signed with mac_key_id");
             authorizationHeader = [NSString stringWithFormat:@"MAC id='%@', ts='%ld', nonce='%@', mac='%@'", [self.cocoaTentApp mac_key_id], [ts integerValue], nonce, mac];
         }
         else
@@ -185,6 +192,7 @@
     
     if (httpBody)
     {
+        NSLog(@"httpBody %@", httpBody);
         [request setHTTPBody:[httpBody JSONData]];
     }
     
@@ -240,9 +248,9 @@
     
     self.state = [NSString randomizedString];
     
-    NSString *params = [NSString stringWithFormat:@"client_id=%@&redirect_uri=cocoatentclient://oauth&scope=read_posts,read_profile&state=%@&tent_profile_info_types=https://tent.io/types/info/music/v0.1.0&tent_post_types=https://tent.io/types/posts/status/v0.1.0,https://tent.io/types/posts/photo/v0.1.0", [self.cocoaTentApp app_id], self.state];
+    NSString *params = [NSString stringWithFormat:@"client_id=%@&tent_profile_info_types=all&tent_post_types=all&redirect_uri=cocoatentclient://oauth&state=%@", [self.cocoaTentApp app_id], self.state];
     
-    NSString *fullParams = [NSString stringWithFormat:@"%@:%@/%@?%@", self.tentHost, self.tentHostPort, @"oauth/authorize", params];
+    NSString *fullParams = [NSString stringWithFormat:@"%@://%@:%@/%@?%@", self.tentHostProtocol, self.tentHost, self.tentHostPort, @"oauth/authorize", params];
     
     NSURL *url = [NSURL URLWithString:fullParams];
     
@@ -286,6 +294,7 @@
 - (void) savePermanentAccessToken:(id) JSON
 {
     [self.cocoaTentApp setAccess_token:[JSON valueForKey:@"access_token"]];
+    [self.cocoaTentApp setMac_key:[JSON valueForKey:@"mac_key"]];
 }
 
 #pragma mark -
@@ -325,6 +334,50 @@
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
         NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
+    }];
+    
+    [operation start];
+}
+
+- (void) pushProfileInfo
+{
+    /*
+     "name": "The Tentity",
+     "avatar_url": "http://example.org/avatar.jpg",
+     "birthdate": "2012-08-23",
+     "location": "The Internet",
+     "gender": "Unknown",
+     "bio": "Dignissimos autem pariatur deserunt voluptatem sed incidunt occaecati."
+     */
+    
+    NSMutableDictionary *profileInfo = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    [profileInfo setValue:@"Dustin Rue" forKey:@"name"];
+    [profileInfo setValue:@"http://example.org/avatar.jpg" forKey:@"avatar_url"];
+    [profileInfo setValue:@"2012-08-23" forKey:@"birthdate"];
+    [profileInfo setValue:@"The Internet" forKey:@"location"];
+    [profileInfo setValue:@"male" forKey:@"gender"];
+    [profileInfo setValue:@"this is my bio" forKey:@"bio"];
+
+    AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"PUT" pathWithLeadingSlash:@"/profile/https%3A%2F%2Ftent.io%2Ftypes%2Finfo%2Fbasic%2Fv0.1.0" HTTPBody:profileInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"worked");
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed with %@", [[error userInfo] valueForKey:@"NSLocalizedRecoverySuggestion"]);
+    }];
+    
+    [operation start];
+}
+
+- (void) newFollowing
+{
+    NSMutableDictionary *followingInfo = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    [followingInfo setValue:@"http://google.com" forKey:@"entity"];
+    
+    AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"/followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"worked %@", JSON);
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed %@", error);
     }];
     
     [operation start];
