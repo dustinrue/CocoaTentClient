@@ -149,8 +149,8 @@
         NSString *nonce = [NSString randomizedString];
         
         
-        
-        NSString *normalizedRequestString = [NSString stringWithFormat:@"%ld\n%@\n%@\n%@\n%@\n%@\n",
+        // the double newline is not a mistake
+        NSString *normalizedRequestString = [NSString stringWithFormat:@"%ld\n%@\n%@\n%@\n%@\n%@\n\n",
                                              [ts integerValue],
                                              nonce,
                                              method,
