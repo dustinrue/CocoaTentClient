@@ -109,7 +109,6 @@
 
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@:%@", self.tentHostProtocol, self.tentHost, self.tentHostPort]];
 
-    NSLog(@"url %@", url);
     AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:url];
     
     NSMutableURLRequest *request = [client requestWithMethod:method path:path parameters:nil];
@@ -159,26 +158,20 @@
                                              self.tentHost,
                                              self.tentHostPort];
         
-        NSLog(@"signing %@\n with %@", normalizedRequestString, [self.cocoaTentApp mac_key]);
-        
         // can't sign anything if we don't have a key
         if (![self.cocoaTentApp mac_key])
             return nil;
         
         NSString *mac = [normalizedRequestString hmac_sha_256:[self.cocoaTentApp mac_key]];
         
-        NSLog(@"mac signature: %@", mac);
-        
         // if access_token is set then set id to that, if not, then use the mac_key_id
         NSString *authorizationHeader = nil;
         if ([self.cocoaTentApp access_token])
         {
-            NSLog(@"signed with access_token");
             authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", [self.cocoaTentApp access_token], [ts integerValue], nonce, mac];
         }
         else if ([self.cocoaTentApp mac_key_id])
         {
-            NSLog(@"signed with mac_key_id");
             authorizationHeader = [NSString stringWithFormat:@"MAC id='%@', ts='%ld', nonce='%@', mac='%@'", [self.cocoaTentApp mac_key_id], [ts integerValue], nonce, mac];
         }
         else
@@ -194,12 +187,10 @@
     
     if (httpBody)
     {
-        NSLog(@"httpBody %@", httpBody);
         [request setHTTPBody:[httpBody JSONData]];
         [request setValue:self.tentMimeType forHTTPHeaderField:@"content-type"];
     }
     
-    NSLog(@"full request details %@", [request HTTPBody]);
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         success(request, response, JSON);
         ;
