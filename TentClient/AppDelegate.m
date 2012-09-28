@@ -123,7 +123,7 @@
 }
 
 - (IBAction)pushProfileInfo:(id)sender {
-    [self.cocoaTent newFollowing];
+    [self.cocoaTent pushProfileInfo];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification

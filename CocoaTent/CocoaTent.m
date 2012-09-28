@@ -151,7 +151,7 @@
         
         
         
-        NSString *normalizedRequestString = [NSString stringWithFormat:@"%ld\n%@\n%@\n%@\n%@\n%@",
+        NSString *normalizedRequestString = [NSString stringWithFormat:@"%ld\n%@\n%@\n%@\n%@\n%@\n",
                                              [ts integerValue],
                                              nonce,
                                              method,
@@ -172,7 +172,7 @@
         if ([self.cocoaTentApp access_token])
         {
             NSLog(@"signed with access_token");
-            authorizationHeader = [NSString stringWithFormat:@"MAC id='%@', ts='%ld', nonce='%@', mac='%@'", [self.cocoaTentApp access_token], [ts integerValue], nonce, mac];
+            authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", [self.cocoaTentApp access_token], [ts integerValue], nonce, mac];
         }
         else if ([self.cocoaTentApp mac_key_id])
         {
@@ -194,13 +194,10 @@
     {
         NSLog(@"httpBody %@", httpBody);
         [request setHTTPBody:[httpBody JSONData]];
-    }
-    
-    if ([method isEqualToString:@"POST"])
-    {
         [request setValue:self.tentMimeType forHTTPHeaderField:@"content-type"];
     }
     
+    NSLog(@"full request details %@", [request HTTPBody]);
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         success(request, response, JSON);
         ;
@@ -362,7 +359,7 @@
     AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"PUT" pathWithLeadingSlash:@"/profile/https%3A%2F%2Ftent.io%2Ftypes%2Finfo%2Fbasic%2Fv0.1.0" HTTPBody:profileInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked");
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"failed with %@", [[error userInfo] valueForKey:@"NSLocalizedRecoverySuggestion"]);
+        NSLog(@"failed \nrequest: %@\nresponse: %@\n\nJSON: %@\n\n error: %@", request, [response allHeaderFields], JSON, error);
     }];
     
     [operation start];
@@ -377,7 +374,7 @@
     AFJSONRequestOperation *operation = [self newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"/followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked %@", JSON);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"failed %@", error);
+        NSLog(@"failed \nrequest: %@\n%@\n\nresponse: %@\n\nJSON: %@\n\n error: %@", [request allHTTPHeaderFields], [request HTTPBody], [response allHeaderFields], JSON, error);
     }];
     
     [operation start];
