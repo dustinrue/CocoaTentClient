@@ -26,6 +26,8 @@
 		DAB0754916121EDF0079BE7D /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754216121EDF0079BE7D /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DAB0754B16121EDF0079BE7D /* NSString+ParseQueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */; };
 		DAB0754C16121EDF0079BE7D /* CocoaTent.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754816121EDF0079BE7D /* CocoaTent.m */; };
+		DACE6FAC1615E9B500021A1A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE6FA91615E9B500021A1A /* NSData+Base64.m */; };
+		DACE6FAD1615E9B500021A1A /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE6FAB1615E9B500021A1A /* NSString+Base64.m */; };
 		DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE05151612952C008CABF5 /* NSString+Random.m */; };
 		DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */; };
 		DAEE051E1612AF2A008CABF5 /* NSString+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051D1612AF2A008CABF5 /* NSString+hmac_sha_256.m */; };
@@ -73,6 +75,10 @@
 		DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ParseQueryString.m"; path = "CocoaTent/NSString+ParseQueryString.m"; sourceTree = "<group>"; };
 		DAB0754716121EDF0079BE7D /* CocoaTent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTent.h; path = CocoaTent/CocoaTent.h; sourceTree = "<group>"; };
 		DAB0754816121EDF0079BE7D /* CocoaTent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTent.m; path = CocoaTent/CocoaTent.m; sourceTree = "<group>"; };
+		DACE6FA81615E9B500021A1A /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		DACE6FA91615E9B500021A1A /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		DACE6FAA1615E9B500021A1A /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		DACE6FAB1615E9B500021A1A /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
 		DAEE05141612952C008CABF5 /* NSString+Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Random.h"; path = "CocoaTent/NSString+Random.h"; sourceTree = "<group>"; };
 		DAEE05151612952C008CABF5 /* NSString+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Random.m"; path = "CocoaTent/NSString+Random.m"; sourceTree = "<group>"; };
 		DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+hmac_sha_256.h"; path = "CocoaTent/NSData+hmac_sha_256.h"; sourceTree = "<group>"; };
@@ -206,6 +212,10 @@
 		DAEE051816129642008CABF5 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				DACE6FA81615E9B500021A1A /* NSData+Base64.h */,
+				DACE6FA91615E9B500021A1A /* NSData+Base64.m */,
+				DACE6FAA1615E9B500021A1A /* NSString+Base64.h */,
+				DACE6FAB1615E9B500021A1A /* NSString+Base64.m */,
 				DAB0754516121EDF0079BE7D /* NSString+ParseQueryString.h */,
 				DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */,
 				DAEE05141612952C008CABF5 /* NSString+Random.h */,
@@ -300,6 +310,8 @@
 				DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */,
 				DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */,
 				DAEE051E1612AF2A008CABF5 /* NSString+hmac_sha_256.m in Sources */,
+				DACE6FAC1615E9B500021A1A /* NSData+Base64.m in Sources */,
+				DACE6FAD1615E9B500021A1A /* NSString+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

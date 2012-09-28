@@ -167,6 +167,8 @@
         
         NSString *mac = [normalizedRequestString hmac_sha_256:[self.cocoaTentApp mac_key]];
         
+        NSLog(@"mac signature: %@", mac);
+        
         // if access_token is set then set id to that, if not, then use the mac_key_id
         NSString *authorizationHeader = nil;
         if ([self.cocoaTentApp access_token])
