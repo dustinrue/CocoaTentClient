@@ -39,6 +39,8 @@
 @property (strong) NSString *app_id;
 @property (strong) NSArray  *redirect_uris;
 @property (strong) NSDictionary *scopes;
+@property (strong) NSDictionary *tent_post_types;
+@property (strong) NSDictionary *tent_profile_info_types;
 
 @property (strong) NSString *tentHostURL;
 
