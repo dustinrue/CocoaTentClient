@@ -151,7 +151,12 @@
     
     [self.cocoaTentCommunication setState:[NSString randomizedString]];
     
-    NSString *params = [NSString stringWithFormat:@"client_id=%@&tent_profile_info_types=all&tent_post_types=all&redirect_uri=cocoatentclient://oauth&state=%@", [self.cocoaTentApp app_id], self.cocoaTentCommunication.state];
+    NSString *params = [NSString stringWithFormat:@"client_id=%@&tent_profile_info_types=%@&tent_post_types=%@&redirect_uri=cocoatentclient://oauth&state=%@&scope=%@",
+                        [self.cocoaTentApp app_id],
+                        [[self.cocoaTentApp.tent_profile_info_types allKeys] componentsJoinedByString:@","],
+                        [[self.cocoaTentApp.tent_post_types allKeys] componentsJoinedByString:@","],
+                        self.cocoaTentCommunication.state,
+                        [[self.cocoaTentApp.scopes allKeys] componentsJoinedByString:@","]];
     
     NSString *fullParams = [NSString stringWithFormat:@"%@://%@:%@/%@?%@", self.cocoaTentCommunication.tentHostProtocol, self.cocoaTentCommunication.tentHost, self.cocoaTentCommunication.tentHostPort, @"oauth/authorize", params];
     
@@ -159,6 +164,7 @@
     
 	[[NSWorkspace sharedWorkspace] openURL:url];
 }
+
 
 /*
  * Store the code and state

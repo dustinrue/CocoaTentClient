@@ -125,7 +125,7 @@
         }
         else if (self.mac_key_id)
         {
-            authorizationHeader = [NSString stringWithFormat:@"MAC id='%@', ts='%ld', nonce='%@', mac='%@'", self.mac_key_id, [ts integerValue], nonce, mac];
+            authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", self.mac_key_id, [ts integerValue], nonce, mac];
         }
         else
         {

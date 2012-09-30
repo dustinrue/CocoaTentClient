@@ -43,22 +43,47 @@
     [appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
 
     
-    // default app information
+    // default app information. Typically you wouldn't set all of these via NSUserDefaults
+    // because this would allow a user to override values by editing the preferences file
+    // for this app.
     [appDefaults setValue:@"Cocoa Tent Client"                                 forKey:@"name"];
     [appDefaults setValue:@"An example client written in Objective-C"          forKey:@"description"];
     [appDefaults setValue:@"https://github.com/dustinrue/CocoaTentClient"      forKey:@"url"];
     [appDefaults setValue:@"http://example.com/icon.png"                       forKey:@"icon"];
     [appDefaults setValue:[NSArray arrayWithObject:@"cocoatentclient://oauth"] forKey:@"redirect_uris"];
+    
     [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
                            @"Uses an app profile section to describe foos", @"write_profile",
-                           @"Calculates foos based on your followings", @"read_followings",
-                           @"read_profile", @"read_profile",
-                           @"read_followers", @"read_followers",
-                           @"write_followers", @"write_followers",
-                           @"read_followings", @"read_followings",
-                           @"write_followings", @"write_followings",
-                           @"read_posts", @"read_posts",
-                           @"write_posts", @"write_posts", nil]  forKey:@"scopes"];
+                           @"Calculates foos based on your followings",     @"read_followings",
+                           @"read_profile",                                 @"read_profile",
+                           @"read_followers",                               @"read_followers",
+                           @"write_followers",                              @"write_followers",
+                           @"read_followings",                              @"read_followings",
+                           @"write_followings",                             @"write_followings",
+                           @"read_posts",                                   @"read_posts",
+                           @"write_posts",                                  @"write_posts", nil]  forKey:@"scopes"];
+    
+    // What post types will this app post?  This is the full list as of v0.1.
+    // You could also simply set it to "all."  In reality this only needs to be a list of
+    // of the URLs, I've included the type name for clarity.  That said, the CocoaTentLibrary
+    // does expect a dictionry of values.
+    [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
+                           @"Status",  @"https://tent.io/types/post/status/v0.1.0",
+                           @"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
+                           @"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
+                           @"Album",   @"https://tent.io/types/post/album/v0.1.0",
+                           @"Repost",  @"https://tent.io/types/post/repost/v0.1.0",
+                           @"Profile", @"https://tent.io/types/post/profile/v0.1.0",
+                           @"Delete",  @"https://tent.io/types/post/delete/v0.1.0", nil] forKey:@"tent_post_types"];
+    
+    // What profile info types will this app deal with?  This is the full list as of v0.1.
+    // You could also simply set it to "all."  Like tent_post_types all that is really needed
+    // is an array of URLs, I've included the type name for clarity.  That said, the CocoaTentLibrary
+    // does expect a dictionry of values.
+
+    [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
+                           @"Core",    @"https://tent.io/types/info/core/v0.1.0",
+                           @"Basic",   @"https://tent.io/types/info/basic/v0.1.0", nil] forKey:@"tent_profile_info_types"];
     
     
     
@@ -72,7 +97,11 @@
     [self.cocoaTentApp setUrl:[[NSUserDefaults standardUserDefaults] valueForKey:@"url"]];
     [self.cocoaTentApp setIcon:[[NSUserDefaults standardUserDefaults] valueForKey:@"icon"]];
     [self.cocoaTentApp setRedirect_uris:[[NSUserDefaults standardUserDefaults] valueForKey:@"redirect_uris"]];
+    
     [self.cocoaTentApp setScopes:[[NSUserDefaults standardUserDefaults] valueForKey:@"scopes"]];
+    [self.cocoaTentApp setTent_post_types:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_post_types"]];
+    [self.cocoaTentApp setTent_profile_info_types:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_profile_info_types"]];
+     
     [self.cocoaTentApp setApp_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"app_id"]];
     [self.cocoaTentApp setMac_key:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]];
     [self.cocoaTentApp setMac_key_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]];
