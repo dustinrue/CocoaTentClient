@@ -28,6 +28,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "CocoaTentCommunication.h"
 
 @interface CocoaTentApp : NSObject
 
@@ -36,12 +37,14 @@
 @property (strong) NSString *url;
 @property (strong) NSString *icon;
 @property (strong) NSString *app_id;
-@property (strong) NSString *mac_key_id;
-@property (strong) NSString *mac_key;
-@property (strong) NSString *mac_algorithm;
-@property (strong) NSString *access_token;
 @property (strong) NSArray  *redirect_uris;
 @property (strong) NSDictionary *scopes;
+
+@property (strong) NSString *tentHostURL;
+
+@property (strong) NSString *mac_key_id;
+@property (strong) NSString *mac_key;
+@property (strong) NSString *access_token;
 
 - (NSDictionary *)dictionary;
 

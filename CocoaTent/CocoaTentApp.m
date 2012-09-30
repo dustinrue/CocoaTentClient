@@ -31,18 +31,6 @@
 
 @implementation CocoaTentApp
 
-/*
- @property (strong) NSString *name;
- @property (strong) NSString *description;
- @property (strong) NSString *url;
- @property (strong) NSString *icon;
- @property (strong) NSString *app_id;
- @property (strong) NSString *mac_key_id;
- @property (strong) NSString *mac_key;
- @property (strong) NSString *mac_algorithm;
- @property (strong) NSArray  *redirect_uris;
- @property (strong) NSDictionary *scopes;
- */
 - (NSDictionary *)dictionary
 {
     NSDictionary *dictionaryOfPropertyValues = [NSDictionary dictionaryWithObjectsAndKeys:

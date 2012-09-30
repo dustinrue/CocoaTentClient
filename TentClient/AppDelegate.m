@@ -40,9 +40,7 @@
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
     
     // connection parameters
-    [appDefaults setValue:@"http"      forKey:@"httpProtocol"];
-    [appDefaults setValue:@"localhost" forKey:@"tentEntityHost"];
-    [appDefaults setValue:@"3000"      forKey:@"tentEntityPort"];
+    [appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
 
     
     // default app information
@@ -76,10 +74,10 @@
     [self.cocoaTentApp setRedirect_uris:[[NSUserDefaults standardUserDefaults] valueForKey:@"redirect_uris"]];
     [self.cocoaTentApp setScopes:[[NSUserDefaults standardUserDefaults] valueForKey:@"scopes"]];
     [self.cocoaTentApp setApp_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"app_id"]];
-    [self.cocoaTentApp setMac_algorithm:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_algorithm"]];
     [self.cocoaTentApp setMac_key:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]];
     [self.cocoaTentApp setMac_key_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]];
     [self.cocoaTentApp setAccess_token:[[NSUserDefaults standardUserDefaults] valueForKey:@"access_token"]];
+    [self.cocoaTentApp setTentHostURL:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_host_url"]];
     
     // we need to know if any of these values change so it can be saved out to the preferences file
     [self.cocoaTentApp addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
@@ -96,12 +94,6 @@
     
     
     self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
-    
-    // very explicitely and verbosely set all of the tent parameters in an effort to expose
-    // the tent protocol for others. Realistically this could be done much smarter.
-    [self.cocoaTent setTentHost:[NSString stringWithFormat:@"%@",
-                                   [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityHost"]]];
-    [self.cocoaTent setTentHostPort:[[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntityPort"]];
 
 }
 
