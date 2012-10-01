@@ -18,7 +18,7 @@
 
 @implementation CocoaTentCommunication
 
-+ (CocoaTentCommunication *) sharedInstance
++ (CocoaTentCommunication *) sharedInstanceWithBaseURL:(NSURL *)baseURL;
 {
     static CocoaTentCommunication *sharedInstance;
     
@@ -26,23 +26,25 @@
     {
         if (!sharedInstance)
         {
-            sharedInstance = [[CocoaTentCommunication alloc] init];
+            sharedInstance = [[CocoaTentCommunication alloc] initWithBaseURL:baseURL];
         }
     }
     
     return sharedInstance;
 }
 
-- (id) init {
-    self = [super init];
+- (id) initWithBaseURL:(NSURL *)url {
+    NSLog(@"starting with %@", url);
+    self = [super initWithBaseURL:url];
     
     if (!self)
         return self;
     
+    
+    self.tentHost         = [url host];
+    self.tentHostPort     = [[url port] stringValue];
+    self.tentHostProtocol = [url scheme];
     self.tentVersion      = @"0.1.0";
-    self.tentHostProtocol = @"http";
-    self.tentHost         = @"localhost";
-    self.tentHostPort     = @"3000";
     self.tentMimeType     = @"application/vnd.tent.v0+json";
     self.urlScheme        = @"cocoatentclient";
     
@@ -52,7 +54,7 @@
 
 #pragma mark -
 #pragma mark communications
-- (AFJSONRequestOperation *) newJSONRequestOperationWithMethod:(NSString *)method
+- (AFJSONRequestOperation *) newJSONRequestOperationWithMethod:(NSString *) method
                                           pathWithLeadingSlash:(NSString *) path
                                                       HTTPBody:(NSDictionary *) httpBody
                                                           sign:(BOOL) isSigned
@@ -60,11 +62,7 @@
                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure
 {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@:%@", self.tentHostProtocol, self.tentHost, self.tentHostPort]];
-    
-    AFHTTPClient *client = [AFHTTPClient clientWithBaseURL:url];
-    
-    NSMutableURLRequest *request = [client requestWithMethod:method path:path parameters:nil];
+    NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
     
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
     [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
@@ -111,9 +109,15 @@
                                              self.tentHost,
                                              self.tentHostPort];
         
+        NSLog(@"signing %@", normalizedRequestString);
         // can't sign anything if we don't have a key
         if (!self.mac_key)
+        {
+            // TODO: properly bail out of here
+            NSLog(@"no key, need to register app first");
             return nil;
+        }
+        
         
         NSString *mac = [normalizedRequestString hmac_sha_256:self.mac_key];
         
@@ -130,6 +134,8 @@
         else
         {
             // neither is set, but we're being asked to sign, not possible
+            // TODO: properly bail out of here
+            NSLog(@"no key id, register first");
             return nil;
         }
         

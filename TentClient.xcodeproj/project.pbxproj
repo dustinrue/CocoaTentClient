@@ -22,6 +22,7 @@
 		DA511D25160F723F00A814D7 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1A160F723F00A814D7 /* AFURLConnectionOperation.m */; };
 		DA511D26160F723F00A814D7 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1C160F723F00A814D7 /* AFXMLRequestOperation.m */; };
 		DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */; };
+		DAB01BA11618D1E4003868E0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */; };
 		DAB0753F16121E590079BE7D /* CocoaTentApp.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0753E16121E590079BE7D /* CocoaTentApp.m */; };
 		DAB0754916121EDF0079BE7D /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754216121EDF0079BE7D /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DAB0754B16121EDF0079BE7D /* NSString+ParseQueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */; };
@@ -68,6 +69,7 @@
 		DA511D1D160F723F00A814D7 /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
 		DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		DA511D28160F7E4600A814D7 /* TentClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TentClient.entitlements; sourceTree = "<group>"; };
+		DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DAB0753D16121E590079BE7D /* CocoaTentApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentApp.h; path = CocoaTent/CocoaTentApp.h; sourceTree = "<group>"; };
 		DAB0753E16121E590079BE7D /* CocoaTentApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentApp.m; path = CocoaTent/CocoaTentApp.m; sourceTree = "<group>"; };
 		DAB0754116121EDF0079BE7D /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = CocoaTent/JSONKit.h; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAB01BA11618D1E4003868E0 /* SystemConfiguration.framework in Frameworks */,
 				DA511CEF160F716D00A814D7 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -124,6 +127,7 @@
 		DA511CED160F716D00A814D7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */,
 				DA511CEE160F716D00A814D7 /* Cocoa.framework */,
 				DA511CF0160F716D00A814D7 /* Other Frameworks */,
 			);

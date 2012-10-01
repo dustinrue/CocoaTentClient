@@ -29,21 +29,43 @@
 
 #import <Foundation/Foundation.h>
 
+@class CocoaTent;
+
+
 @class CocoaTentApp;
 @class CocoaTentCommunication;
 
+// use a delegate system to alert the app of changes, would it be
+// better to use blocks here?
+@protocol CocoaTentDelegate <NSObject>
+
+- (void) didReceiveAppId:(NSString *)app_id;
+- (void) didReceiveAccessToken:(NSString *)access_token;
+
+// would be used when streaming to notify the delegate that new data
+// has been received
+- (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
+
+// would be used to tell the delegate that communication layer
+// error has occurred
+- (void) communicationError:(NSError *)error;
+
+@end
+
 @interface CocoaTent : NSObject
-
-
-
 
 @property (strong) CocoaTentApp *cocoaTentApp;
 @property (strong) CocoaTentCommunication *cocoaTentCommunication;
+@property (strong) id <CocoaTentDelegate> delegate;
 
+// You should create and set the properties of a CocoaTentApp object
+// and pass it in as you create a CocoaTent object.  
 - (id) initWithApp:(CocoaTentApp *) cocoaTentApp;
 
 
-
+/*
+ *
+ */
 - (void) registerWithTentServer;
 
 

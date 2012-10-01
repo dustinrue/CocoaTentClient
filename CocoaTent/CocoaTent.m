@@ -60,39 +60,26 @@
         return self;
     
     
-    
-    /*
-    self.tentVersion      = @"0.1.0";
-    self.tentHostProtocol = @"http";
-    self.tentHost         = @"localhost";
-    self.tentHostPort     = @"3000";
-    self.tentMimeType     = @"application/vnd.tent.v0+json";
-    self.urlScheme        = @"cocoatentclient";
-     */
-    
     self.cocoaTentApp = cocoaTentApp;
-    
-    self.cocoaTentCommunication = [CocoaTentCommunication sharedInstance];
     
     NSURL *hostInfo = [NSURL URLWithString:self.cocoaTentApp.tentHostURL];
     
-    [self.cocoaTentCommunication setTentHost:[hostInfo host]];
-    [self.cocoaTentCommunication setTentHostPort:[[hostInfo port] stringValue]];
-    [self.cocoaTentCommunication setTentHostProtocol:[hostInfo scheme]];
+    self.cocoaTentCommunication = [CocoaTentCommunication sharedInstanceWithBaseURL:hostInfo];
+    
+    // configure the communication layer with this apps key info
     [self.cocoaTentCommunication setMac_key:self.cocoaTentApp.mac_key];
     [self.cocoaTentCommunication setMac_key_id:self.cocoaTentApp.mac_key_id];
+    [self.cocoaTentCommunication setAccess_token:self.cocoaTentApp.access_token];
     
-    [self.cocoaTentApp addObserver:self forKeyPath:@"name"          options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"description"   options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"url"           options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"icon"          options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"redirect_uris" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"scopes"        options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"app_id"        options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_agorithm"  options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key"       options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id"    options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"access_token"  options:NSKeyValueObservingOptionNew context:nil];
+    __weak CocoaTent *reachabilityDelegate = self;
+    [self.cocoaTentCommunication setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        [reachabilityDelegate reachabilityStatusHasChanged:(AFNetworkReachabilityStatus) status];
+    }];
+    
+    // if they change, we need to be notified
+    [self.cocoaTentCommunication addObserver:self forKeyPath:@"mac_key"       options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentCommunication addObserver:self forKeyPath:@"mac_key_id"    options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentCommunication addObserver:self forKeyPath:@"access_token"  options:NSKeyValueObservingOptionNew context:nil];
     
     [self registerForURLScheme];
     
@@ -105,20 +92,29 @@
 }
 
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
-    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]]; // Now you can parse the URL and perform whatever action is needed
+    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
     
+    // blindly assume that we've received an authorization code
     [self saveAuthorizationCodeFromAuthorizationURL:url];
 }
 
 
-
-
-
-
-
-
 #pragma mark -
 #pragma mark OAuth2 registration steps
+
+- (void) discover {
+    
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithLeadingSlash:@"/" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
+        [self registerWithTentServer];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@", error);
+    }];
+    
+    [operation start];
+}
+
 /*
  * STEP 1: Tell tentd that we exist and it'll respond with:
  *   an id for our app (id)
@@ -207,7 +203,7 @@
 }
 
 #pragma mark -
-#pragma mark other things
+#pragma mark User Profile
 - (void) getUserProfile {
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"didReceiveProfileData" object:nil userInfo:JSON];
@@ -215,34 +211,6 @@
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
         NSLog(@"failure, %@", error);
-    }];
-    
-    [operation start];
-}
-
-- (void) discover {
-    
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithLeadingSlash:@"/" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
-        [self registerWithTentServer];
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        NSLog(@"failure, %@", error);
-    }];
-    
-    [operation start];
-}
-
-
-- (void) getFollowings
-{
-    
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/followings" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got followings %@", JSON);
-        
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
     }];
     
     [operation start];
@@ -267,7 +235,7 @@
     [profileInfo setValue:@"The Internet" forKey:@"location"];
     [profileInfo setValue:@"male" forKey:@"gender"];
     [profileInfo setValue:@"this is my bio" forKey:@"bio"];
-
+    
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"PUT" pathWithLeadingSlash:@"/profile/https%3A%2F%2Ftent.io%2Ftypes%2Finfo%2Fbasic%2Fv0.1.0" HTTPBody:profileInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked");
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -277,11 +245,29 @@
     [operation start];
 }
 
+#pragma mark -
+#pragma mark Followings
+- (void) getFollowings
+{
+    
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/followings" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"got followings %@", JSON);
+        
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
+    }];
+    
+    [operation start];
+}
+
+
+
 - (void) newFollowing
 {
     NSMutableDictionary *followingInfo = [NSMutableDictionary dictionaryWithCapacity:0];
     
-    [followingInfo setValue:@"http://google.com" forKey:@"entity"];
+    [followingInfo setValue:@"http://localhost:3001" forKey:@"entity"];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"/followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked %@", JSON);
@@ -292,8 +278,26 @@
     [operation start];
 }
 
+- (void) reachabilityStatusHasChanged:(AFNetworkReachabilityStatus) status
+{
+    NSLog(@"reachability changed with %i", status);
+}
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
+    
+    if ([keyPath isEqualToString:@"access_token"])
+    {
+        [self.cocoaTentApp setAccess_token:[change valueForKey:@"new"]];
+    }
+    
+    if ([keyPath isEqualToString:@"mac_key_id"])
+    {
+        [self.cocoaTentApp setMac_key_id:[change valueForKey:@"new"]];
+    }
+    
+    if ([keyPath isEqualToString:@"mac_key"])
+    {
+        [self.cocoaTentApp setMac_key:[change valueForKey:@"new"]];
+    }
 }
 @end

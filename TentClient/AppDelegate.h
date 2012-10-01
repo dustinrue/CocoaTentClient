@@ -21,6 +21,7 @@
 - (IBAction)performDiscover:(id)sender;
 - (IBAction)performAuthorizedAction:(id)sender;
 - (IBAction)pushProfileInfo:(id)sender;
+- (IBAction)newFollowing:(id)sender;
 
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;

@@ -109,13 +109,7 @@
     [self.cocoaTentApp setTentHostURL:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_host_url"]];
     
     // we need to know if any of these values change so it can be saved out to the preferences file
-    [self.cocoaTentApp addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"description" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"url" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"icon" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"redirect_uris" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"scopes" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cocoaTentApp addObserver:self forKeyPath:@"app_id" options:NSKeyValueObservingOptionNew context:nil];
+        [self.cocoaTentApp addObserver:self forKeyPath:@"app_id" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_agorithm" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id" options:NSKeyValueObservingOptionNew context:nil];
@@ -145,6 +139,10 @@
 
 - (IBAction)pushProfileInfo:(id)sender {
     [self.cocoaTent pushProfileInfo];
+}
+
+- (IBAction)newFollowing:(id)sender {
+    [self.cocoaTent newFollowing];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification

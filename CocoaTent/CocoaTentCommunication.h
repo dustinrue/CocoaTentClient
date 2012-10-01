@@ -27,7 +27,7 @@
 @property (strong) NSString *code;
 @property (strong) NSString *state;
 
-+ (CocoaTentCommunication *) sharedInstance;
++ (CocoaTentCommunication *) sharedInstanceWithBaseURL:(NSURL *)baseURL;
 
 - (AFJSONRequestOperation *) newJSONRequestOperationWithMethod:(NSString *)method
                                           pathWithLeadingSlash:(NSString *) path

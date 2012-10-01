@@ -32,21 +32,25 @@
 
 @interface CocoaTentApp : NSObject
 
+// you should observe these values for changes so you can save them
+@property (strong) NSString *app_id;
+@property (strong) NSString *tentHostURL;
+@property (strong) NSString *mac_key_id;
+@property (strong) NSString *mac_key;
+@property (strong) NSString *access_token;
+
+// you set these values but they should otherwise remain
+// read only
 @property (strong) NSString *name;
 @property (strong) NSString *description;
 @property (strong) NSString *url;
 @property (strong) NSString *icon;
-@property (strong) NSString *app_id;
 @property (strong) NSArray  *redirect_uris;
 @property (strong) NSDictionary *scopes;
 @property (strong) NSDictionary *tent_post_types;
 @property (strong) NSDictionary *tent_profile_info_types;
 
-@property (strong) NSString *tentHostURL;
 
-@property (strong) NSString *mac_key_id;
-@property (strong) NSString *mac_key;
-@property (strong) NSString *access_token;
 
 - (NSDictionary *)dictionary;
 
