@@ -23,6 +23,7 @@
 		DA511D26160F723F00A814D7 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1C160F723F00A814D7 /* AFXMLRequestOperation.m */; };
 		DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */; };
 		DAB01BA11618D1E4003868E0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */; };
+		DAB01BA41619410E003868E0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DAB01BA31619410E003868E0 /* README.md */; };
 		DAB0753F16121E590079BE7D /* CocoaTentApp.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0753E16121E590079BE7D /* CocoaTentApp.m */; };
 		DAB0754916121EDF0079BE7D /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754216121EDF0079BE7D /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DAB0754B16121EDF0079BE7D /* NSString+ParseQueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754616121EDF0079BE7D /* NSString+ParseQueryString.m */; };
@@ -70,6 +71,7 @@
 		DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		DA511D28160F7E4600A814D7 /* TentClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TentClient.entitlements; sourceTree = "<group>"; };
 		DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		DAB01BA31619410E003868E0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		DAB0753D16121E590079BE7D /* CocoaTentApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentApp.h; path = CocoaTent/CocoaTentApp.h; sourceTree = "<group>"; };
 		DAB0753E16121E590079BE7D /* CocoaTentApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentApp.m; path = CocoaTent/CocoaTentApp.m; sourceTree = "<group>"; };
 		DAB0754116121EDF0079BE7D /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = CocoaTent/JSONKit.h; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 		DA511CF5160F716D00A814D7 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DAB01BA31619410E003868E0 /* README.md */,
 				DA511CF6160F716D00A814D7 /* TentClient-Info.plist */,
 				DA511CF7160F716D00A814D7 /* InfoPlist.strings */,
 				DA511CFA160F716D00A814D7 /* main.m */,
@@ -291,6 +294,7 @@
 				DA511CF9160F716D00A814D7 /* InfoPlist.strings in Resources */,
 				DA511CFF160F716D00A814D7 /* Credits.rtf in Resources */,
 				DA511D05160F716D00A814D7 /* MainMenu.xib in Resources */,
+				DAB01BA41619410E003868E0 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
