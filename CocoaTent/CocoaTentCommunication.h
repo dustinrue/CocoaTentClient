@@ -17,6 +17,7 @@
 @property (strong) NSString *tentHost;
 @property (strong) NSString *tentHostPort;
 @property (strong) NSString *tentMimeType;
+@property (strong) NSURL *tentHostURL;
 @property (strong) NSString *urlScheme;
 @property (strong) NSString *mac_key_id;
 @property (strong) NSString *mac_key;

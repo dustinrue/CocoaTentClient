@@ -44,6 +44,7 @@
     self.tentHost         = [url host];
     self.tentHostPort     = [[url port] stringValue];
     self.tentHostProtocol = [url scheme];
+    self.tentHostURL      = url;
     self.tentVersion      = @"0.1.0";
     self.tentMimeType     = @"application/vnd.tent.v0+json";
     self.urlScheme        = @"cocoatentclient";
@@ -62,8 +63,10 @@
                                                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON))failure
 {
     
+
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
-    
+
+    NSLog(@"making request to %@ with baseURL %@", [request URL], self.baseURL);
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
     [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
     
@@ -105,11 +108,11 @@
                                              [ts integerValue],
                                              nonce,
                                              method,
-                                             path,
+                                             [NSString stringWithFormat:@"%@/%@", [self.tentHostURL path], path],
                                              self.tentHost,
-                                             self.tentHostPort];
+                                             (self.tentHostPort) ? self.tentHostPort:(([self.tentHostProtocol isEqualToString:@"http"]) ?@"80":@"443")];
         
-        NSLog(@"signing %@", normalizedRequestString);
+        NSLog(@"signing \n%@", normalizedRequestString);
         // can't sign anything if we don't have a key
         if (!self.mac_key)
         {

@@ -104,7 +104,7 @@
 
 - (void) discover {
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithLeadingSlash:@"/" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithLeadingSlash:@"" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
         [self registerWithTentServer];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -124,7 +124,7 @@
  */
 - (void) registerWithTentServer {
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"/apps" HTTPBody:[self.cocoaTentApp dictionary] sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"apps" HTTPBody:[self.cocoaTentApp dictionary] sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self saveResponseDataAndRedirectToAuthorizationURL:JSON];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -154,7 +154,7 @@
                         self.cocoaTentCommunication.state,
                         [[self.cocoaTentApp.scopes allKeys] componentsJoinedByString:@","]];
     
-    NSString *fullParams = [NSString stringWithFormat:@"%@://%@:%@/%@?%@", self.cocoaTentCommunication.tentHostProtocol, self.cocoaTentCommunication.tentHost, self.cocoaTentCommunication.tentHostPort, @"oauth/authorize", params];
+    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.cocoaTentApp.tentHostURL, @"oauth/authorize", params];
     
     NSURL *url = [NSURL URLWithString:fullParams];
     
@@ -185,7 +185,7 @@
     
     NSDictionary *httpBody = [NSDictionary dictionaryWithObjectsAndKeys:self.cocoaTentCommunication.code, @"code", @"mac", @"token_type", nil];
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:[NSString stringWithFormat:@"/apps/%@/authorizations", [self.cocoaTentApp app_id]] HTTPBody:httpBody sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:[NSString stringWithFormat:@"apps/%@/authorizations", [self.cocoaTentApp app_id]] HTTPBody:httpBody sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self savePermanentAccessToken:JSON];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -205,7 +205,7 @@
 #pragma mark -
 #pragma mark User Profile
 - (void) getUserProfile {
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"didReceiveProfileData" object:nil userInfo:JSON];
         ;
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -236,7 +236,7 @@
     [profileInfo setValue:@"male" forKey:@"gender"];
     [profileInfo setValue:@"this is my bio" forKey:@"bio"];
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"PUT" pathWithLeadingSlash:@"/profile/https%3A%2F%2Ftent.io%2Ftypes%2Finfo%2Fbasic%2Fv0.1.0" HTTPBody:profileInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"PUT" pathWithLeadingSlash:@"profile/https%3A%2F%2Ftent.io%2Ftypes%2Finfo%2Fbasic%2Fv0.1.0" HTTPBody:profileInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked");
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed \nrequest: %@\nresponse: %@\n\nJSON: %@\n\n error: %@", request, [response allHeaderFields], JSON, error);
@@ -250,7 +250,7 @@
 - (void) getFollowings
 {
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"/followings" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"followings" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"got followings %@", JSON);
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -267,9 +267,9 @@
 {
     NSMutableDictionary *followingInfo = [NSMutableDictionary dictionaryWithCapacity:0];
     
-    [followingInfo setValue:@"http://localhost:3001" forKey:@"entity"];
+    [followingInfo setValue:@"" forKey:@"entity"];
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"/followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked %@", JSON);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed \nrequest: %@\n%@\n\nresponse: %@\n\nJSON: %@\n\n error: %@", [request allHTTPHeaderFields], [request HTTPBody], [response allHeaderFields], JSON, error);

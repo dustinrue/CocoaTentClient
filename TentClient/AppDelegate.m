@@ -40,7 +40,8 @@
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
     
     // connection parameters
-    [appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
+    [appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
+    //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
 
     
     // default app information. Typically you wouldn't set all of these via NSUserDefaults
