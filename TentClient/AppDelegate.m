@@ -73,12 +73,12 @@
     // does expect a dictionry of values.
     [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
                            @"Status",  @"https://tent.io/types/post/status/v0.1.0",
-                           //@"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
-                           //@"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
-                           //@"Album",   @"https://tent.io/types/post/album/v0.1.0",
+                           @"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
+                           @"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
+                           @"Album",   @"https://tent.io/types/post/album/v0.1.0",
                            @"Repost",  @"https://tent.io/types/post/repost/v0.1.0",
-                           //@"Profile", @"https://tent.io/types/post/profile/v0.1.0",
-                           //@"Delete",  @"https://tent.io/types/post/delete/v0.1.0",
+                           @"Profile", @"https://tent.io/types/post/profile/v0.1.0",
+                           @"Delete",  @"https://tent.io/types/post/delete/v0.1.0",
                            nil] forKey:@"tent_post_types"];
     
     // What profile info types will this app deal with?  This is the full list as of v0.1.
@@ -240,14 +240,15 @@
     {
         if (![[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"])
             continue;
+        NSString *client = [post valueForKeyPath:@"app.name"];
         NSString *entity = [post valueForKeyPath:@"entity"];
         NSString *content = [post valueForKeyPath:@"content.text"];
         
         NSLog(@"wanting to add %@ - %@", entity, content);
         TimelineData *tld = [[TimelineData alloc] init];
-        tld.entity = [post valueForKey:@"entity"];
-        tld.content = [post valueForKeyPath:@"content.text"];
-        tld.client = [post valueForKeyPath:@"app.name"];
+        tld.entity = entity;
+        tld.content = content;
+        tld.client = client;
         
         [newTimelineData addObject:tld];
 
@@ -256,6 +257,7 @@
     
     
     self.timelineData = newTimelineData;
+    [self.statusMessage setStringValue:@"timeline updated"];
     [self startTimelineRefreshTimer];
     //[aPost setTextField:currentPostTextField];
     
