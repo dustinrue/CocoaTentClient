@@ -73,8 +73,9 @@
 - (void) getUserProfile;
 - (void) discover;
 - (void) getFollowings;
+- (void) followEntity:(NSString *)newEntity;
 - (void) pushProfileInfo;
-- (void) newFollowing;
+
 - (void) getPosts;
 - (void) newPost:(id)post;
 

@@ -264,11 +264,11 @@
 
 
 
-- (void) newFollowing
+- (void) followEntity:(NSString *)newEntity
 {
     NSMutableDictionary *followingInfo = [NSMutableDictionary dictionaryWithCapacity:0];
     
-    [followingInfo setValue:@"" forKey:@"entity"];
+    [followingInfo setValue:newEntity forKey:@"entity"];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked %@", JSON);
@@ -285,7 +285,7 @@
 - (void) getPosts
 {
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"posts" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got \n%@", JSON);
+        NSLog(@"finished getting posts, sending to %@", self.delegate);
         [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed to get posts");

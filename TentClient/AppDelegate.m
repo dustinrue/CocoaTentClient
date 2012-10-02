@@ -11,6 +11,7 @@
 #import "CocoaTentApp.h"
 #import "CocoaTentPost.h"
 #import "CocoaTentStatus.h"
+#import "TimelineData.h"
 
 @implementation AppDelegate
 
@@ -95,6 +96,8 @@
     
     self.cocoaTentApp = [[CocoaTentApp alloc] init];
     
+
+    
     // some of this data should be stored in KeyChain and NOT in a plain text file
     [self.cocoaTentApp setName:[[NSUserDefaults standardUserDefaults] valueForKey:@"name"]];
     [self.cocoaTentApp setDescription:[[NSUserDefaults standardUserDefaults] valueForKey:@"description"]];
@@ -121,10 +124,20 @@
     
     
     self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
-
+    
+    NSLog(@"registering %@ with %@", self, self.cocoaTent);
+    [self.cocoaTent setDelegate:self];
+    
+    [self getPosts:nil];
 }
 
-
+- (void) startTimelineRefreshTimer
+{
+    self.timelineDataRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)15
+                                                                     target:self selector:@selector(getPosts:)
+                                                                   userInfo:nil
+                                                                    repeats:NO];
+}
 
 - (IBAction)doThing:(id)sender
 {
@@ -146,11 +159,19 @@
 }
 
 - (IBAction)newFollowing:(id)sender {
-    [self.cocoaTent newFollowing];
+    NSString *newFollowee = [self.followEntityValue stringValue];
+    
+    if (newFollowee)
+        [self.cocoaTent followEntity:newFollowee];
+    
+    [self.followEntityValue setStringValue:@""];
 }
 
 - (IBAction)getPosts:(id)sender {
+    NSLog(@"expecting data sent to %@", self);
     [self.cocoaTent getPosts];
+    [self.statusMessage setStringValue:@"getting timeline data"];
+
 }
 
 - (IBAction)newPost:(id)sender {
@@ -162,13 +183,17 @@
                          self.cocoaTentApp.url, @"url", nil];
     
     [post setApp:app];
-    [post setText:@"This is a test post from the Cocoa Tent Client"];
+    [post setText:[self.statusTextValue stringValue]];
     [post setPublished_at:[NSNumber numberWithInt: timestamp]];
     [post setType:@"https://tent.io/types/post/status/v0.1.0"];
     [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
     [post setEntity:@"https://dustinrue.tent.is"];
-    NSLog(@"der %@", [post dictionary]);
+    
+    NSLog(@"expecting data sent to %@", self);
     [self.cocoaTent newPost:post];
+    
+    [self.statusMessage setStringValue:@"posted new status"];
+    [self.statusTextValue setStringValue:@""];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
@@ -207,6 +232,45 @@
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
-    NSLog(@"post data \n%@", postData);
+
+    NSLog(@"get new posts \n%@", postData);
+    NSMutableArray *newTimelineData = [NSMutableArray arrayWithCapacity:0];
+    
+    for (NSDictionary *post in postData)
+    {
+        if (![[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"])
+            continue;
+        NSString *entity = [post valueForKeyPath:@"entity"];
+        NSString *content = [post valueForKeyPath:@"content.text"];
+        
+        NSLog(@"wanting to add %@ - %@", entity, content);
+        TimelineData *tld = [[TimelineData alloc] init];
+        tld.entity = [post valueForKey:@"entity"];
+        tld.content = [post valueForKeyPath:@"content.text"];
+        tld.client = [post valueForKeyPath:@"app.name"];
+        
+        [newTimelineData addObject:tld];
+
+    }
+    
+    
+    
+    self.timelineData = newTimelineData;
+    [self startTimelineRefreshTimer];
+    //[aPost setTextField:currentPostTextField];
+    
+    //[self.timelineCollectionView ]
 }
+
+#pragma mark -
+#pragma mark timeline collection view
+-(void)insertObject:(TimelineData *)p inTimelineDataAtIndex:(NSUInteger)index {
+    [self.timelineData insertObject:p atIndex:index];
+}
+
+-(void)removeObjectFromPersonModelArrayAtIndex:(NSUInteger)index {
+    [self.timelineData removeObjectAtIndex:index];
+}
+
+
 @end

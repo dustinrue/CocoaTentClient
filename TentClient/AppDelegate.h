@@ -17,6 +17,8 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (strong) CocoaTent *cocoaTent;
 @property (strong) CocoaTentApp *cocoaTentApp;
+@property (weak) NSMutableArray *timelineData;
+@property (strong) NSTimer *timelineDataRefreshTimer;
 
 - (IBAction)doThing:(id)sender;
 - (IBAction)performDiscover:(id)sender;
@@ -25,6 +27,11 @@
 - (IBAction)newFollowing:(id)sender;
 - (IBAction)getPosts:(id)sender;
 - (IBAction)newPost:(id)sender;
+@property (weak) IBOutlet NSTextField *followEntityValue;
+@property (weak) IBOutlet NSTextField *statusTextValue;
+@property (weak) IBOutlet NSScrollView *timelineScrollView;
+@property (weak) IBOutlet NSTextField *statusMessage;
+@property (weak) IBOutlet NSCollectionView *timelineCollectionView;
 
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;

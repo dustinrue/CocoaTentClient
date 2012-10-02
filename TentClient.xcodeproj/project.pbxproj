@@ -24,6 +24,7 @@
 		DA511D27160F723F00A814D7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511D1E160F723F00A814D7 /* UIImageView+AFNetworking.m */; };
 		DA6BC4FA161A68EB0044CF5D /* CocoaTentPost.m in Sources */ = {isa = PBXBuildFile; fileRef = DA6BC4F9161A68EB0044CF5D /* CocoaTentPost.m */; };
 		DA6BC4FE161A718F0044CF5D /* CocoaTentStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = DA6BC4FD161A718F0044CF5D /* CocoaTentStatus.m */; };
+		DA6BC501161A89D00044CF5D /* TimelineData.m in Sources */ = {isa = PBXBuildFile; fileRef = DA6BC500161A89D00044CF5D /* TimelineData.m */; };
 		DAB01BA11618D1E4003868E0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */; };
 		DAB01BA41619410E003868E0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DAB01BA31619410E003868E0 /* README.md */; };
 		DAB0753F16121E590079BE7D /* CocoaTentApp.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0753E16121E590079BE7D /* CocoaTentApp.m */; };
@@ -76,6 +77,8 @@
 		DA6BC4F9161A68EB0044CF5D /* CocoaTentPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentPost.m; path = CocoaTent/CocoaTentPost.m; sourceTree = "<group>"; };
 		DA6BC4FC161A718F0044CF5D /* CocoaTentStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentStatus.h; path = CocoaTent/CocoaTentStatus.h; sourceTree = "<group>"; };
 		DA6BC4FD161A718F0044CF5D /* CocoaTentStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentStatus.m; path = CocoaTent/CocoaTentStatus.m; sourceTree = "<group>"; };
+		DA6BC4FF161A89D00044CF5D /* TimelineData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineData.h; sourceTree = "<group>"; };
+		DA6BC500161A89D00044CF5D /* TimelineData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineData.m; sourceTree = "<group>"; };
 		DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DAB01BA31619410E003868E0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		DAB0753D16121E590079BE7D /* CocoaTentApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentApp.h; path = CocoaTent/CocoaTentApp.h; sourceTree = "<group>"; };
@@ -160,6 +163,8 @@
 				DA511D01160F716D00A814D7 /* AppDelegate.m */,
 				DA511D03160F716D00A814D7 /* MainMenu.xib */,
 				DA511CF5160F716D00A814D7 /* Supporting Files */,
+				DA6BC4FF161A89D00044CF5D /* TimelineData.h */,
+				DA6BC500161A89D00044CF5D /* TimelineData.m */,
 			);
 			path = TentClient;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				DAC3A01716169B8700188E73 /* CocoaTentCommunication.m in Sources */,
 				DA6BC4FA161A68EB0044CF5D /* CocoaTentPost.m in Sources */,
 				DA6BC4FE161A718F0044CF5D /* CocoaTentStatus.m in Sources */,
+				DA6BC501161A89D00044CF5D /* TimelineData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
