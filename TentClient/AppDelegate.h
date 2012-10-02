@@ -7,11 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "CocoaTent.h"
 
 @class CocoaTent;
 @class CocoaTentApp;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate,CocoaTentDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
 @property (strong) CocoaTent *cocoaTent;
@@ -22,6 +23,8 @@
 - (IBAction)performAuthorizedAction:(id)sender;
 - (IBAction)pushProfileInfo:(id)sender;
 - (IBAction)newFollowing:(id)sender;
+- (IBAction)getPosts:(id)sender;
+- (IBAction)newPost:(id)sender;
 
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;

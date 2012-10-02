@@ -39,6 +39,7 @@
 #import "NSString+hmac_sha_256.h"
 #import "NSString+ParseQueryString.h"
 #import "NSString+Random.h"
+#import "CocoaTentPost.h"
 
 
 @interface CocoaTent (Private)
@@ -273,6 +274,33 @@
         NSLog(@"worked %@", JSON);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed \nrequest: %@\n%@\n\nresponse: %@\n\nJSON: %@\n\n error: %@", [request allHTTPHeaderFields], [request HTTPBody], [response allHeaderFields], JSON, error);
+    }];
+    
+    [operation start];
+}
+
+#pragma mark -
+#pragma mark Posts
+
+- (void) getPosts
+{
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithLeadingSlash:@"posts" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"got \n%@", JSON);
+        [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed to get posts");
+    }];
+    
+    [operation start];
+}
+
+- (void) newPost:(id)post
+{
+    NSLog(@"post %@", [post dictionary]);
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithLeadingSlash:@"posts" HTTPBody:[post dictionary] sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"worked");
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed with\n%@\n%@\n%@", [request allHTTPHeaderFields], [response allHeaderFields], JSON);
     }];
     
     [operation start];

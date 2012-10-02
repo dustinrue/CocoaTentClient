@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "CocoaTent.h"
 #import "CocoaTentApp.h"
+#import "CocoaTentPost.h"
+#import "CocoaTentStatus.h"
 
 @implementation AppDelegate
 
@@ -40,8 +42,8 @@
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
     
     // connection parameters
-    [appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
-    //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
+    //[appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
+    [appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
 
     
     // default app information. Typically you wouldn't set all of these via NSUserDefaults
@@ -146,6 +148,28 @@
     [self.cocoaTent newFollowing];
 }
 
+- (IBAction)getPosts:(id)sender {
+    [self.cocoaTent getPosts];
+}
+
+- (IBAction)newPost:(id)sender {
+    CocoaTentStatus *post = [[CocoaTentStatus alloc] init];
+    
+    NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+    NSDictionary *app = [NSDictionary dictionaryWithObjectsAndKeys:
+                         self.cocoaTentApp.name, @"name",
+                         self.cocoaTentApp.url, @"url", nil];
+    
+    [post setApp:app];
+    [post setText:@"This is a test post from the Cocoa Tent Client"];
+    [post setPublished_at:[NSNumber numberWithInt: timestamp]];
+    [post setType:@"https://tent.io/types/post/status/v0.1.0"];
+    [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
+    [post setEntity:@"https://dustinrue.tent.is"];
+    NSLog(@"der %@", [post dictionary]);
+    [self.cocoaTent newPost:post];
+}
+
 - (void) receivedProfileData:(NSNotification *) notification
 {
     NSLog(@"got profile data %@", [notification userInfo]);
@@ -177,5 +201,11 @@
     if ([object class] == [self.cocoaTentApp class]) {
         [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
     }
+}
+
+// CocoaTent delegate methods
+-(void) didReceiveNewPost:(id)postType withPostData:(id)postData
+{
+    NSLog(@"post data \n%@", postData);
 }
 @end

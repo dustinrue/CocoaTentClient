@@ -34,6 +34,7 @@
 
 @class CocoaTentApp;
 @class CocoaTentCommunication;
+@class CocoaTentPost;
 
 // use a delegate system to alert the app of changes, would it be
 // better to use blocks here?
@@ -74,5 +75,7 @@
 - (void) getFollowings;
 - (void) pushProfileInfo;
 - (void) newFollowing;
+- (void) getPosts;
+- (void) newPost:(id)post;
 
 @end
