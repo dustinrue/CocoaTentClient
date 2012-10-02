@@ -188,6 +188,7 @@
     [post setType:@"https://tent.io/types/post/status/v0.1.0"];
     [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
     [post setEntity:@"https://dustinrue.tent.is"];
+    [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
     
     NSLog(@"expecting data sent to %@", self);
     [self.cocoaTent newPost:post];
@@ -233,7 +234,6 @@
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
 
-    NSLog(@"get new posts \n%@", postData);
     NSMutableArray *newTimelineData = [NSMutableArray arrayWithCapacity:0];
     
     for (NSDictionary *post in postData)

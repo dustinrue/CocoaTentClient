@@ -35,7 +35,7 @@
 @property (strong) NSArray *attachments;
 @property (strong) NSDictionary *app;
 @property (strong) NSString *views;
-@property (strong) NSString *permissions;
+@property (strong) NSDictionary *permissions;
 
 
 - (NSMutableDictionary *)dictionary;
