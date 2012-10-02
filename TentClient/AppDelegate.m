@@ -42,8 +42,8 @@
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
     
     // connection parameters
-    //[appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
-    [appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
+    [appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
+    //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
 
     
     // default app information. Typically you wouldn't set all of these via NSUserDefaults
@@ -72,12 +72,13 @@
     // does expect a dictionry of values.
     [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
                            @"Status",  @"https://tent.io/types/post/status/v0.1.0",
-                           @"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
-                           @"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
-                           @"Album",   @"https://tent.io/types/post/album/v0.1.0",
+                           //@"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
+                           //@"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
+                           //@"Album",   @"https://tent.io/types/post/album/v0.1.0",
                            @"Repost",  @"https://tent.io/types/post/repost/v0.1.0",
-                           @"Profile", @"https://tent.io/types/post/profile/v0.1.0",
-                           @"Delete",  @"https://tent.io/types/post/delete/v0.1.0", nil] forKey:@"tent_post_types"];
+                           //@"Profile", @"https://tent.io/types/post/profile/v0.1.0",
+                           //@"Delete",  @"https://tent.io/types/post/delete/v0.1.0",
+                           nil] forKey:@"tent_post_types"];
     
     // What profile info types will this app deal with?  This is the full list as of v0.1.
     // You could also simply set it to "all."  Like tent_post_types all that is really needed
@@ -85,7 +86,7 @@
     // does expect a dictionry of values.
 
     [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
-                           @"Core",    @"https://tent.io/types/info/core/v0.1.0",
+                           //@"Core",    @"https://tent.io/types/info/core/v0.1.0",
                            @"Basic",   @"https://tent.io/types/info/basic/v0.1.0", nil] forKey:@"tent_profile_info_types"];
     
     
