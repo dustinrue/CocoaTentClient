@@ -12,6 +12,7 @@
 #import "CocoaTentPost.h"
 #import "CocoaTentStatus.h"
 #import "TimelineData.h"
+#import <AutoHyperlinks/AutoHyperlinks.h>
 
 @implementation AppDelegate
 
@@ -241,8 +242,14 @@
         if (![[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"])
             continue;
         NSString *client = [post valueForKeyPath:@"app.name"];
-        NSString *entity = [post valueForKeyPath:@"entity"];
-        NSString *content = [post valueForKeyPath:@"content.text"];
+        NSString *rawEntity = [post valueForKeyPath:@"entity"];
+        NSString *rawContent = [post valueForKeyPath:@"content.text"];
+        
+        AHHyperlinkScanner *contentScanner = [[AHHyperlinkScanner alloc] initWithString:rawContent usingStrictChecking:NO];
+        NSAttributedString *content = [contentScanner linkifiedString];
+        
+        AHHyperlinkScanner *entityScanner = [[AHHyperlinkScanner alloc] initWithString:rawEntity usingStrictChecking:NO];
+        NSAttributedString *entity = [entityScanner linkifiedString];
         
         NSLog(@"wanting to add %@ - %@", entity, content);
         TimelineData *tld = [[TimelineData alloc] init];

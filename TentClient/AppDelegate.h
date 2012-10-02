@@ -32,6 +32,7 @@
 @property (weak) IBOutlet NSScrollView *timelineScrollView;
 @property (weak) IBOutlet NSTextField *statusMessage;
 @property (weak) IBOutlet NSCollectionView *timelineCollectionView;
+@property (weak) IBOutlet NSTextField *statusMessageTimelineLabel;
 
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;

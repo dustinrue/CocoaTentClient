@@ -34,10 +34,25 @@
 		DAC3A01716169B8700188E73 /* CocoaTentCommunication.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */; };
 		DACE6FAC1615E9B500021A1A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE6FA91615E9B500021A1A /* NSData+Base64.m */; };
 		DACE6FAD1615E9B500021A1A /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE6FAB1615E9B500021A1A /* NSString+Base64.m */; };
+		DADABDD5161B5C9A00189BC6 /* AutoHyperlinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */; };
+		DADABDEA161B5E0900189BC6 /* AutoHyperlinks.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */; };
 		DAEE05161612952C008CABF5 /* NSString+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE05151612952C008CABF5 /* NSString+Random.m */; };
 		DAEE051B161297C2008CABF5 /* NSData+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */; };
 		DAEE051E1612AF2A008CABF5 /* NSString+hmac_sha_256.m in Sources */ = {isa = PBXBuildFile; fileRef = DAEE051D1612AF2A008CABF5 /* NSString+hmac_sha_256.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DADABDE9161B5DFB00189BC6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DADABDEA161B5E0900189BC6 /* AutoHyperlinks.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DA511CEA160F716D00A814D7 /* TentClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TentClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +110,7 @@
 		DACE6FA91615E9B500021A1A /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		DACE6FAA1615E9B500021A1A /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
 		DACE6FAB1615E9B500021A1A /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutoHyperlinks.framework; sourceTree = "<group>"; };
 		DAEE05141612952C008CABF5 /* NSString+Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Random.h"; path = "CocoaTent/NSString+Random.h"; sourceTree = "<group>"; };
 		DAEE05151612952C008CABF5 /* NSString+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Random.m"; path = "CocoaTent/NSString+Random.m"; sourceTree = "<group>"; };
 		DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+hmac_sha_256.h"; path = "CocoaTent/NSData+hmac_sha_256.h"; sourceTree = "<group>"; };
@@ -110,6 +126,7 @@
 			files = (
 				DAB01BA11618D1E4003868E0 /* SystemConfiguration.framework in Frameworks */,
 				DA511CEF160F716D00A814D7 /* Cocoa.framework in Frameworks */,
+				DADABDD5161B5C9A00189BC6 /* AutoHyperlinks.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +155,7 @@
 		DA511CED160F716D00A814D7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */,
 				DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */,
 				DA511CEE160F716D00A814D7 /* Cocoa.framework */,
 				DA511CF0160F716D00A814D7 /* Other Frameworks */,
@@ -265,6 +283,7 @@
 				DA511CE6160F716D00A814D7 /* Sources */,
 				DA511CE7160F716D00A814D7 /* Frameworks */,
 				DA511CE8160F716D00A814D7 /* Resources */,
+				DADABDE9161B5DFB00189BC6 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -434,6 +453,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TentClient/TentClient-Prefix.pch";
 				INFOPLIST_FILE = "TentClient/TentClient-Info.plist";
@@ -446,6 +469,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TentClient/TentClient-Prefix.pch";
 				INFOPLIST_FILE = "TentClient/TentClient-Info.plist";

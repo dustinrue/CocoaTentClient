@@ -10,8 +10,8 @@
 
 @interface TimelineData : NSObject
 
-@property (strong) NSString *entity;
-@property (strong) NSString *content;
+@property (strong) NSAttributedString *entity;
+@property (strong) NSAttributedString *content;
 @property (strong) NSString *client;
 
 @end
