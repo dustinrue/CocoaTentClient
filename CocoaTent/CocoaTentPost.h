@@ -44,19 +44,30 @@
  views          Optional	Object	The available views of the post.
  permissions	Optional	Object	The permissions that apply to the instance.
  */
-@property (strong) NSString *post_id;
+
+// required attributes
+
+// entity uri
 @property (strong) NSString *entity;
+
+// timestamp
 @property (strong) NSNumber *published_at;
+
+// array of string values detailing the license to be applied to the post
+@property (strong) NSArray *licenses;
+
+// what post type
+@property (strong) NSString *type;
+
+
+// optional
+@property (strong) NSString *post_id;
 @property (strong) NSNumber *received_at;
 @property (strong) NSArray *mentions;
-@property (strong) NSArray *licenses;
-@property (strong) NSString *type;
-@property (strong) NSString *content;
 @property (strong) NSArray *attachments;
 @property (strong) NSDictionary *app;
 @property (strong) NSString *views;
 @property (strong) NSDictionary *permissions;
-
 
 - (NSMutableDictionary *)dictionary;
 

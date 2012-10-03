@@ -186,7 +186,6 @@
     [post setApp:app];
     [post setText:[self.statusTextValue stringValue]];
     [post setPublished_at:[NSNumber numberWithInt: timestamp]];
-    [post setType:@"https://tent.io/types/post/status/v0.1.0"];
     [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
     [post setEntity:@"https://dustinrue.tent.is"];
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];

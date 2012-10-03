@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA2134D7161BAF6600733F82 /* CocoaTentMention.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134D6161BAF6600733F82 /* CocoaTentMention.m */; };
+		DA2134DB161BB23C00733F82 /* CocoaTentEssay.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134DA161BB23C00733F82 /* CocoaTentEssay.m */; };
+		DA2134DE161BB8AB00733F82 /* CocoaTentPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134DD161BB8AB00733F82 /* CocoaTentPhoto.m */; };
+		DA2134E1161BBA9C00733F82 /* CocoaTentAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134E0161BBA9C00733F82 /* CocoaTentAlbum.m */; };
+		DA2134E4161BBBA700733F82 /* CocoaTentRepost.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134E3161BBBA700733F82 /* CocoaTentRepost.m */; };
+		DA2134E7161BBC3700733F82 /* CocoaTentProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134E6161BBC3700733F82 /* CocoaTentProfile.m */; };
+		DA2134EA161BC48B00733F82 /* CocoaTentDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134E9161BC48B00733F82 /* CocoaTentDelete.m */; };
 		DA511CEF160F716D00A814D7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA511CEE160F716D00A814D7 /* Cocoa.framework */; };
 		DA511CF9160F716D00A814D7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA511CF7160F716D00A814D7 /* InfoPlist.strings */; };
 		DA511CFB160F716D00A814D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511CFA160F716D00A814D7 /* main.m */; };
@@ -55,6 +62,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DA2134D5161BAF6600733F82 /* CocoaTentMention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentMention.h; path = CocoaTent/CocoaTentMention.h; sourceTree = "<group>"; };
+		DA2134D6161BAF6600733F82 /* CocoaTentMention.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentMention.m; path = CocoaTent/CocoaTentMention.m; sourceTree = "<group>"; };
+		DA2134D9161BB23C00733F82 /* CocoaTentEssay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentEssay.h; path = CocoaTent/CocoaTentEssay.h; sourceTree = "<group>"; };
+		DA2134DA161BB23C00733F82 /* CocoaTentEssay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentEssay.m; path = CocoaTent/CocoaTentEssay.m; sourceTree = "<group>"; };
+		DA2134DC161BB8AB00733F82 /* CocoaTentPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentPhoto.h; path = CocoaTent/CocoaTentPhoto.h; sourceTree = "<group>"; };
+		DA2134DD161BB8AB00733F82 /* CocoaTentPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentPhoto.m; path = CocoaTent/CocoaTentPhoto.m; sourceTree = "<group>"; };
+		DA2134DF161BBA9C00733F82 /* CocoaTentAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentAlbum.h; path = CocoaTent/CocoaTentAlbum.h; sourceTree = "<group>"; };
+		DA2134E0161BBA9C00733F82 /* CocoaTentAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentAlbum.m; path = CocoaTent/CocoaTentAlbum.m; sourceTree = "<group>"; };
+		DA2134E2161BBBA700733F82 /* CocoaTentRepost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentRepost.h; path = CocoaTent/CocoaTentRepost.h; sourceTree = "<group>"; };
+		DA2134E3161BBBA700733F82 /* CocoaTentRepost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentRepost.m; path = CocoaTent/CocoaTentRepost.m; sourceTree = "<group>"; };
+		DA2134E5161BBC3700733F82 /* CocoaTentProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentProfile.h; path = CocoaTent/CocoaTentProfile.h; sourceTree = "<group>"; };
+		DA2134E6161BBC3700733F82 /* CocoaTentProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentProfile.m; path = CocoaTent/CocoaTentProfile.m; sourceTree = "<group>"; };
+		DA2134E8161BC48B00733F82 /* CocoaTentDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentDelete.h; path = CocoaTent/CocoaTentDelete.h; sourceTree = "<group>"; };
+		DA2134E9161BC48B00733F82 /* CocoaTentDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentDelete.m; path = CocoaTent/CocoaTentDelete.m; sourceTree = "<group>"; };
 		DA511CEA160F716D00A814D7 /* TentClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TentClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA511CEE160F716D00A814D7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		DA511CF1160F716D00A814D7 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -133,6 +154,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DA2134EB161BC6E100733F82 /* PostTypes */ = {
+			isa = PBXGroup;
+			children = (
+				DA2134DF161BBA9C00733F82 /* CocoaTentAlbum.h */,
+				DA2134E0161BBA9C00733F82 /* CocoaTentAlbum.m */,
+				DA2134E8161BC48B00733F82 /* CocoaTentDelete.h */,
+				DA2134E9161BC48B00733F82 /* CocoaTentDelete.m */,
+				DA2134D9161BB23C00733F82 /* CocoaTentEssay.h */,
+				DA2134DA161BB23C00733F82 /* CocoaTentEssay.m */,
+				DA2134DC161BB8AB00733F82 /* CocoaTentPhoto.h */,
+				DA2134DD161BB8AB00733F82 /* CocoaTentPhoto.m */,
+				DA2134E5161BBC3700733F82 /* CocoaTentProfile.h */,
+				DA2134E6161BBC3700733F82 /* CocoaTentProfile.m */,
+				DA2134E2161BBBA700733F82 /* CocoaTentRepost.h */,
+				DA2134E3161BBBA700733F82 /* CocoaTentRepost.m */,
+				DA6BC4FC161A718F0044CF5D /* CocoaTentStatus.h */,
+				DA6BC4FD161A718F0044CF5D /* CocoaTentStatus.m */,
+			);
+			name = PostTypes;
+			sourceTree = "<group>";
+		};
 		DA511CDF160F716D00A814D7 = {
 			isa = PBXGroup;
 			children = (
@@ -230,17 +272,18 @@
 			isa = PBXGroup;
 			children = (
 				DAEE051816129642008CABF5 /* Categories */,
-				DAB0754D16121EE90079BE7D /* JSONKit */,
 				DAB0754716121EDF0079BE7D /* CocoaTent.h */,
 				DAB0754816121EDF0079BE7D /* CocoaTent.m */,
 				DAB0753D16121E590079BE7D /* CocoaTentApp.h */,
 				DAB0753E16121E590079BE7D /* CocoaTentApp.m */,
 				DAC3A01516169B8700188E73 /* CocoaTentCommunication.h */,
 				DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */,
+				DA2134D5161BAF6600733F82 /* CocoaTentMention.h */,
+				DA2134D6161BAF6600733F82 /* CocoaTentMention.m */,
 				DA6BC4F8161A68EA0044CF5D /* CocoaTentPost.h */,
 				DA6BC4F9161A68EB0044CF5D /* CocoaTentPost.m */,
-				DA6BC4FC161A718F0044CF5D /* CocoaTentStatus.h */,
-				DA6BC4FD161A718F0044CF5D /* CocoaTentStatus.m */,
+				DAB0754D16121EE90079BE7D /* JSONKit */,
+				DA2134EB161BC6E100733F82 /* PostTypes */,
 			);
 			name = CocoaTent;
 			sourceTree = "<group>";
@@ -363,6 +406,13 @@
 				DA6BC4FA161A68EB0044CF5D /* CocoaTentPost.m in Sources */,
 				DA6BC4FE161A718F0044CF5D /* CocoaTentStatus.m in Sources */,
 				DA6BC501161A89D00044CF5D /* TimelineData.m in Sources */,
+				DA2134D7161BAF6600733F82 /* CocoaTentMention.m in Sources */,
+				DA2134DB161BB23C00733F82 /* CocoaTentEssay.m in Sources */,
+				DA2134DE161BB8AB00733F82 /* CocoaTentPhoto.m in Sources */,
+				DA2134E1161BBA9C00733F82 /* CocoaTentAlbum.m in Sources */,
+				DA2134E4161BBBA700733F82 /* CocoaTentRepost.m in Sources */,
+				DA2134E7161BBC3700733F82 /* CocoaTentProfile.m in Sources */,
+				DA2134EA161BC48B00733F82 /* CocoaTentDelete.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
