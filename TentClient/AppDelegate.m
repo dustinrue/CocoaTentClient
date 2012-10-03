@@ -234,21 +234,22 @@
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
     NSMutableArray *newTimelineData = nil;
-    BOOL timelineIsFresh = YES;
+    BOOL timelineIsFresh = NO;
     
     if (self.timelineData)
     {
         newTimelineData = self.timelineData;
-        timelineIsFresh = NO;
     }
     else
     {
         newTimelineData = [NSMutableArray arrayWithCapacity:0];
+        timelineIsFresh = YES;
     }
     
     
     for (NSDictionary *post in postData)
     {
+        // TODO: don't filter here, instead setup the poller to ask for a configured list of post types
         if (![[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"])
             continue;
         NSString *client = [post valueForKeyPath:@"id"];
@@ -261,7 +262,7 @@
         AHHyperlinkScanner *entityScanner = [[AHHyperlinkScanner alloc] initWithString:rawEntity usingStrictChecking:NO];
         NSAttributedString *entity = [entityScanner linkifiedString];
         
-        NSLog(@"wanting to add %@ - %@", entity, content);
+        //NSLog(@"wanting to add %@ - %@", entity, content);
         TimelineData *tld = [[TimelineData alloc] init];
         tld.entity = entity;
         tld.content = content;
@@ -272,9 +273,6 @@
             [newTimelineData addObject:tld];
         else
             [newTimelineData insertObject:tld atIndex:0];
-
-        
-
     }
     
     
@@ -283,9 +281,7 @@
 
     [self.statusMessage setStringValue:@"timeline updated"];
     [self startTimelineRefreshTimer];
-    //[aPost setTextField:currentPostTextField];
-    
-    //[self.timelineCollectionView ]
+
 }
 
 #pragma mark -

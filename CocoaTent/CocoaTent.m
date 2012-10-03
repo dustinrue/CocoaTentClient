@@ -40,6 +40,7 @@
 #import "NSString+ParseQueryString.h"
 #import "NSString+Random.h"
 #import "CocoaTentPost.h"
+#import "NSString+URLEncoding.h"
 
 
 @interface CocoaTent (Private)
@@ -315,19 +316,20 @@
 
 - (void) getRecentPosts
 {
-    NSString *path = [NSString stringWithFormat:@"posts?since_id=%@&since_entity_id=%@", self.lastPostId, self.lastEntityId];
+    NSString *path = [NSString stringWithFormat:@"posts?since_id=%@&since_id_entity=%@", self.lastPostId, [self.lastEntityId urlEncoded]];
     //NSString *path = [NSString stringWithFormat:@"posts?since_time=%@", self.lastPostTimeStamp];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"returned with %ld new results", [JSON count]);
         if ([JSON count] > 0)
         {
-            NSLog(@"finished getting posts, sending %@", JSON);
+            //NSLog(@"finished getting posts, sending %@", JSON);
             self.lastPostId = [[JSON objectAtIndex:0] valueForKey:@"id"];
             self.lastEntityId = [[JSON objectAtIndex:0] valueForKey:@"entity"];
             self.lastPostTimeStamp = [[JSON objectAtIndex:0] valueForKey:@"published_at"];
-            [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
+            
         }
+        [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed to get posts");
     }];

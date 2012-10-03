@@ -54,7 +54,7 @@
 }
 
 - (id) initWithBaseURL:(NSURL *)url {
-    NSLog(@"starting with %@", url);
+
     self = [super initWithBaseURL:url];
     
     if (!self)
@@ -133,7 +133,7 @@
                                              (self.tentHostPort) ? self.tentHostPort:(([self.tentHostProtocol isEqualToString:@"http"]) ?@"80":@"443")];
         
         NSLog(@"httpBody looks like\n%@", httpBody);
-        NSLog(@"signing \n%@", normalizedRequestString);
+        //NSLog(@"signing \n%@", normalizedRequestString);
         // can't sign anything if we don't have a key
         if (!self.mac_key)
         {

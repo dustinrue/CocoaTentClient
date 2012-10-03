@@ -16,6 +16,7 @@
 		DA2134EA161BC48B00733F82 /* CocoaTentDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134E9161BC48B00733F82 /* CocoaTentDelete.m */; };
 		DA2134F0161BCC1E00733F82 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134ED161BCC1E00733F82 /* NSData+Base64.m */; };
 		DA2134F1161BCC1E00733F82 /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134EF161BCC1E00733F82 /* NSString+Base64.m */; };
+		DA2134F4161BEAC300733F82 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134F3161BEAC300733F82 /* NSString+URLEncoding.m */; };
 		DA511CEF160F716D00A814D7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA511CEE160F716D00A814D7 /* Cocoa.framework */; };
 		DA511CF9160F716D00A814D7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA511CF7160F716D00A814D7 /* InfoPlist.strings */; };
 		DA511CFB160F716D00A814D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DA511CFA160F716D00A814D7 /* main.m */; };
@@ -80,6 +81,8 @@
 		DA2134ED161BCC1E00733F82 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "CocoaTent/NSData+Base64.m"; sourceTree = "<group>"; };
 		DA2134EE161BCC1E00733F82 /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Base64.h"; path = "CocoaTent/NSString+Base64.h"; sourceTree = "<group>"; };
 		DA2134EF161BCC1E00733F82 /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Base64.m"; path = "CocoaTent/NSString+Base64.m"; sourceTree = "<group>"; };
+		DA2134F2161BEAC300733F82 /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding.h"; path = "CocoaTent/NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		DA2134F3161BEAC300733F82 /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding.m"; path = "CocoaTent/NSString+URLEncoding.m"; sourceTree = "<group>"; };
 		DA511CEA160F716D00A814D7 /* TentClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TentClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA511CEE160F716D00A814D7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		DA511CF1160F716D00A814D7 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -312,6 +315,8 @@
 				DAEE051A161297C2008CABF5 /* NSData+hmac_sha_256.m */,
 				DAEE051C1612AF2A008CABF5 /* NSString+hmac_sha_256.h */,
 				DAEE051D1612AF2A008CABF5 /* NSString+hmac_sha_256.m */,
+				DA2134F2161BEAC300733F82 /* NSString+URLEncoding.h */,
+				DA2134F3161BEAC300733F82 /* NSString+URLEncoding.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -413,6 +418,7 @@
 				DA2134EA161BC48B00733F82 /* CocoaTentDelete.m in Sources */,
 				DA2134F0161BCC1E00733F82 /* NSData+Base64.m in Sources */,
 				DA2134F1161BCC1E00733F82 /* NSString+Base64.m in Sources */,
+				DA2134F4161BEAC300733F82 /* NSString+URLEncoding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
