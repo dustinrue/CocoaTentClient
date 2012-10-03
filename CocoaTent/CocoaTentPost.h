@@ -65,6 +65,8 @@
 @property (strong) NSNumber *received_at;
 @property (strong) NSArray *mentions;
 @property (strong) NSArray *attachments;
+
+// it is not necessary for a client to set this, the server will override it anyway
 @property (strong) NSDictionary *app;
 @property (strong) NSString *views;
 @property (strong) NSDictionary *permissions;

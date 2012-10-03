@@ -41,6 +41,7 @@
 #import "NSString+Random.h"
 #import "CocoaTentPost.h"
 #import "NSString+URLEncoding.h"
+#import "NSArray+Reverse.h"
 
 
 @interface CocoaTent (Private)
@@ -329,7 +330,7 @@
             self.lastPostTimeStamp = [[JSON objectAtIndex:0] valueForKey:@"published_at"];
             
         }
-        [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
+        [self.delegate didReceiveNewPost:@"posts" withPostData:[JSON reversedArray]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed to get posts");
     }];

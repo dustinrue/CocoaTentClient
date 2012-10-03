@@ -45,6 +45,9 @@
     
     // connection parameters
     [appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
+    
+    // TODO: fix this, it's dumb
+    [appDefaults setValue:@"https://dustinrue.tent.is" forKey:@"tent_user_name"];
     //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
 
     
@@ -187,7 +190,7 @@
     [post setText:[self.statusTextValue stringValue]];
     [post setPublished_at:[NSNumber numberWithInt: timestamp]];
     [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
-    [post setEntity:@"https://dustinrue.tent.is"];
+    [post setEntity:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_user_name"]];
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
     
     NSLog(@"expecting data sent to %@", self);
@@ -233,6 +236,9 @@
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
+    if ([postData count] > 0)
+        [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
+    
     NSMutableArray *newTimelineData = nil;
     BOOL timelineIsFresh = NO;
     
@@ -246,33 +252,36 @@
         timelineIsFresh = YES;
     }
     
-    
+    timelineIsFresh = NO;
     for (NSDictionary *post in postData)
     {
         // TODO: don't filter here, instead setup the poller to ask for a configured list of post types
-        if (![[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"])
-            continue;
-        NSString *client = [post valueForKeyPath:@"id"];
-        NSString *rawEntity = [post valueForKeyPath:@"entity"];
-        NSString *rawContent = [post valueForKeyPath:@"content.text"];
-        
-        AHHyperlinkScanner *contentScanner = [[AHHyperlinkScanner alloc] initWithString:rawContent usingStrictChecking:NO];
-        NSAttributedString *content = [contentScanner linkifiedString];
-        
-        AHHyperlinkScanner *entityScanner = [[AHHyperlinkScanner alloc] initWithString:rawEntity usingStrictChecking:NO];
-        NSAttributedString *entity = [entityScanner linkifiedString];
-        
-        //NSLog(@"wanting to add %@ - %@", entity, content);
-        TimelineData *tld = [[TimelineData alloc] init];
-        tld.entity = entity;
-        tld.content = content;
-        tld.client = client;
-        
-        
-        if (timelineIsFresh)
-            [newTimelineData addObject:tld];
-        else
-            [newTimelineData insertObject:tld atIndex:0];
+        NSLog(@"post is of type %@", [post valueForKey:@"type"]);
+        if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"] || [[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
+        {
+            NSLog(@"%@", post);
+            NSString *client = [NSString stringWithFormat:@"Via: %@ (%@)",[post valueForKeyPath:@"app.name"], [post valueForKey:@"type"]];
+            NSString *rawEntity = [post valueForKeyPath:@"entity"];
+            NSString *rawContent = ([post valueForKeyPath:@"content.text"]) ? [post valueForKeyPath:@"content.text"]:@"";
+            
+            AHHyperlinkScanner *contentScanner = [[AHHyperlinkScanner alloc] initWithString:rawContent usingStrictChecking:NO];
+            NSAttributedString *content = [contentScanner linkifiedString];
+            
+            AHHyperlinkScanner *entityScanner = [[AHHyperlinkScanner alloc] initWithString:rawEntity usingStrictChecking:NO];
+            NSAttributedString *entity = [entityScanner linkifiedString];
+            
+            //NSLog(@"wanting to add %@ - %@", entity, content);
+            TimelineData *tld = [[TimelineData alloc] init];
+            tld.entity = entity;
+            tld.content = content;
+            tld.client = client;
+            
+            
+            if (timelineIsFresh)
+                [newTimelineData addObject:tld];
+            else
+                [newTimelineData insertObject:tld atIndex:0];
+        }
     }
     
     
@@ -292,6 +301,19 @@
 
 -(void)removeObjectFromPersonModelArrayAtIndex:(NSUInteger)index {
     [self.timelineData removeObjectAtIndex:index];
+}
+
+- (void) issueNotificationWithTitle:(NSString *)title andMessage:(NSString *)message
+{
+    NSUserNotification *notificationMessage = [[NSUserNotification alloc] init];
+    
+    notificationMessage.title = title;
+    notificationMessage.informativeText = message;
+    
+    NSUserNotificationCenter *unc = [NSUserNotificationCenter defaultUserNotificationCenter];
+    
+    [unc scheduleNotification:notificationMessage];
+    
 }
 
 
