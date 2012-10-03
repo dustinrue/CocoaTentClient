@@ -52,7 +52,7 @@
 + (CocoaTentCommunication *) sharedInstanceWithBaseURL:(NSURL *)baseURL;
 
 - (AFJSONRequestOperation *) newJSONRequestOperationWithMethod:(NSString *)method
-                                          pathWithLeadingSlash:(NSString *) path
+                                          pathWithoutLeadingSlash:(NSString *) path
                                                       HTTPBody:(NSDictionary *) httpBody
                                                           sign:(BOOL) isSigned
                                                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON))success

@@ -74,12 +74,12 @@
     // does expect a dictionry of values.
     [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
                            @"Status",  @"https://tent.io/types/post/status/v0.1.0",
-                           @"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
-                           @"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
-                           @"Album",   @"https://tent.io/types/post/album/v0.1.0",
+                           //@"Essay",   @"https://tent.io/types/post/essay/v0.1.0",
+                           //@"Photo",   @"https://tent.io/types/post/photo/v0.1.0",
+                           //@"Album",   @"https://tent.io/types/post/album/v0.1.0",
                            @"Repost",  @"https://tent.io/types/post/repost/v0.1.0",
                            @"Profile", @"https://tent.io/types/post/profile/v0.1.0",
-                           @"Delete",  @"https://tent.io/types/post/delete/v0.1.0",
+                           //@"Delete",  @"https://tent.io/types/post/delete/v0.1.0",
                            nil] forKey:@"tent_post_types"];
     
     // What profile info types will this app deal with?  This is the full list as of v0.1.
@@ -170,7 +170,7 @@
 
 - (IBAction)getPosts:(id)sender {
     NSLog(@"expecting data sent to %@", self);
-    [self.cocoaTent getPosts];
+    [self.cocoaTent getRecentPosts];
     [self.statusMessage setStringValue:@"getting timeline data"];
 
 }
@@ -233,14 +233,25 @@
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
-
-    NSMutableArray *newTimelineData = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray *newTimelineData = nil;
+    BOOL timelineIsFresh = YES;
+    
+    if (self.timelineData)
+    {
+        newTimelineData = self.timelineData;
+        timelineIsFresh = NO;
+    }
+    else
+    {
+        newTimelineData = [NSMutableArray arrayWithCapacity:0];
+    }
+    
     
     for (NSDictionary *post in postData)
     {
         if (![[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"])
             continue;
-        NSString *client = [post valueForKeyPath:@"app.name"];
+        NSString *client = [post valueForKeyPath:@"id"];
         NSString *rawEntity = [post valueForKeyPath:@"entity"];
         NSString *rawContent = [post valueForKeyPath:@"content.text"];
         
@@ -256,13 +267,20 @@
         tld.content = content;
         tld.client = client;
         
-        [newTimelineData addObject:tld];
+        
+        if (timelineIsFresh)
+            [newTimelineData addObject:tld];
+        else
+            [newTimelineData insertObject:tld atIndex:0];
+
+        
 
     }
     
     
     
     self.timelineData = newTimelineData;
+
     [self.statusMessage setStringValue:@"timeline updated"];
     [self startTimelineRefreshTimer];
     //[aPost setTextField:currentPostTextField];

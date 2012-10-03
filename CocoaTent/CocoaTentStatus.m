@@ -31,6 +31,17 @@
 
 @implementation CocoaTentStatus
 
+- (id) init
+{
+    self = [super init];
+    
+    if (!self)
+        return self;
+    
+    self.type = @"https://tent.io/types/post/status/v0.1.0";
+    
+    return self;
+}
 
 - (NSMutableDictionary *)dictionary
 {

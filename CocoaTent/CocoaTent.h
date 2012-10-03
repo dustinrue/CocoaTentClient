@@ -57,6 +57,16 @@
 
 @property (strong) CocoaTentApp *cocoaTentApp;
 @property (strong) CocoaTentCommunication *cocoaTentCommunication;
+
+// together, the following two properties define the last, unique
+// post on a tent system
+@property (strong) NSString *lastPostId;
+@property (strong) NSString *lastEntityId;
+
+// other properties used to define the last post
+@property (strong) NSNumber *lastPostTimeStamp;
+
+
 @property (strong) id <CocoaTentDelegate> delegate;
 
 // You should create and set the properties of a CocoaTentApp object
@@ -77,6 +87,14 @@
 - (void) pushProfileInfo;
 
 - (void) getPosts;
+
+// gets the most recent posts since the last time
+// or gets all posts if there isn't a "since_id" value
+- (void) getRecentPosts;
+
+// manually get posts since a post_id
+- (void) getPostsSince:(NSString *)post_id;
+
 - (void) newPost:(id)post;
 
 @end
