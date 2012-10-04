@@ -42,10 +42,6 @@
     
 
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
-    
-    
-
-    //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_entity"];
 
     
     // default app information. Typically you wouldn't set all of these via NSUserDefaults
@@ -126,6 +122,12 @@
     
 
     [self.statusTextValue setDelegate:self];
+    
+    if (self.cocoaTentApp.tentEntity)
+        [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
+    
+    [self.statusMessage setStringValue:@"starting up"];
+    [self.charsLeft setStringValue:@"256"];
     [self start];
     
     
@@ -139,24 +141,19 @@
         return;
     }
 
-    if (!self.cocoaTentApp.access_token)
-    {
-        [self.statusMessage setStringValue:@"Please register your app with your tent entity server"];
-
-        return;
-    }
+    if (self.cocoaTentApp.access_token)
+        [self.registerAppButton setEnabled:NO];
     
     [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
-    [self.tentEntityURLTextField setEnabled:NO];
-    [self.registerAppButton setEnabled:NO];
     [self.saveButton setEnabled:NO];
-    
+    [self.tentEntityURLTextField setEnabled:NO];
+
     self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
-    
-    NSLog(@"registering %@ with %@", self, self.cocoaTent);
-    [self.charsLeft setStringValue:@"256"];
+
     [self.cocoaTent setDelegate:self];
+    [self.statusMessage setStringValue:@"discovering API root"];
     [self.cocoaTent discover];
+    
 }
 
 - (void) startTimelineRefreshTimer
@@ -201,9 +198,12 @@
 }
 
 - (IBAction)getPosts:(id)sender {
+    [self.timelineDataRefreshTimer invalidate];
+    self.timelineDataRefreshTimer = nil;
     NSLog(@"expecting data sent to %@", self);
     [self.cocoaTent getRecentPosts];
     [self.statusMessage setStringValue:@"getting timeline data"];
+    [self startTimelineRefreshTimer];
 
 }
 
@@ -222,7 +222,6 @@
     [post setEntity:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_user_name"]];
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
     
-    NSLog(@"expecting data sent to %@", self);
     [self.cocoaTent newPost:post];
     
     [self.statusMessage setStringValue:@"posted new status"];
@@ -260,8 +259,13 @@
     //NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
     if ([object class] == [self.cocoaTentApp class]) {
         [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
-        NSLog(@"got %@ for %@", [change valueForKey:@"new"], keyPath);
+        //NSLog(@"saved %@ for %@", [change valueForKey:@"new"], keyPath);
+        
+        // hack to "start up the app" once this is set
         if ([keyPath isEqualToString:@"tentEntity"])
+            [self start];
+        
+        if ([keyPath isEqualToString:@"access_token"])
             [self start];
     }
 }
@@ -296,7 +300,7 @@
         NSLog(@"post is of type %@", [post valueForKey:@"type"]);
         if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"] || [[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
         {
-            NSLog(@"%@", post);
+            
             NSString *client = [NSString stringWithFormat:@"Via: %@ (%@)",[post valueForKeyPath:@"app.name"], [post valueForKey:@"type"]];
             NSString *rawEntity = [post valueForKeyPath:@"entity"];
             NSString *rawContent = ([post valueForKeyPath:@"content.text"]) ? [post valueForKeyPath:@"content.text"]:@"";
@@ -332,8 +336,19 @@
 
 - (void) cocoaTentIsReady
 {
-    [self getPosts:nil];
+    if (!self.cocoaTentApp.access_token)
+    {
+        [self.statusMessage setStringValue:@"Please click the Register App button and register your app, then click Refresh Timeline"];
+    }
+    else
+    {
+        [self getPosts:nil];
+    }
+}
 
+- (void) didSubmitNewPost
+{
+    [self.statusMessage setStringValue:@"Posted successfully"];
 }
 
 #pragma mark -
@@ -341,7 +356,7 @@
 
 -(void)controlTextDidChange:(NSNotification*)notification
 {
-    NSLog(@"note %@", notification);
+    //NSLog(@"note %@", notification);
     // cheat a bit, just assume it is the right text field :)
     [self.charsLeft setStringValue:[NSString stringWithFormat:@"%ld",256 - [[self.statusTextValue stringValue] length]]];
 }

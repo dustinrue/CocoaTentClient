@@ -421,9 +421,9 @@
 
 - (void) newPost:(id)post
 {
-    NSLog(@"post %@", [post dictionary]);
+
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithoutLeadingSlash:@"posts" HTTPBody:[post dictionary] sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"worked \n%@\n%@", [request allHTTPHeaderFields], [response allHeaderFields]);
+        [self.delegate didSubmitNewPost];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed with\n%@\n%@\n%@", [request allHTTPHeaderFields], [response allHeaderFields], JSON);
     }];

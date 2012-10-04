@@ -45,6 +45,7 @@
 // has been received
 
 - (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
+- (void) didSubmitNewPost;
 
 // this lets you know that the communication layer is ready to start
 // doing work
@@ -62,7 +63,6 @@
 - (void) didReceiveAccessToken:(NSString *)access_token;
 - (void) didReceiveBasicInfo;
 - (void) didReceiveCoreInfo;
-
 
 @end
 
