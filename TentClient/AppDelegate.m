@@ -40,11 +40,10 @@
 											   object:nil];
     
     
-    
+
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
     
-    // connection parameters, should be your tent entity with a trailing slash
-    [appDefaults setValue:@"https://dustinrue.tent.is/" forKey:@"tent_entity"];
+    
 
     //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_entity"];
 
@@ -115,7 +114,7 @@
     [self.cocoaTentApp setMac_key:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]];
     [self.cocoaTentApp setMac_key_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]];
     [self.cocoaTentApp setAccess_token:[[NSUserDefaults standardUserDefaults] valueForKey:@"access_token"]];
-    [self.cocoaTentApp setTentEntity:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_entity"]];
+    [self.cocoaTentApp setTentEntity:[[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntity"]];
     
     // we need to know if any of these values change so it can be saved out to the preferences file
     [self.cocoaTentApp addObserver:self forKeyPath:@"app_id" options:NSKeyValueObservingOptionNew context:nil];
@@ -123,15 +122,41 @@
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"access_token" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"tentEntity" options:NSKeyValueObservingOptionNew context:nil];
     
+
+    [self.statusTextValue setDelegate:self];
+    [self start];
+    
+    
+}
+
+- (void) start
+{
+    if (!self.cocoaTentApp.tentEntity)
+    {
+        [self.statusMessage setStringValue:@"Please set your Tent Entity URL and click Save"];
+        return;
+    }
+
+    if (!self.cocoaTentApp.access_token)
+    {
+        [self.statusMessage setStringValue:@"Please register your app with your tent entity server"];
+
+        return;
+    }
+    
+    [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
+    [self.tentEntityURLTextField setEnabled:NO];
+    [self.registerAppButton setEnabled:NO];
+    [self.saveButton setEnabled:NO];
     
     self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
     
     NSLog(@"registering %@ with %@", self, self.cocoaTent);
+    [self.charsLeft setStringValue:@"256"];
     [self.cocoaTent setDelegate:self];
     [self.cocoaTent discover];
-    
-    [self getPosts:nil];
 }
 
 - (void) startTimelineRefreshTimer
@@ -142,6 +167,11 @@
                                                                     repeats:NO];
 }
 
+- (IBAction)saveTentEntityURL:(id)sender
+{
+    self.cocoaTentApp.tentEntity = [self.tentEntityURLTextField stringValue];
+}
+
 - (IBAction)doThing:(id)sender
 {
 
@@ -150,7 +180,7 @@
 
 - (IBAction)performDiscover:(id)sender
 {
-    [self.cocoaTent discover];
+    [self.cocoaTent registerWithTentServer];
 }
 
 - (IBAction)performAuthorizedAction:(id)sender {
@@ -197,6 +227,7 @@
     
     [self.statusMessage setStringValue:@"posted new status"];
     [self.statusTextValue setStringValue:@""];
+    [self.charsLeft setStringValue:@"256"];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
@@ -229,6 +260,9 @@
     //NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
     if ([object class] == [self.cocoaTentApp class]) {
         [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
+        NSLog(@"got %@ for %@", [change valueForKey:@"new"], keyPath);
+        if ([keyPath isEqualToString:@"tentEntity"])
+            [self start];
     }
 }
 
@@ -296,6 +330,21 @@
 
 }
 
+- (void) cocoaTentIsReady
+{
+    [self getPosts:nil];
+
+}
+
+#pragma mark -
+#pragma mark NSTextField delegates
+
+-(void)controlTextDidChange:(NSNotification*)notification
+{
+    NSLog(@"note %@", notification);
+    // cheat a bit, just assume it is the right text field :)
+    [self.charsLeft setStringValue:[NSString stringWithFormat:@"%ld",256 - [[self.statusTextValue stringValue] length]]];
+}
 #pragma mark -
 #pragma mark timeline collection view
 -(void)insertObject:(TimelineData *)p inTimelineDataAtIndex:(NSUInteger)index {

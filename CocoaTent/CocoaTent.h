@@ -40,6 +40,21 @@
 // better to use blocks here?
 @protocol CocoaTentDelegate <NSObject>
 
+@required
+// would be used when streaming to notify the delegate that new data
+// has been received
+
+- (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
+
+// this lets you know that the communication layer is ready to start
+// doing work
+- (void) cocoaTentIsReady;
+
+// would be used to tell the delegate that communication layer
+// error has occurred
+- (void) communicationError:(NSError *)error;
+
+
 // these are optional, you should either implement these
 // OR observe the values
 @optional
@@ -48,16 +63,6 @@
 - (void) didReceiveBasicInfo;
 - (void) didReceiveCoreInfo;
 
-
-@required
-// would be used when streaming to notify the delegate that new data
-// has been received
-
-- (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
-
-// would be used to tell the delegate that communication layer
-// error has occurred
-- (void) communicationError:(NSError *)error;
 
 @end
 

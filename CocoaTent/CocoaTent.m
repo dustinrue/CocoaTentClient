@@ -111,6 +111,8 @@
     NSLog(@"switching to %@", server);
     [self removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication];
     [self createCocoaTentCommunicationObjectWithBaseURL:server];
+    
+    [self.delegate cocoaTentIsReady];
 }
 
 
@@ -235,10 +237,11 @@
                         self.cocoaTentCommunication.state,
                         [[self.cocoaTentApp.scopes allKeys] componentsJoinedByString:@","]];
     
-    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.cocoaTentApp.tentEntity, @"oauth/authorize", params];
+    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", [[self.cocoaTentApp.coreInfo valueForKey:@"servers"] objectAtIndex:0], @"oauth/authorize", params];
     
     NSURL *url = [NSURL URLWithString:fullParams];
     
+    NSLog(@"opening URL %@", url);
 	[[NSWorkspace sharedWorkspace] openURL:url];
 }
 
