@@ -12,11 +12,11 @@ What is exposed in the client
 =============================
 Currently this client will expost to you:
 
-  # Automatically perform discovery (find the proper API root for a given tent entity url)
-  # Register itself with your tent.is or personal tentd server (and should work with any custom tent.io version 0.1.0 compliant server)
-  # Follow users
-  # Read your personal timeline
-  # Post messages
+* Automatically perform discovery (find the proper API root for a given tent entity url)
+* Register itself with your tent.is or personal tentd server (and should work with any custom tent.io version 0.1.0 compliant server)
+* Follow users
+* Read your personal timeline
+* Post messages
 
 Cocoa Tent Client will issue a simple notification when new items are received.
 
@@ -24,17 +24,17 @@ What works but isn't exposed in the client
 ==========================================
 The following exists in the library but isn't exposed in the client:
 
-  # Display profile
-  # Update profile
+* Display profile
+* Update profile
 
 What hasn't been implemented at all yet
 =======================================
 The following hasn't been implemented at all yet, but most of the items already have classes to support the operations
 
-  # Reply
-  # Repost
-  # Delete
-  # Unfollow users
+* Reply
+* Repost
+* Delete
+* Unfollow users
 
 Support
 =======
