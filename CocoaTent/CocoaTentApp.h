@@ -34,7 +34,7 @@
 
 // you should observe these values for changes so you can save them
 @property (strong) NSString *app_id;
-@property (strong) NSString *tentHostURL;
+@property (strong) NSString *tentEntity;
 @property (strong) NSString *mac_key_id;
 @property (strong) NSString *mac_key;
 @property (strong) NSString *access_token;
@@ -51,6 +51,8 @@
 @property (strong) NSDictionary *tent_profile_info_types;
 
 
+@property (strong) NSDictionary *basicInfo;
+@property (strong) NSDictionary *coreInfo;
 
 - (NSDictionary *)dictionary;
 

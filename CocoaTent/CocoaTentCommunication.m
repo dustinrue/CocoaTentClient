@@ -48,6 +48,10 @@
         {
             sharedInstance = [[CocoaTentCommunication alloc] initWithBaseURL:baseURL];
         }
+        else
+        {
+            NSLog(@"returning the shared instance");
+        }
     }
     
     return sharedInstance;

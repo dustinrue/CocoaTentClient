@@ -40,11 +40,19 @@
 // better to use blocks here?
 @protocol CocoaTentDelegate <NSObject>
 
+// these are optional, you should either implement these
+// OR observe the values
+@optional
 - (void) didReceiveAppId:(NSString *)app_id;
 - (void) didReceiveAccessToken:(NSString *)access_token;
+- (void) didReceiveBasicInfo;
+- (void) didReceiveCoreInfo;
 
+
+@required
 // would be used when streaming to notify the delegate that new data
 // has been received
+
 - (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
 
 // would be used to tell the delegate that communication layer

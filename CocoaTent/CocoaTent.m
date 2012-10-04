@@ -50,6 +50,11 @@
 - (void) saveAuthorizationCodeFromAuthorizationURL:(NSURL *) callBackData;
 - (void) getPermanentAccessToken;
 - (void) savePermanentAccessToken:(id) JSON;
+- (NSString *) parseAPIRootURL:(NSString *)apiRootURL;
+- (void) getEntityURL:(NSString *) profileURL;
+- (void) createCocoaTentCommunicationObjectWithBaseURL:(NSURL *) url;
+- (void) removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication;
+- (void) switchToTentEntityServerAddress:(NSURL *)server;
 
 @end
 
@@ -65,9 +70,14 @@
     
     self.cocoaTentApp = cocoaTentApp;
     
-    NSURL *hostInfo = [NSURL URLWithString:self.cocoaTentApp.tentHostURL];
-    
-    self.cocoaTentCommunication = [CocoaTentCommunication sharedInstanceWithBaseURL:hostInfo];
+    [self registerForURLScheme];
+
+    return self;
+}
+
+- (void) createCocoaTentCommunicationObjectWithBaseURL:(NSURL *) url
+{
+    self.cocoaTentCommunication = [[CocoaTentCommunication alloc] initWithBaseURL:url];
     
     // configure the communication layer with this apps key info
     [self.cocoaTentCommunication setMac_key:self.cocoaTentApp.mac_key];
@@ -83,11 +93,27 @@
     [self.cocoaTentCommunication addObserver:self forKeyPath:@"mac_key"       options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentCommunication addObserver:self forKeyPath:@"mac_key_id"    options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentCommunication addObserver:self forKeyPath:@"access_token"  options:NSKeyValueObservingOptionNew context:nil];
-    
-    [self registerForURLScheme];
-    
-    return self;
 }
+
+
+
+- (void) removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication
+{
+    [self.cocoaTentCommunication removeObserver:self forKeyPath:@"mac_key"];
+    [self.cocoaTentCommunication removeObserver:self forKeyPath:@"mac_key_id"];
+    [self.cocoaTentCommunication removeObserver:self forKeyPath:@"access_token"];
+    
+    [self.cocoaTentCommunication setReachabilityStatusChangeBlock:nil];
+}
+
+- (void) switchToTentEntityServerAddress:(NSURL *)server
+{
+    NSLog(@"switching to %@", server);
+    [self removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication];
+    [self createCocoaTentCommunicationObjectWithBaseURL:server];
+}
+
+
 
 - (void)registerForURLScheme
 {
@@ -102,14 +128,25 @@
 }
 
 
-#pragma mark -
-#pragma mark OAuth2 registration steps
 
+#pragma mark -
+#pragma mark Discover
+/**
+ After initWithApp, run this to discover the proper server address
+ */
 - (void) discover {
+    
+    // on app startup, we use the user's Tent Entity URL and then discover
+    // there their API root is, we'll switch to that later
+    NSURL *tentEntityUrl = [NSURL URLWithString:self.cocoaTentApp.tentEntity];
+    
+    [self createCocoaTentCommunicationObjectWithBaseURL:tentEntityUrl];
+    
+
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithoutLeadingSlash:@"" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
-        [self registerWithTentServer];
+        [self getEntityURL:[self parseAPIRootURL:[[response allHeaderFields] valueForKey:@"Link"]]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
         NSLog(@"failure, %@", error);
@@ -118,6 +155,47 @@
     [operation start];
 }
 
+- (NSString *) parseAPIRootURL:(NSString *)apiRootURL
+{
+    NSArray *exploded = [apiRootURL componentsSeparatedByString:@";"];
+    
+    NSString *theBetterHalf = [exploded objectAtIndex:0];
+    
+    NSString *thePartIWant = [theBetterHalf substringWithRange:NSMakeRange(1, [theBetterHalf length] - 2)];
+    
+    return thePartIWant;
+}
+
+- (void) getEntityURL:(NSString *) profileURL
+{
+    // profileURL is going to be a full URL and we're about to pass it in as the path,
+    // AFJSONRequestOperation would appear to deal with this by magic and build the request
+    // appropriately so this *will* build a proper request.
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:profileURL HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        
+        // TODO: remove the hardcoded bits here
+        self.cocoaTentApp.basicInfo = [JSON valueForKey:@"https://tent.io/types/info/basic/v0.1.0"];
+        self.cocoaTentApp.coreInfo = [JSON valueForKey:@"https://tent.io/types/info/core/v0.1.0"];
+        
+        if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo)])
+            [self.delegate didReceiveBasicInfo];
+        
+        if ([self.delegate respondsToSelector:@selector(didReceiveCoreInfo)])
+            [self.delegate didReceiveCoreInfo];
+        
+        // TODO: deal with multiple servers
+        [self switchToTentEntityServerAddress:[NSURL URLWithString:[[self.cocoaTentApp.coreInfo valueForKey:@"servers"] objectAtIndex:0]]];
+             
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [self.delegate communicationError:error];
+    }];
+    
+    [operation start];
+}
+
+
+#pragma mark -
+#pragma mark OAuth2 registration steps
 /*
  * STEP 1: Tell tentd that we exist and it'll respond with:
  *   an id for our app (id)
@@ -157,7 +235,7 @@
                         self.cocoaTentCommunication.state,
                         [[self.cocoaTentApp.scopes allKeys] componentsJoinedByString:@","]];
     
-    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.cocoaTentApp.tentHostURL, @"oauth/authorize", params];
+    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", self.cocoaTentApp.tentEntity, @"oauth/authorize", params];
     
     NSURL *url = [NSURL URLWithString:fullParams];
     

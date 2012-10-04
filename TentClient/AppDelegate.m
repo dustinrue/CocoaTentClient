@@ -43,12 +43,10 @@
     
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
     
-    // connection parameters
-    [appDefaults setValue:@"https://dustinrue.tent.is/tent/" forKey:@"tent_host_url"];
-    
-    // TODO: fix this, it's dumb
-    [appDefaults setValue:@"https://dustinrue.tent.is" forKey:@"tent_user_name"];
-    //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_host_url"];
+    // connection parameters, should be your tent entity with a trailing slash
+    [appDefaults setValue:@"https://dustinrue.tent.is/" forKey:@"tent_entity"];
+
+    //[appDefaults setValue:@"http://localhost:3000" forKey:@"tent_entity"];
 
     
     // default app information. Typically you wouldn't set all of these via NSUserDefaults
@@ -117,10 +115,10 @@
     [self.cocoaTentApp setMac_key:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key"]];
     [self.cocoaTentApp setMac_key_id:[[NSUserDefaults standardUserDefaults] valueForKey:@"mac_key_id"]];
     [self.cocoaTentApp setAccess_token:[[NSUserDefaults standardUserDefaults] valueForKey:@"access_token"]];
-    [self.cocoaTentApp setTentHostURL:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_host_url"]];
+    [self.cocoaTentApp setTentEntity:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_entity"]];
     
     // we need to know if any of these values change so it can be saved out to the preferences file
-        [self.cocoaTentApp addObserver:self forKeyPath:@"app_id" options:NSKeyValueObservingOptionNew context:nil];
+    [self.cocoaTentApp addObserver:self forKeyPath:@"app_id" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_agorithm" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"mac_key_id" options:NSKeyValueObservingOptionNew context:nil];
@@ -131,6 +129,7 @@
     
     NSLog(@"registering %@ with %@", self, self.cocoaTent);
     [self.cocoaTent setDelegate:self];
+    [self.cocoaTent discover];
     
     [self getPosts:nil];
 }
@@ -232,6 +231,10 @@
         [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
     }
 }
+
+#pragma mark -
+#pragma mark CocoaTent delegate methods
+
 
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
