@@ -202,7 +202,6 @@
 - (IBAction)getPosts:(id)sender {
     [self.timelineDataRefreshTimer invalidate];
     self.timelineDataRefreshTimer = nil;
-    NSLog(@"expecting data sent to %@", self);
     [self.cocoaTent getRecentPosts];
     [self.statusMessage setStringValue:@"getting timeline data"];
     [self startTimelineRefreshTimer];
@@ -322,7 +321,13 @@
             
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
-                [self.cocoaTent fetchPostFor:[post valueForKeyPath:@"content.entity"] withID:[post valueForKeyPath:@"content.id"] forPost:tld];
+            {
+                [self.cocoaTent fetchRepostDataFor:[post valueForKeyPath:@"content.entity"] withID:[post valueForKeyPath:@"content.id"] forPost:tld];
+                
+                tld.content = [[NSAttributedString alloc] initWithString:@"Retrieving repost data..."];
+            }
+
+            
             
             if (timelineIsFresh)
                 [newTimelineData addObject:tld];

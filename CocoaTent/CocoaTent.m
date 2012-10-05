@@ -46,6 +46,7 @@
 #import "CocoaTentProfile.h"
 #import "CocoaTentCoreProfile.h"
 #import "CocoaTentBasicProfile.h"
+#import "CocoaTentRepostFetcher.h"
 
 
 @interface CocoaTent (Private)
@@ -152,7 +153,7 @@
 
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithoutLeadingSlash:@"" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
+        //NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
         [self getEntityURL:[self parseAPIRootURL:[[response allHeaderFields] valueForKey:@"Link"]]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
@@ -183,9 +184,7 @@
         // TODO: remove the hardcoded bits here
         self.cocoaTentApp.basicInfo = [JSON valueForKey:@"https://tent.io/types/info/basic/v0.1.0"];
         self.cocoaTentApp.coreInfo = [JSON valueForKey:@"https://tent.io/types/info/core/v0.1.0"];
-        
-        NSLog(@"core %@", self.cocoaTentApp.coreInfo);
-        NSLog(@"basic %@", self.cocoaTentApp.basicInfo);
+    
         
         if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo)])
             [self.delegate didReceiveBasicInfo];
@@ -378,6 +377,20 @@
     [operation start];
 }
 
+- (void) getPostWithId:(NSString *)post_id
+{
+    NSString *path = [NSString stringWithFormat:@"posts/%@", post_id];
+    
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        if ([self.delegate respondsToSelector:@selector(didReceiveRepostData:)])
+            [self.delegate didReceiveRepostData:JSON];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [self.delegate communicationError:error];
+    }];
+    
+    [operation start];
+}
+
 - (void) getPostsSince:(NSString *)post_id
 {
     NSString *path = [NSString stringWithFormat:@"posts?since_id=%@", post_id];
@@ -432,17 +445,11 @@
     [operation start];
 }
 
-- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post 
 {
-    NSString *path = [NSString stringWithFormat:@"posts/%@", post_id];
+    CocoaTentRepostFetcher *repostFetcher = [[CocoaTentRepostFetcher alloc] init];
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got %@", JSON);
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"failed with %@", [response allHeaderFields]);
-    }];
-    
-    [operation start];
+    [repostFetcher fetchRepostDataFor:entity withID:post_id forPost:post];
 }
 
 - (void) reachabilityStatusHasChanged:(AFNetworkReachabilityStatus) status

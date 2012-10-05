@@ -65,6 +65,7 @@
 - (void) didReceiveAccessToken:(NSString *)access_token;
 - (void) didReceiveBasicInfo;
 - (void) didReceiveCoreInfo;
+- (void) didReceiveRepostData:(NSDictionary *) repostData;
 
 @end
 
@@ -108,7 +109,8 @@
 #pragma mark -
 #pragma mark Posts
 - (void) getPosts;
-- (void) fetchPostFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post;
+- (void) getPostWithId:(NSString *)post_id;
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post;
 
 // gets the most recent posts since the last time
 // or gets all posts if there isn't a "since_id" value

@@ -171,6 +171,10 @@
         //NSLog(@"will be sending %@", authorizationHeader);
         [request setValue:authorizationHeader forHTTPHeaderField:@"Authorization"];
     }
+    else
+    {
+        NSLog(@"not a signed request");
+    }
     
     if (httpBody)
     {
@@ -178,6 +182,7 @@
         [request setValue:self.tentMimeType forHTTPHeaderField:@"content-type"];
     }
     
+    NSLog(@"building operation");
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         success(request, response, JSON);
         ;
@@ -185,6 +190,8 @@
         failure(request, response, error, JSON);
     }];
     
+    if (!operation)
+        NSLog(@"returning a NULL operation!");
     return operation;
 }
 
