@@ -35,6 +35,8 @@
 		DA6BC4FA161A68EB0044CF5D /* CocoaTentPost.m in Sources */ = {isa = PBXBuildFile; fileRef = DA6BC4F9161A68EB0044CF5D /* CocoaTentPost.m */; };
 		DA6BC4FE161A718F0044CF5D /* CocoaTentStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = DA6BC4FD161A718F0044CF5D /* CocoaTentStatus.m */; };
 		DA6BC501161A89D00044CF5D /* TimelineData.m in Sources */ = {isa = PBXBuildFile; fileRef = DA6BC500161A89D00044CF5D /* TimelineData.m */; };
+		DA936F12161E734B00DF2016 /* CocoaTentCoreProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = DA936F11161E734B00DF2016 /* CocoaTentCoreProfile.m */; };
+		DA936F16161E74C300DF2016 /* CocoaTentBasicProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = DA936F15161E74C300DF2016 /* CocoaTentBasicProfile.m */; };
 		DAB01BA11618D1E4003868E0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */; };
 		DAB01BA41619410E003868E0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DAB01BA31619410E003868E0 /* README.md */; };
 		DAB0753F16121E590079BE7D /* CocoaTentApp.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0753E16121E590079BE7D /* CocoaTentApp.m */; };
@@ -122,6 +124,10 @@
 		DA6BC4FD161A718F0044CF5D /* CocoaTentStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentStatus.m; path = CocoaTent/CocoaTentStatus.m; sourceTree = "<group>"; };
 		DA6BC4FF161A89D00044CF5D /* TimelineData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineData.h; sourceTree = "<group>"; };
 		DA6BC500161A89D00044CF5D /* TimelineData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineData.m; sourceTree = "<group>"; };
+		DA936F10161E734B00DF2016 /* CocoaTentCoreProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentCoreProfile.h; path = CocoaTent/CocoaTentCoreProfile.h; sourceTree = "<group>"; };
+		DA936F11161E734B00DF2016 /* CocoaTentCoreProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentCoreProfile.m; path = CocoaTent/CocoaTentCoreProfile.m; sourceTree = "<group>"; };
+		DA936F14161E74C300DF2016 /* CocoaTentBasicProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentBasicProfile.h; path = CocoaTent/CocoaTentBasicProfile.h; sourceTree = "<group>"; };
+		DA936F15161E74C300DF2016 /* CocoaTentBasicProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentBasicProfile.m; path = CocoaTent/CocoaTentBasicProfile.m; sourceTree = "<group>"; };
 		DAB01BA01618D1E4003868E0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DAB01BA31619410E003868E0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		DAB0753D16121E590079BE7D /* CocoaTentApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentApp.h; path = CocoaTent/CocoaTentApp.h; sourceTree = "<group>"; };
@@ -281,6 +287,10 @@
 				DAB0753E16121E590079BE7D /* CocoaTentApp.m */,
 				DAC3A01516169B8700188E73 /* CocoaTentCommunication.h */,
 				DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */,
+				DA936F14161E74C300DF2016 /* CocoaTentBasicProfile.h */,
+				DA936F15161E74C300DF2016 /* CocoaTentBasicProfile.m */,
+				DA936F10161E734B00DF2016 /* CocoaTentCoreProfile.h */,
+				DA936F11161E734B00DF2016 /* CocoaTentCoreProfile.m */,
 				DA2134D5161BAF6600733F82 /* CocoaTentMention.h */,
 				DA2134D6161BAF6600733F82 /* CocoaTentMention.m */,
 				DA6BC4F8161A68EA0044CF5D /* CocoaTentPost.h */,
@@ -419,6 +429,8 @@
 				DA2134F0161BCC1E00733F82 /* NSData+Base64.m in Sources */,
 				DA2134F1161BCC1E00733F82 /* NSString+Base64.m in Sources */,
 				DA2134F4161BEAC300733F82 /* NSString+URLEncoding.m in Sources */,
+				DA936F12161E734B00DF2016 /* CocoaTentCoreProfile.m in Sources */,
+				DA936F16161E74C300DF2016 /* CocoaTentBasicProfile.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
