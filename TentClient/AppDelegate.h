@@ -25,7 +25,6 @@
 - (IBAction)saveTentEntityURL:(id)sender;
 - (IBAction)doThing:(id)sender;
 - (IBAction)registerWithTentServer:(id)sender;
-- (IBAction)performAuthorizedAction:(id)sender;
 - (IBAction)pushProfileInfo:(id)sender;
 - (IBAction)newFollowing:(id)sender;
 - (IBAction)getPosts:(id)sender;

@@ -18,6 +18,6 @@
                                                                     NULL,
                                                                     (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
                                                                     kCFStringEncodingUTF8 );
-    return (__bridge NSString *)urlString;
+    return (NSString *)CFBridgingRelease(urlString);
 }
 @end

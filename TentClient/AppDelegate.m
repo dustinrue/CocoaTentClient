@@ -282,24 +282,15 @@
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
     
     NSMutableArray *newTimelineData = nil;
-    BOOL timelineIsFresh = NO;
-    
     if (self.timelineData)
-    {
         newTimelineData = self.timelineData;
-    }
     else
-    {
         newTimelineData = [NSMutableArray arrayWithCapacity:0];
-        timelineIsFresh = YES;
-    }
+        
     
-    timelineIsFresh = NO;
-    NSLog(@"posts %@", postData);
     for (NSDictionary *post in postData)
     {
         // TODO: don't filter here, instead setup the poller to ask for a configured list of post types
-        NSLog(@"post is of type %@", [post valueForKey:@"type"]);
         if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"] || [[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
         {
             
@@ -329,13 +320,8 @@
 
             
             
-            if (timelineIsFresh)
-                [newTimelineData addObject:tld];
-            else
-                [newTimelineData insertObject:tld atIndex:0];
-            
-            self.testing = tld;
-            
+           
+            [newTimelineData addObject:tld];
         }
     }
     
