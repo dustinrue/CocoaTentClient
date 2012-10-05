@@ -44,8 +44,10 @@
 // would be used when streaming to notify the delegate that new data
 // has been received
 
+// TODO: provide the sender
 - (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
 - (void) didSubmitNewPost;
+- (void) didUpdateProfile:(id) sender;
 
 // this lets you know that the communication layer is ready to start
 // doing work
@@ -93,13 +95,20 @@
 - (void) registerWithTentServer;
 
 
-- (void) getUserProfile;
+
 - (void) discover;
 - (void) getFollowings;
 - (void) followEntity:(NSString *)newEntity;
-- (void) pushProfileInfo;
 
+#pragma mark -
+#pragma mark User Profile
+- (void) getUserProfile;
+- (void) pushProfileInfo:(id) profile;
+
+#pragma mark -
+#pragma mark Posts
 - (void) getPosts;
+- (void) fetchPostFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post;
 
 // gets the most recent posts since the last time
 // or gets all posts if there isn't a "since_id" value

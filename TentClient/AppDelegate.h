@@ -20,9 +20,11 @@
 @property (weak) NSMutableArray *timelineData;
 @property (strong) NSTimer *timelineDataRefreshTimer;
 
+@property (strong) id testing;
+
 - (IBAction)saveTentEntityURL:(id)sender;
 - (IBAction)doThing:(id)sender;
-- (IBAction)performDiscover:(id)sender;
+- (IBAction)registerWithTentServer:(id)sender;
 - (IBAction)performAuthorizedAction:(id)sender;
 - (IBAction)pushProfileInfo:(id)sender;
 - (IBAction)newFollowing:(id)sender;

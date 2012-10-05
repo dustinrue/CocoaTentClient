@@ -43,6 +43,10 @@
 #import "NSString+URLEncoding.h"
 #import "NSArray+Reverse.h"
 
+#import "CocoaTentProfile.h"
+#import "CocoaTentCoreProfile.h"
+#import "CocoaTentBasicProfile.h"
+
 
 @interface CocoaTent (Private)
 
@@ -108,6 +112,7 @@
 
 - (void) switchToTentEntityServerAddress:(NSURL *)server
 {
+    //server = [NSURL URLWithString:@"https://controlplane.tent.is/tent"];
     NSLog(@"switching to %@", server);
     [self removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication];
     [self createCocoaTentCommunicationObjectWithBaseURL:server];
@@ -178,6 +183,9 @@
         // TODO: remove the hardcoded bits here
         self.cocoaTentApp.basicInfo = [JSON valueForKey:@"https://tent.io/types/info/basic/v0.1.0"];
         self.cocoaTentApp.coreInfo = [JSON valueForKey:@"https://tent.io/types/info/core/v0.1.0"];
+        
+        NSLog(@"core %@", self.cocoaTentApp.coreInfo);
+        NSLog(@"basic %@", self.cocoaTentApp.basicInfo);
         
         if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo)])
             [self.delegate didReceiveBasicInfo];
@@ -300,30 +308,23 @@
     [operation start];
 }
 
-- (void) pushProfileInfo
+- (void) pushProfileInfo:(id) profile
 {
-    /*
-     "name": "The Tentity",
-     "avatar_url": "http://example.org/avatar.jpg",
-     "birthdate": "2012-08-23",
-     "location": "The Internet",
-     "gender": "Unknown",
-     "bio": "Dignissimos autem pariatur deserunt voluptatem sed incidunt occaecati."
-     */
+
+    if (![profile respondsToSelector:@selector(profileType)])
+    {
+        NSLog(@"I can only accept a Core Profile or Basic Profile object");
+        return;
+    }
     
-    NSMutableDictionary *profileInfo = [NSMutableDictionary dictionaryWithCapacity:0];
+    NSString *type = [[profile profileType] urlEncoded];
     
-    [profileInfo setValue:@"Dustin Rue" forKey:@"name"];
-    [profileInfo setValue:@"http://example.org/avatar.jpg" forKey:@"avatar_url"];
-    [profileInfo setValue:@"2012-08-23" forKey:@"birthdate"];
-    [profileInfo setValue:@"The Internet" forKey:@"location"];
-    [profileInfo setValue:@"male" forKey:@"gender"];
-    [profileInfo setValue:@"this is my bio" forKey:@"bio"];
+    NSString *path = [NSString stringWithFormat:@"%@/%@", @"profile", type];
     
-    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"PUT" pathWithoutLeadingSlash:@"profile/https%3A%2F%2Ftent.io%2Ftypes%2Finfo%2Fbasic%2Fv0.1.0" HTTPBody:profileInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"worked");
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"PUT" pathWithoutLeadingSlash:path HTTPBody:[profile dictionary] sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        [self.delegate didUpdateProfile:self];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"failed \nrequest: %@\nresponse: %@\n\nJSON: %@\n\n error: %@", request, [response allHeaderFields], JSON, error);
+        [self.delegate communicationError:error];
     }];
     
     [operation start];
@@ -426,6 +427,19 @@
         [self.delegate didSubmitNewPost];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed with\n%@\n%@\n%@", [request allHTTPHeaderFields], [response allHeaderFields], JSON);
+    }];
+    
+    [operation start];
+}
+
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post
+{
+    NSString *path = [NSString stringWithFormat:@"posts/%@", post_id];
+    
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"got %@", JSON);
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed with %@", [response allHeaderFields]);
     }];
     
     [operation start];

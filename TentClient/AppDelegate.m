@@ -13,6 +13,8 @@
 #import "CocoaTentStatus.h"
 #import "TimelineData.h"
 #import <AutoHyperlinks/AutoHyperlinks.h>
+#import "NSString+hmac_sha_256.h"
+#import "CocoaTentCoreProfile.h"
 
 @implementation AppDelegate
 
@@ -84,7 +86,7 @@
     // does expect a dictionry of values.
 
     [appDefaults setValue:[NSDictionary dictionaryWithObjectsAndKeys:
-                           //@"Core",    @"https://tent.io/types/info/core/v0.1.0",
+                           @"Core",    @"https://tent.io/types/info/core/v0.1.0",
                            @"Basic",   @"https://tent.io/types/info/basic/v0.1.0", nil] forKey:@"tent_profile_info_types"];
     
     
@@ -154,6 +156,9 @@
     [self.statusMessage setStringValue:@"discovering API root"];
     [self.cocoaTent discover];
     
+
+    
+    
 }
 
 - (void) startTimelineRefreshTimer
@@ -175,17 +180,14 @@
     [self.cocoaTent getUserProfile];
 }
 
-- (IBAction)performDiscover:(id)sender
+- (IBAction)registerWithTentServer:(id)sender
 {
     [self.cocoaTent registerWithTentServer];
 }
 
-- (IBAction)performAuthorizedAction:(id)sender {
-    [self.cocoaTent getFollowings];
-}
 
 - (IBAction)pushProfileInfo:(id)sender {
-    [self.cocoaTent pushProfileInfo];
+    
 }
 
 - (IBAction)newFollowing:(id)sender {
@@ -219,7 +221,7 @@
     [post setText:[self.statusTextValue stringValue]];
     [post setPublished_at:[NSNumber numberWithInt: timestamp]];
     [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
-    [post setEntity:[[NSUserDefaults standardUserDefaults] valueForKey:@"tent_user_name"]];
+    [post setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
     
     [self.cocoaTent newPost:post];
@@ -294,6 +296,7 @@
     }
     
     timelineIsFresh = NO;
+    NSLog(@"posts %@", postData);
     for (NSDictionary *post in postData)
     {
         // TODO: don't filter here, instead setup the poller to ask for a configured list of post types
@@ -318,16 +321,23 @@
             tld.client = client;
             
             
+            if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
+                [self.cocoaTent fetchPostFor:[post valueForKeyPath:@"content.entity"] withID:[post valueForKeyPath:@"content.id"] forPost:tld];
+            
             if (timelineIsFresh)
                 [newTimelineData addObject:tld];
             else
                 [newTimelineData insertObject:tld atIndex:0];
+            
+            self.testing = tld;
+            
         }
     }
     
     
     
     self.timelineData = newTimelineData;
+
 
     [self.statusMessage setStringValue:@"timeline updated"];
     [self startTimelineRefreshTimer];
@@ -342,6 +352,10 @@
     }
     else
     {
+        
+        
+        //[self.cocoaTent pushProfileInfo:cp];
+        [self.cocoaTent getUserProfile];
         [self getPosts:nil];
     }
 }
@@ -349,6 +363,15 @@
 - (void) didSubmitNewPost
 {
     [self.statusMessage setStringValue:@"Posted successfully"];
+}
+
+- (void) didUpdateProfile:(id)sender
+{
+    [self.statusMessage setStringValue:@"Updated profile successfully"];
+}
+- (void) communicationError:(NSError *)error
+{
+    [self.statusMessage setStringValue:@"failed to perform last operation"];
 }
 
 #pragma mark -
@@ -382,6 +405,5 @@
     [unc scheduleNotification:notificationMessage];
     
 }
-
 
 @end
