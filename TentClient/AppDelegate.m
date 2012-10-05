@@ -282,6 +282,7 @@
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
     
     NSMutableArray *newTimelineData = nil;
+    
     if (self.timelineData)
         newTimelineData = self.timelineData;
     else
@@ -317,11 +318,8 @@
                 
                 tld.content = [[NSAttributedString alloc] initWithString:@"Retrieving repost data..."];
             }
-
-            
-            
-           
-            [newTimelineData addObject:tld];
+         
+            [newTimelineData insertObject:tld atIndex:0];
         }
     }
     
