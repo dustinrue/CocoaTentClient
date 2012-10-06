@@ -128,7 +128,7 @@
         
         
         // the double newline is not a mistake
-        NSString *normalizedRequestString = [NSString stringWithFormat:@"%ld\n%@\n%@\n%@\n%@\n%@\n\n",
+        NSString *normalizedRequestString = [NSString stringWithFormat:@"%d\n%@\n%@\n%@\n%@\n%@\n\n",
                                              [ts integerValue],
                                              nonce,
                                              method,
@@ -153,11 +153,11 @@
         NSString *authorizationHeader = nil;
         if (self.access_token)
         {
-            authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", self.access_token, [ts integerValue], nonce, mac];
+            authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%d\", nonce=\"%@\", mac=\"%@\"", self.access_token, [ts integerValue], nonce, mac];
         }
         else if (self.mac_key_id)
         {
-            authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%ld\", nonce=\"%@\", mac=\"%@\"", self.mac_key_id, [ts integerValue], nonce, mac];
+            authorizationHeader = [NSString stringWithFormat:@"MAC id=\"%@\", ts=\"%d\", nonce=\"%@\", mac=\"%@\"", self.mac_key_id, [ts integerValue], nonce, mac];
         }
         else
         {
