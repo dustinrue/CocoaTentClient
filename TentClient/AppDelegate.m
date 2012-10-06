@@ -432,8 +432,16 @@
         if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"] || [[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
         {
             
-            NSString *client = [NSString stringWithFormat:@"Via: %@ (%@)",[post valueForKeyPath:@"app.name"], [post valueForKey:@"type"]];
-            NSString *rawEntity = [post valueForKeyPath:@"entity"];
+            NSString *client = [NSString stringWithFormat:@"Via: %@ (%@)",[post valueForKeyPath:@"app.name"], [self getSimplePostTypeText:[post valueForKey:@"type"]]];
+            
+            NSString *rawEntity = nil;
+            // Build a sort a nice title for the post
+            if ([[self getSimplePostTypeText:[post valueForKey:@"type"]] isEqualToString:@"status"])
+                rawEntity = [NSString stringWithFormat:@"%@ says:", [post valueForKeyPath:@"entity"]];
+            
+            else if ([[self getSimplePostTypeText:[post valueForKey:@"type"]] isEqualToString:@"repost"])
+                rawEntity = [NSString stringWithFormat:@"%@ reposted:", [post valueForKeyPath:@"entity"]];
+            
             NSString *rawContent = ([post valueForKeyPath:@"content.text"]) ? [post valueForKeyPath:@"content.text"]:@"";
             
             AHHyperlinkScanner *contentScanner = [[AHHyperlinkScanner alloc] initWithString:rawContent usingStrictChecking:NO];
@@ -541,6 +549,13 @@
     NSString *part1 = [[entityURL componentsSeparatedByString:@"."] objectAtIndex:0];
     
     return [part1 substringFromIndex:8];
+}
+
+- (NSString *) getSimplePostTypeText:(NSString *)postType
+{
+    NSArray *part1 = [postType componentsSeparatedByString:@"/"];
+    
+    return [part1 objectAtIndex:5];
 }
 
 @end
