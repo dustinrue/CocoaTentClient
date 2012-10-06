@@ -142,6 +142,13 @@
         [self.statusMessage setStringValue:@"Please set your Tent Entity URL and click Save"];
         return;
     }
+    else if ([self.cocoaTentApp.tentEntity rangeOfString:@"http"].location == NSNotFound)
+    {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"Invalid input" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"You must include http or https in your tent entity URL"];
+        
+        [alert runModal];
+        return;
+    }
 
     if (self.cocoaTentApp.access_token)
         [self.registerAppButton setEnabled:NO];
@@ -171,7 +178,8 @@
 
 - (IBAction)saveTentEntityURL:(id)sender
 {
-    self.cocoaTentApp.tentEntity = [self.tentEntityURLTextField stringValue];
+
+        self.cocoaTentApp.tentEntity = [self.tentEntityURLTextField stringValue];
 }
 
 - (IBAction)doThing:(id)sender
@@ -200,6 +208,12 @@
 }
 
 - (IBAction)getPosts:(id)sender {
+    if ([sender class] == [NSButton class])
+    {
+        self.timelineData = nil;
+        [self.cocoaTent clearLastPostCounters];
+    }
+    
     [self.timelineDataRefreshTimer invalidate];
     self.timelineDataRefreshTimer = nil;
     [self.cocoaTent getRecentPosts];
@@ -336,6 +350,7 @@
     NSView *theViewThisButtonIsOn = [sender superview];
     NSString *postId = nil;
     NSString *entity = nil;
+    NSArray *repostMentionData = nil;
     
     CocoaTentRepost *repost = [[CocoaTentRepost alloc] init];
     
@@ -345,7 +360,7 @@
     [repost setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
     [repost setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
     [repost setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
-    
+ 
     // search for the values we need to do a reply
     for (NSTextField *item in theViewThisButtonIsOn.subviews)
     {
@@ -356,12 +371,29 @@
             entity = [item stringValue];
     }
     
+    NSArray *timelineData = [self.timelineArrayController arrangedObjects];
+    
+    for (NSDictionary *post in self.timelineData)
+    {
+        if ([[[post valueForKey:@"entity"] string] isEqualToString:entity] && [[post valueForKey:@"post_id"] isEqualToString:postId])
+        {
+            NSDictionary *thePostWeFound = [[timelineData objectAtIndex:[self.timelineData indexOfObject:post]] valueForKey:@"fullPost"];
+            repostMentionData =  [thePostWeFound mutableCopy];
+        }
+    }
+    
+    /*
+
+     */
+    
     
     [self.statusMessage setStringValue:[NSString stringWithFormat:@"reposting %@ - %@", [entity substringFromIndex:8] , postId]];
     
-    repost.repostedEntity = entity;
-    repost.repostedPostId = postId;
+    NSLog(@"mention data %@", repostMentionData);
+    repost.repostedEntity = [repostMentionData valueForKey:@"entity"];
+    repost.repostedPostId = [repostMentionData valueForKey:@"id"];
 
+    NSLog(@"repost data %@", [repost dictionary]);
     [self.cocoaTent newPost:repost];
 }
 
@@ -458,6 +490,8 @@
             tld.post_id = [post valueForKey:@"id"];
             tld.fullPost = post;
             
+            if ([[post valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
+                NSLog(@"a post from me of type %@", [post valueForKey:@"type"]);
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
             {

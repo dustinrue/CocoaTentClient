@@ -114,6 +114,7 @@
 #pragma mark Posts
 - (void) getPosts;
 - (void) getPostWithId:(NSString *)post_id;
+- (void) clearLastPostCounters;
 - (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post;
 
 // gets the most recent posts since the last time

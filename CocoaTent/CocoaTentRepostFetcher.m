@@ -50,7 +50,7 @@
     self.cocoaTentApp = [[CocoaTentApp alloc] init];
     
     self.cocoaTentApp.tentEntity = entity;
-    
+
     self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
     
     [self.cocoaTent setDelegate:self];
@@ -60,6 +60,7 @@
 
 - (void) cocoaTentIsReady
 {
+    NSLog(@"cocoaTent is ready in %@ going to %@", [self class], self.cocoaTentApp.tentEntity);
     [self.cocoaTent getPostWithId:self.post_id];
 }
 
@@ -71,7 +72,7 @@
 
 - (void) communicationError:(NSError *)error
 {
-    
+    [self.post setContent:[NSString stringWithFormat:@"Failed to get repost data %@", error]];
 }
 
 // implemented just to keep the compiler happy

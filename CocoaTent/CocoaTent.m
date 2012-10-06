@@ -197,6 +197,7 @@
         [self switchToTentEntityServerAddress:[NSURL URLWithString:[[self.cocoaTentApp.coreInfo valueForKey:@"servers"] objectAtIndex:0]]];
              
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed to get something, \nrequest:\n%@\nreponse\n%@\nJSON\n%@ on URL: %@", [request allHTTPHeaderFields], [response allHeaderFields], JSON, [request URL]);
         [self.delegate communicationError:error];
     }];
     
@@ -413,10 +414,12 @@
 {
     NSString *path = [NSString stringWithFormat:@"posts/%@", post_id];
     
+    NSLog(@"going to %@ %@", self.cocoaTentApp.tentEntity, path);
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         if ([self.delegate respondsToSelector:@selector(didReceiveRepostData:)])
             [self.delegate didReceiveRepostData:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"failed to get something, \nrequest:\n%@\nreponse\n%@\n on URL: %@", [request allHTTPHeaderFields], [response allHeaderFields], [request URL]);
         [self.delegate communicationError:error];
     }];
     
@@ -463,6 +466,13 @@
     }];
     
     [operation start];
+}
+
+- (void) clearLastPostCounters
+{
+    self.lastEntityId = nil;
+    self.lastPostId = nil;
+    self.lastPostTimeStamp = nil;
 }
 
 - (void) newPost:(id)post

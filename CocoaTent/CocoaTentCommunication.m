@@ -182,7 +182,7 @@
         [request setValue:self.tentMimeType forHTTPHeaderField:@"content-type"];
     }
     
-    NSLog(@"building operation");
+    NSLog(@"building operation for %@", [request URL]);
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         success(request, response, JSON);
         ;
