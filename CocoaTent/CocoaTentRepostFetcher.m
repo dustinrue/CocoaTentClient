@@ -33,11 +33,17 @@
  * THE SOFTWARE.
  */
 
+/**
+ fetchRepostDataFor:withID:forPost: is going to create a new CocoaTent object
+ and perform a discover on it.  Once CocoaTent reports it is ready it will
+ ask CocoaTent to get the post with post_id, if it can it'll update the content 
+ property of the post passed in.  It can then be killed.
+ */
+
 @implementation CocoaTentRepostFetcher
 
 - (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post
 {
-    
     self.post = post;
     self.post_id = post_id;
     

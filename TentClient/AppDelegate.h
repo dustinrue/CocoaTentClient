@@ -29,6 +29,8 @@
 - (IBAction)newFollowing:(id)sender;
 - (IBAction)getPosts:(id)sender;
 - (IBAction)newPost:(id)sender;
+- (IBAction)doReply:(id)sender;
+- (IBAction)doRepost:(id)sender;
 
 @property (weak) IBOutlet NSTextField *followEntityValue;
 @property (weak) IBOutlet NSTextField *statusTextValue;
@@ -40,6 +42,8 @@
 @property (weak) IBOutlet NSTextFieldCell *statusTextValueTextFieldCell;
 @property (weak) IBOutlet NSButton *registerAppButton;
 @property (weak) IBOutlet NSButton *saveButton;
+@property (weak) IBOutlet NSArrayController *timelineArrayController;
+@property (unsafe_unretained) IBOutlet NSCollectionViewItem *timelineCollectionViewItem;
 
 @property (weak) IBOutlet NSTextField *charsLeft;
 

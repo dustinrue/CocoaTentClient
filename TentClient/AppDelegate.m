@@ -10,11 +10,11 @@
 #import "CocoaTent.h"
 #import "CocoaTentApp.h"
 #import "CocoaTentPost.h"
-#import "CocoaTentStatus.h"
 #import "TimelineData.h"
 #import <AutoHyperlinks/AutoHyperlinks.h>
 #import "NSString+hmac_sha_256.h"
 #import "CocoaTentCoreProfile.h"
+#import "CocoaTentPostTypes.h"
 
 @implementation AppDelegate
 
@@ -230,6 +230,64 @@
     [self.charsLeft setStringValue:@"256"];
 }
 
+- (IBAction)doReply:(id)sender
+{
+
+    // I'm cheating really badly here because I don't want implement
+    // the NSControllerView properly.  I'd be delighted if someone did though 
+    NSView *theViewThisButtonIsOn = [sender superview];
+    NSString *postId = nil;
+    NSString *entity = nil;
+    
+    // search for the values we need to do a reply
+    for (NSTextField *item in theViewThisButtonIsOn.subviews)
+    {
+        if ([[item identifier] isEqualToString:@"post_id"])
+            postId = [item stringValue];
+        
+        if ([[item identifier] isEqualToString:@"entity"])
+            entity = [item stringValue];
+    }
+    
+   
+    [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [entity substringFromIndex:8] , postId]];
+    
+    NSArray *explodedOnPeriod = [entity componentsSeparatedByString:@"."];
+    NSString *username = [[explodedOnPeriod objectAtIndex:0] substringFromIndex:8];
+    [self.statusTextValue setStringValue:[NSString stringWithFormat:@"^%@ ", username]];
+    [self.statusTextValue becomeFirstResponder];
+    [[self.statusTextValue currentEditor] setSelectedRange:NSMakeRange([[self.statusTextValue stringValue] length], 0)];
+}
+
+- (IBAction)doRepost:(id)sender
+{
+    // I'm cheating really badly here because I don't want implement
+    // the NSControllerView properly.  I'd be delighted if someone did though 
+    NSView *theViewThisButtonIsOn = [sender superview];
+    NSString *postId = nil;
+    NSString *entity = nil;
+    
+    // search for the values we need to do a reply
+    for (NSTextField *item in theViewThisButtonIsOn.subviews)
+    {
+        if ([[item identifier] isEqualToString:@"post_id"])
+            postId = [item stringValue];
+        
+        if ([[item identifier] isEqualToString:@"entity"])
+            entity = [item stringValue];
+    }
+    
+    
+    [self.statusMessage setStringValue:[NSString stringWithFormat:@"reposting %@ - %@", [entity substringFromIndex:8] , postId]];
+    
+    CocoaTentRepost *repost = [[CocoaTentRepost alloc] init];
+    
+    repost.entity = entity;
+    repost.post_id = postId;
+    
+    [self.cocoaTent newPost:repost];
+}
+
 - (void) receivedProfileData:(NSNotification *) notification
 {
     NSLog(@"got profile data %@", [notification userInfo]);
@@ -310,6 +368,7 @@
             tld.entity = entity;
             tld.content = content;
             tld.client = client;
+            tld.post_id = [post valueForKey:@"id"];
             
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
@@ -322,9 +381,7 @@
             [newTimelineData insertObject:tld atIndex:0];
         }
     }
-    
-    
-    
+  
     self.timelineData = newTimelineData;
 
 

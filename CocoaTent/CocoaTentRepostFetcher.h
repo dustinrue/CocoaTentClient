@@ -27,6 +27,12 @@
  * THE SOFTWARE.
  */
 
+/**
+ Retrieves the content of a "repost" post by doing a discover
+ on the entity URL and getting the post from their server.  It then
+ directly updates the content property of the passed in post
+ */
+
 #import <Foundation/Foundation.h>
 #import "CocoaTent.h"
 

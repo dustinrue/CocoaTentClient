@@ -47,6 +47,7 @@
 #import "CocoaTentCoreProfile.h"
 #import "CocoaTentBasicProfile.h"
 #import "CocoaTentRepostFetcher.h"
+#import "CocoaTentPostTypes.h"
 
 
 @interface CocoaTent (Private)

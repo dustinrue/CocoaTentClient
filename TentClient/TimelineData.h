@@ -13,5 +13,6 @@
 @property (strong) NSAttributedString *entity;
 @property (strong) NSAttributedString *content;
 @property (strong) NSString *client;
+@property (strong) NSString *post_id;
 
 @end

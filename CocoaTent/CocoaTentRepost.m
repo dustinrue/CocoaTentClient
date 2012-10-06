@@ -45,7 +45,7 @@
 
 - (NSMutableDictionary *)dictionary
 {
-    NSDictionary *content = [NSDictionary dictionary];
+    NSMutableDictionary *content = [NSMutableDictionary dictionary];
     
     if (self.entity)
         [content setValue:self.entity forKey:@"entity"];

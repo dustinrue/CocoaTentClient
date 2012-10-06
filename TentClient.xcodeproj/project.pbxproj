@@ -144,6 +144,7 @@
 		DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutoHyperlinks.framework; sourceTree = "<group>"; };
 		DADFBE71161F14CA00946C10 /* CocoaTentRepostFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentRepostFetcher.h; path = CocoaTent/CocoaTentRepostFetcher.h; sourceTree = "<group>"; };
 		DADFBE72161F14CA00946C10 /* CocoaTentRepostFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentRepostFetcher.m; path = CocoaTent/CocoaTentRepostFetcher.m; sourceTree = "<group>"; };
+		DADFBE80161FEBDA00946C10 /* CocoaTentPostTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentPostTypes.h; path = CocoaTent/CocoaTentPostTypes.h; sourceTree = "<group>"; };
 		DAEE05141612952C008CABF5 /* NSString+Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Random.h"; path = "CocoaTent/NSString+Random.h"; sourceTree = "<group>"; };
 		DAEE05151612952C008CABF5 /* NSString+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Random.m"; path = "CocoaTent/NSString+Random.m"; sourceTree = "<group>"; };
 		DAEE0519161297C2008CABF5 /* NSData+hmac_sha_256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+hmac_sha_256.h"; path = "CocoaTent/NSData+hmac_sha_256.h"; sourceTree = "<group>"; };
@@ -288,20 +289,21 @@
 				DAB0754816121EDF0079BE7D /* CocoaTent.m */,
 				DAB0753D16121E590079BE7D /* CocoaTentApp.h */,
 				DAB0753E16121E590079BE7D /* CocoaTentApp.m */,
-				DAC3A01516169B8700188E73 /* CocoaTentCommunication.h */,
-				DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */,
 				DA936F14161E74C300DF2016 /* CocoaTentBasicProfile.h */,
 				DA936F15161E74C300DF2016 /* CocoaTentBasicProfile.m */,
+				DAC3A01516169B8700188E73 /* CocoaTentCommunication.h */,
+				DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */,
 				DA936F10161E734B00DF2016 /* CocoaTentCoreProfile.h */,
 				DA936F11161E734B00DF2016 /* CocoaTentCoreProfile.m */,
 				DA2134D5161BAF6600733F82 /* CocoaTentMention.h */,
 				DA2134D6161BAF6600733F82 /* CocoaTentMention.m */,
 				DA6BC4F8161A68EA0044CF5D /* CocoaTentPost.h */,
 				DA6BC4F9161A68EB0044CF5D /* CocoaTentPost.m */,
-				DAB0754D16121EE90079BE7D /* JSONKit */,
-				DA2134EB161BC6E100733F82 /* PostTypes */,
 				DADFBE71161F14CA00946C10 /* CocoaTentRepostFetcher.h */,
 				DADFBE72161F14CA00946C10 /* CocoaTentRepostFetcher.m */,
+				DAB0754D16121EE90079BE7D /* JSONKit */,
+				DA2134EB161BC6E100733F82 /* PostTypes */,
+				DADFBE80161FEBDA00946C10 /* CocoaTentPostTypes.h */,
 			);
 			name = CocoaTent;
 			sourceTree = "<group>";
