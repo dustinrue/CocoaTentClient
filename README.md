@@ -8,6 +8,10 @@ The app currently provides very basic support for interacting with a tent.io ver
 
 If you want to hack on this client feel free.  Simply compile and run, enter your entity URL (for example, https://dustinrue.tent.is) and click save, then click the register app button.  The app will direct you to your account where you sign in and authorize the app.  Cocoa Tent Client should then start showing you your personal timeline.
 
+Changing your username
+======================
+Currently this client will save whatever you enter as your entity url and then prevent you from changing.  To change it, you must delete your preferences file, enter in a new value and then register the app again.  
+
 What is exposed in the client
 =============================
 Currently this client will expost to you:
@@ -17,6 +21,8 @@ Currently this client will expost to you:
 * Follow users
 * Read your personal timeline
 * Post messages
+* Reply
+* Repost
 
 Cocoa Tent Client will issue a simple notification when new items are received.
 
@@ -31,8 +37,6 @@ What hasn't been implemented at all yet
 =======================================
 The following hasn't been implemented at all yet, but most of the items already have classes to support the operations
 
-* Reply
-* Repost
 * Delete
 * Unfollow users
 
