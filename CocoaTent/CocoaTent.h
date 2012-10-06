@@ -102,6 +102,10 @@
 - (void) followEntity:(NSString *)newEntity;
 
 #pragma mark -
+#pragma mark Mention Finder
+- (NSArray *) findMentionsInPostContent:(NSString *)content;
+
+#pragma mark -
 #pragma mark User Profile
 - (void) getUserProfile;
 - (void) pushProfileInfo:(id) profile;

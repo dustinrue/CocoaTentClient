@@ -364,6 +364,40 @@
 }
 
 #pragma mark -
+#pragma mark Mention Finder
+/**
+ Find all ^mentions in a given string and return it as an array
+ */
+- (NSArray *) findMentionsInPostContent:(NSString *)content
+{
+    NSLog(@"content %@", content);
+    NSMutableArray *explodedOnTent = [[content componentsSeparatedByString:@"^"] mutableCopy];
+
+    NSMutableArray *mentionList = [NSMutableArray arrayWithCapacity:0];
+    
+    if ([explodedOnTent count] == 0)
+        return nil;
+    
+    // remove the first item, we never want it.  It'll either be blank or
+    // simply the content itself because there won't be a ^ in it to
+    // explode on
+    [explodedOnTent removeObjectAtIndex:0];
+    NSLog(@"exploded %@", explodedOnTent);
+    for (NSString *line in explodedOnTent)
+    {
+        if ([line isEqualToString:@""])
+        {
+            NSLog(@"skipping");
+            continue;
+        }
+        
+        [mentionList addObject:[NSDictionary dictionaryWithObjectsAndKeys:[[line componentsSeparatedByString:@" "] objectAtIndex:0], @"entity", nil]];
+    }
+    
+    return mentionList;
+}
+
+#pragma mark -
 #pragma mark Posts
 
 - (void) getPosts

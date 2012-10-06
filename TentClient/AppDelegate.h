@@ -20,6 +20,10 @@
 @property (weak) NSMutableArray *timelineData;
 @property (strong) NSTimer *timelineDataRefreshTimer;
 
+@property (strong) NSArray *mentionList;
+@property (strong) NSString *replyingTo;
+@property (strong) NSString *replyingToPostId;
+
 @property (strong) id testing;
 
 - (IBAction)saveTentEntityURL:(id)sender;

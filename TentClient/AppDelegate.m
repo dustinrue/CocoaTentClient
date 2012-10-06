@@ -209,7 +209,14 @@
 }
 
 - (IBAction)newPost:(id)sender {
+    
     CocoaTentStatus *post = [[CocoaTentStatus alloc] init];
+    
+
+    NSMutableArray *postMentions = [NSMutableArray arrayWithCapacity:0];
+    
+    if (self.mentionList)
+        [postMentions addObjectsFromArray:self.mentionList];
     
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     NSDictionary *app = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -222,6 +229,19 @@
     [post setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
     [post setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
+    
+    // check the post content for mentions and build a mention set if needed
+    NSArray *moreMentions = [self.cocoaTent findMentionsInPostContent:[self.statusTextValue stringValue]];
+
+    if (moreMentions)
+        [postMentions addObjectsFromArray:moreMentions];
+    
+    if (postMentions)
+    {
+        [post setMentions:postMentions];
+    }
+    
+    
     
     [self.cocoaTent newPost:post];
     
@@ -238,6 +258,9 @@
     NSView *theViewThisButtonIsOn = [sender superview];
     NSString *postId = nil;
     NSString *entity = nil;
+    NSString *content = nil;
+    NSMutableArray *mentionListArray = nil;
+    NSString *mentionList = @"";
     
     // search for the values we need to do a reply
     for (NSTextField *item in theViewThisButtonIsOn.subviews)
@@ -247,16 +270,42 @@
         
         if ([[item identifier] isEqualToString:@"entity"])
             entity = [item stringValue];
+        
+        if ([[item identifier] isEqualToString:@"content"])
+            content = [item stringValue];
     }
     
    
     [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [entity substringFromIndex:8] , postId]];
     
+    // build the username for the entity we are replying too, not sure
+    // what the proper way to do this is, but this seems to be the
+    // "normal" format on tent.is
     NSArray *explodedOnPeriod = [entity componentsSeparatedByString:@"."];
     NSString *username = [[explodedOnPeriod objectAtIndex:0] substringFromIndex:8];
-    [self.statusTextValue setStringValue:[NSString stringWithFormat:@"^%@ ", username]];
+    
+    mentionListArray = [[self.cocoaTent findMentionsInPostContent:content] mutableCopy];
+    
+    if ([mentionListArray count] > 0)
+    {
+        for (NSDictionary *mention in mentionListArray)
+        {
+            mentionList = [NSString stringWithFormat:@"^%@ %@", [mention valueForKey:@"entity"], mentionList];
+        }
+        
+
+    }
+    [self.statusTextValue setStringValue:[NSString stringWithFormat:@"^%@ %@", username, mentionList]];
     [self.statusTextValue becomeFirstResponder];
     [[self.statusTextValue currentEditor] setSelectedRange:NSMakeRange([[self.statusTextValue stringValue] length], 0)];
+    
+    [mentionListArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                entity, @"entity",
+                                postId, @"post", nil]];
+    
+    self.mentionList = mentionListArray;
+
+
 }
 
 - (IBAction)doRepost:(id)sender
@@ -408,6 +457,7 @@
 
 - (void) didSubmitNewPost
 {
+    self.mentionList = nil;
     [self.statusMessage setStringValue:@"Posted successfully"];
 }
 
