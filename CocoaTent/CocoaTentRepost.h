@@ -39,7 +39,7 @@
  id         Required	String	The post identifier that is being reposted.
  */
 
-@property (strong) NSString *entity;
-@property (strong) NSString *post_id;
+@property (strong) NSString *repostedEntity;
+@property (strong) NSString *repostedPostId;
 
 @end

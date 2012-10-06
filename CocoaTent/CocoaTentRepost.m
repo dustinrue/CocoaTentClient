@@ -47,13 +47,11 @@
 {
     NSMutableDictionary *content = [NSMutableDictionary dictionary];
     
-    if (self.entity)
-        [content setValue:self.entity forKey:@"entity"];
+    if (self.repostedEntity)
+        [content setValue:self.repostedEntity forKey:@"entity"];
     
-    if (self.post_id)
-        [content setValue:self.post_id forKey:@"id"];
-    
-    
+    if (self.repostedPostId)
+        [content setValue:self.repostedPostId forKey:@"id"];
     
     NSMutableDictionary *dictionaryOfPropertyValues = [super dictionary];
     

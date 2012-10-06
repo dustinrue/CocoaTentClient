@@ -316,6 +316,15 @@
     NSString *postId = nil;
     NSString *entity = nil;
     
+    CocoaTentRepost *repost = [[CocoaTentRepost alloc] init];
+    
+    NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+    
+    [repost setPublished_at:[NSNumber numberWithInt: timestamp]];
+    [repost setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
+    [repost setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
+    [repost setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
+    
     // search for the values we need to do a reply
     for (NSTextField *item in theViewThisButtonIsOn.subviews)
     {
@@ -329,11 +338,9 @@
     
     [self.statusMessage setStringValue:[NSString stringWithFormat:@"reposting %@ - %@", [entity substringFromIndex:8] , postId]];
     
-    CocoaTentRepost *repost = [[CocoaTentRepost alloc] init];
-    
-    repost.entity = entity;
-    repost.post_id = postId;
-    
+    repost.repostedEntity = entity;
+    repost.repostedPostId = postId;
+
     [self.cocoaTent newPost:repost];
 }
 
@@ -385,9 +392,11 @@
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
+    
     if ([postData count] > 0)
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
     
+    NSLog(@"posts %@", postData);
     NSMutableArray *newTimelineData = nil;
     
     if (self.timelineData)
