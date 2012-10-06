@@ -15,4 +15,6 @@
 @property (strong) NSString *client;
 @property (strong) NSString *post_id;
 
+@property (strong) id fullPost;
+
 @end

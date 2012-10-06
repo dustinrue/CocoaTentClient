@@ -215,8 +215,8 @@
 
     NSMutableArray *postMentions = [NSMutableArray arrayWithCapacity:0];
     
-    if (self.mentionList)
-        [postMentions addObjectsFromArray:self.mentionList];
+    if (self.replyingTo)
+        [postMentions addObjectsFromArray:[self.replyingTo valueForKey:@"mentions"]];
     
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     NSDictionary *app = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -231,16 +231,11 @@
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
     
     // check the post content for mentions and build a mention set if needed
-    NSArray *moreMentions = [self.cocoaTent findMentionsInPostContent:[self.statusTextValue stringValue]];
-
-    if (moreMentions)
-        [postMentions addObjectsFromArray:moreMentions];
     
     if (postMentions)
     {
         [post setMentions:postMentions];
     }
-    
     
     
     [self.cocoaTent newPost:post];
@@ -262,6 +257,7 @@
     NSMutableArray *mentionListArray = nil;
     NSString *mentionList = @"";
     
+    
     // search for the values we need to do a reply
     for (NSTextField *item in theViewThisButtonIsOn.subviews)
     {
@@ -275,7 +271,28 @@
             content = [item stringValue];
     }
     
-   
+    // manually find the post being replied to in the timeline view
+    // this seriously is not the right way to do this
+    
+    NSArray *timelineData = [self.timelineArrayController arrangedObjects];
+    
+    for (NSDictionary *post in self.timelineData)
+    {
+        if ([[[post valueForKey:@"entity"] string] isEqualToString:entity] && [[post valueForKey:@"post_id"] isEqualToString:postId])
+        {
+            NSDictionary *thePostWeFound = [[timelineData objectAtIndex:[self.timelineData indexOfObject:post]] valueForKey:@"fullPost"];
+            self.replyingTo =  [thePostWeFound mutableCopy];
+        }
+    }
+    
+    NSMutableArray *currentMentionList = [[self.replyingTo valueForKey:@"mentions"] mutableCopy];
+    
+    [currentMentionList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                   [self.replyingTo valueForKey:@"entity"], @"entity",
+                                   [self.replyingTo valueForKey:@"id"], @"post", nil]];
+    
+    [self.replyingTo setValue:currentMentionList forKey:@"mentions"];
+    
     [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [entity substringFromIndex:8] , postId]];
     
     // build the username for the entity we are replying too, not sure
@@ -290,7 +307,10 @@
     {
         for (NSDictionary *mention in mentionListArray)
         {
-            mentionList = [NSString stringWithFormat:@"^%@ %@", [mention valueForKey:@"entity"], mentionList];
+            // don't include our own name in the reply list, that's already in the mention list, no need to include it in
+            // the text of the post as well
+            if (![[mention valueForKey:@"entity"] isEqualToString:[self getShortUsernameFromEntityURL:self.cocoaTentApp.tentEntity]])
+                mentionList = [NSString stringWithFormat:@"^%@ %@", [mention valueForKey:@"entity"], mentionList];
         }
         
 
@@ -298,13 +318,14 @@
     [self.statusTextValue setStringValue:[NSString stringWithFormat:@"^%@ %@", username, mentionList]];
     [self.statusTextValue becomeFirstResponder];
     [[self.statusTextValue currentEditor] setSelectedRange:NSMakeRange([[self.statusTextValue stringValue] length], 0)];
+    [mentionListArray removeAllObjects];
     
     [mentionListArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                 entity, @"entity",
                                 postId, @"post", nil]];
     
     self.mentionList = mentionListArray;
-
+     
 
 }
 
@@ -427,6 +448,7 @@
             tld.content = content;
             tld.client = client;
             tld.post_id = [post valueForKey:@"id"];
+            tld.fullPost = post;
             
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
@@ -509,6 +531,16 @@
     
     [unc scheduleNotification:notificationMessage];
     
+}
+
+#pragma mark -
+#pragma mark Utilities
+
+- (NSString *) getShortUsernameFromEntityURL:(NSString *)entityURL
+{
+    NSString *part1 = [[entityURL componentsSeparatedByString:@"."] objectAtIndex:0];
+    
+    return [part1 substringFromIndex:8];
 }
 
 @end

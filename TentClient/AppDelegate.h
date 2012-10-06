@@ -21,8 +21,8 @@
 @property (strong) NSTimer *timelineDataRefreshTimer;
 
 @property (strong) NSArray *mentionList;
-@property (strong) NSString *replyingTo;
-@property (strong) NSString *replyingToPostId;
+@property (strong) NSDictionary *replyingTo;
+
 
 @property (strong) id testing;
 
@@ -48,6 +48,7 @@
 @property (weak) IBOutlet NSButton *saveButton;
 @property (weak) IBOutlet NSArrayController *timelineArrayController;
 @property (unsafe_unretained) IBOutlet NSCollectionViewItem *timelineCollectionViewItem;
+
 
 @property (weak) IBOutlet NSTextField *charsLeft;
 

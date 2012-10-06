@@ -370,7 +370,6 @@
  */
 - (NSArray *) findMentionsInPostContent:(NSString *)content
 {
-    NSLog(@"content %@", content);
     NSMutableArray *explodedOnTent = [[content componentsSeparatedByString:@"^"] mutableCopy];
 
     NSMutableArray *mentionList = [NSMutableArray arrayWithCapacity:0];
@@ -382,12 +381,10 @@
     // simply the content itself because there won't be a ^ in it to
     // explode on
     [explodedOnTent removeObjectAtIndex:0];
-    NSLog(@"exploded %@", explodedOnTent);
     for (NSString *line in explodedOnTent)
     {
         if ([line isEqualToString:@""])
         {
-            NSLog(@"skipping");
             continue;
         }
         
