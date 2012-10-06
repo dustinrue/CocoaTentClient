@@ -451,7 +451,7 @@
     //NSString *path = [NSString stringWithFormat:@"posts?since_time=%@", self.lastPostTimeStamp];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"returned with %ld new results", [JSON count]);
+        NSLog(@"returned with %d new results", [JSON count]);
         if ([JSON count] > 0)
         {
             //NSLog(@"finished getting posts, sending %@", JSON);
@@ -489,7 +489,7 @@
 
 - (void) reachabilityStatusHasChanged:(AFNetworkReachabilityStatus) status
 {
-    NSLog(@"reachability changed with %i", status);
+    NSLog(@"reachability changed with %@", status);
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
