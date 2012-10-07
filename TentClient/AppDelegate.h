@@ -35,7 +35,9 @@
 - (IBAction)newPost:(id)sender;
 - (IBAction)doReply:(id)sender;
 - (IBAction)doRepost:(id)sender;
+- (IBAction)cancelReply:(id)sender;
 
+@property (weak) IBOutlet NSButton *cancelReplyButton;
 @property (weak) IBOutlet NSTextField *followEntityValue;
 @property (weak) IBOutlet NSTextField *statusTextValue;
 @property (weak) IBOutlet NSScrollView *timelineScrollView;

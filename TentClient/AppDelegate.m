@@ -122,7 +122,12 @@
     [self.cocoaTentApp addObserver:self forKeyPath:@"access_token" options:NSKeyValueObservingOptionNew context:nil];
     [self.cocoaTentApp addObserver:self forKeyPath:@"tentEntity" options:NSKeyValueObservingOptionNew context:nil];
     
-
+    [self addObserver:self forKeyPath:@"replyingTo" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"mentionList" options:NSKeyValueObservingOptionNew context:nil];
+    
+    self.replyingTo = nil;
+    self.mentionList = nil;
+    
     [self.statusTextValue setDelegate:self];
     
     if (self.cocoaTentApp.tentEntity)
@@ -226,11 +231,43 @@
     
     CocoaTentStatus *post = [[CocoaTentStatus alloc] init];
     
-
+    NSMutableArray *moreMentionsFromText = [NSMutableArray arrayWithCapacity:0];
     NSMutableArray *postMentions = [NSMutableArray arrayWithCapacity:0];
     
-    if (self.replyingTo)
-        [postMentions addObjectsFromArray:[self.replyingTo valueForKey:@"mentions"]];
+    if (self.mentionList)
+        [postMentions addObjectsFromArray:self.mentionList];
+    
+    /**
+     The following routine is going to scan the content of the post to see if anyone was mentioned
+     and create the mention list accordingly.  It will preserve mentions that were created
+     by repost and reply while adding anyone new that was mentioned as a normal mention 
+     */
+    // see if there is anyone else mentioned in the post
+    moreMentionsFromText = [[self.cocoaTent findMentionsInPostContent:[self.statusTextValue stringValue]] mutableCopy];
+    
+    NSMutableArray *mentionsToThrowAway = [NSMutableArray arrayWithCapacity:0];
+
+    
+    for (NSDictionary *username in moreMentionsFromText)
+    {
+        NSString *usernameExpanded = [self expandShortUsername:[username valueForKey:@"entity"]];
+        for (NSDictionary *mention in postMentions)
+        {
+            if ([[mention valueForKey:@"entity"] isEqualToString:usernameExpanded])
+                [mentionsToThrowAway addObject:username];
+        }
+    }
+    
+    [moreMentionsFromText removeObjectsInArray:mentionsToThrowAway];
+    
+    if ([moreMentionsFromText count] > 0)
+    {
+        for (NSDictionary *mention in moreMentionsFromText)
+            [postMentions addObject:[NSDictionary dictionaryWithObject:[self expandShortUsername:[mention valueForKey:@"entity"]] forKey:@"entity"]];
+    }
+    /**
+     and so ends the mention list building routine
+     */
     
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     NSDictionary *app = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -244,6 +281,7 @@
     [post setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
     [post setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
     
+    
     // check the post content for mentions and build a mention set if needed
     
     if (postMentions)
@@ -252,13 +290,16 @@
     }
     
     
+    // clear out the mentionList and replyingTo properties
+    self.mentionList = nil;
+    self.replyingTo = nil;
+    //NSLog(@"post %@", [post dictionary]);
     [self.cocoaTent newPost:post];
     
     [self.statusMessage setStringValue:@"posted new status"];
     [self.statusTextValue setStringValue:@""];
     [self.charsLeft setStringValue:@"256"];
-    self.mentionList = nil;
-    self.replyingTo = nil;
+
 }
 
 - (IBAction)doReply:(id)sender
@@ -266,58 +307,43 @@
 
     // I'm cheating really badly here because I don't want implement
     // the NSControllerView properly.  I'd be delighted if someone did though 
-    NSView *theViewThisButtonIsOn = [sender superview];
+    
     NSString *postId = nil;
     NSString *entity = nil;
-    NSString *content = nil;
     NSMutableArray *mentionListArray = nil;
     NSString *mentionList = @"";
     
+    NSDictionary *fullPost = nil;
     
-    // search for the values we need to do a reply
-    for (NSTextField *item in theViewThisButtonIsOn.subviews)
-    {
-        if ([[item identifier] isEqualToString:@"post_id"])
-            postId = [item stringValue];
-        
-        if ([[item identifier] isEqualToString:@"entity"])
-            entity = [item stringValue];
-        
-        if ([[item identifier] isEqualToString:@"content"])
-            content = [item stringValue];
-    }
+    fullPost = [self findPostInTimelineBasedOnSendingButton:sender];
     
-    // manually find the post being replied to in the timeline view
-    // this seriously is not the right way to do this
+    NSLog(@"fullPost %@", fullPost);
     
-    NSArray *timelineData = [self.timelineArrayController arrangedObjects];
     
-    for (NSDictionary *post in self.timelineData)
-    {
-        if ([[[post valueForKey:@"entity"] string] isEqualToString:entity] && [[post valueForKey:@"post_id"] isEqualToString:postId])
-        {
-            NSDictionary *thePostWeFound = [[timelineData objectAtIndex:[self.timelineData indexOfObject:post]] valueForKey:@"fullPost"];
-            self.replyingTo =  [thePostWeFound mutableCopy];
-        }
-    }
+    // we have the full, original post, lets pull anything that was mentioned
+    // in it and store it for our reply, this keeps any conversations linked
+    // properly
     
-    NSMutableArray *currentMentionList = [[self.replyingTo valueForKey:@"mentions"] mutableCopy];
+    NSMutableArray *currentMentionList = [[fullPost valueForKey:@"mentions"] mutableCopy];
     
+    // now we need to add this post to the list
     [currentMentionList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                   [self.replyingTo valueForKey:@"entity"], @"entity",
-                                   [self.replyingTo valueForKey:@"id"], @"post", nil]];
+                                   [fullPost valueForKey:@"entity"], @"entity",
+                                   [fullPost valueForKey:@"id"], @"post", nil]];
     
-    [self.replyingTo setValue:currentMentionList forKey:@"mentions"];
-    
-    [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [entity substringFromIndex:8] , postId]];
+    // set a helpful status message alerting the user of what postID we're reposting and for what entity
+    [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [[fullPost valueForKey:@"entity"] substringFromIndex:8] , [fullPost valueForKey:@"id"]]];
     
     // build the username for the entity we are replying too, not sure
     // what the proper way to do this is, but this seems to be the
     // "normal" format on tent.is
-    NSArray *explodedOnPeriod = [entity componentsSeparatedByString:@"."];
+    NSArray *explodedOnPeriod = [[fullPost valueForKey:@"entity"] componentsSeparatedByString:@"."];
     NSString *username = [[explodedOnPeriod objectAtIndex:0] substringFromIndex:8];
     
-    mentionListArray = [[self.cocoaTent findMentionsInPostContent:content] mutableCopy];
+    
+    // this could now be build based off of the mentions array we pulled from
+    // but I wrote this first and it works
+    mentionListArray = [[self.cocoaTent findMentionsInPostContent:[fullPost valueForKeyPath:@"content.text"]] mutableCopy];
     
     if ([mentionListArray count] > 0)
     {
@@ -340,19 +366,26 @@
                                 entity, @"entity",
                                 postId, @"post", nil]];
     
-    self.mentionList = mentionListArray;
+    self.mentionList = currentMentionList;
      
 
 }
 
+/**
+ Builds a repost request
+ */
 - (IBAction)doRepost:(id)sender
 {
-    // I'm cheating really badly here because I don't want implement
-    // the NSControllerView properly.  I'd be delighted if someone did though 
-    NSView *theViewThisButtonIsOn = [sender superview];
+    // the post id of the post being reposted
     NSString *postId = nil;
-    NSString *entity = nil;
+    
+    // if the repost carries mention data, include that with the repost
     NSArray *repostMentionData = nil;
+    
+    // the full post as found by
+    NSDictionary *fullPost = nil;
+    
+    
     
     CocoaTentRepost *repost = [[CocoaTentRepost alloc] init];
     
@@ -363,40 +396,37 @@
     [repost setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
     [repost setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
  
-    // search for the values we need to do a reply
-    for (NSTextField *item in theViewThisButtonIsOn.subviews)
-    {
-        if ([[item identifier] isEqualToString:@"post_id"])
-            postId = [item stringValue];
-        
-        if ([[item identifier] isEqualToString:@"entity"])
-            entity = [item stringValue];
-    }
     
-    NSLog(@"found post_id %@ for entity %@", postId, entity);
+    // find the information of the post being reposted
+    fullPost = [self findPostInTimelineBasedOnSendingButton:sender];
+    NSLog(@"fullPost %@", fullPost);
     
-    // we should have the post_id and entity from the form, now we search
-    // the timeline for matching data
-    NSArray *timelineData = [self.timelineArrayController arrangedObjects];
-    
-    for (NSDictionary *post in self.timelineData)
-    {
-        if ([[[post valueForKey:@"entity"] string] isEqualToString:entity] && [[post valueForKey:@"post_id"] isEqualToString:postId])
-        {
-            NSDictionary *thePostWeFound = [[timelineData objectAtIndex:[self.timelineData indexOfObject:post]] valueForKey:@"fullPost"];
-            repostMentionData =  [thePostWeFound mutableCopy];
-        }
-    }
-    
-    
-    [self.statusMessage setStringValue:[NSString stringWithFormat:@"reposting %@ - %@", [entity substringFromIndex:8] , postId]];
+    // store the entity and postId so we can put that into the content
+    // of this repost
+    repost.repostedEntity = [fullPost valueForKey:@"entity"];
+    repost.repostedPostId = [fullPost valueForKey:@"id"];
+    NSLog(@"postId %@", postId);
+    repostMentionData = [fullPost valueForKey:@"mentions"];
     
     NSLog(@"mention data %@", repostMentionData);
-    repost.repostedEntity = [repostMentionData valueForKey:@"entity"];
-    repost.repostedPostId = [repostMentionData valueForKey:@"id"];
+    [self.statusMessage setStringValue:[NSString stringWithFormat:@"reposting %@ - %@", [repost.repostedEntity substringFromIndex:8] , postId]];
+    
+    
+    NSLog(@"mention data %@", repostMentionData);
+    
+    if (repostMentionData)
+        repost.mentions = repostMentionData;
+    
 
-    NSLog(@"repost data %@", [repost dictionary]);
-    //[self.cocoaTent newPost:repost];
+
+    //NSLog(@"repost data %@", [repost dictionary]);
+    [self.cocoaTent newPost:repost];
+}
+
+- (IBAction)cancelReply:(id)sender {
+    [self.statusTextValue setStringValue:@""];
+    self.replyingTo = nil;
+    self.mentionList = nil;
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
@@ -427,7 +457,8 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     //NSLog(@"got updated data for %@, key: %@; value: %@", [object class], keyPath, change);
-    if ([object class] == [self.cocoaTentApp class]) {
+    if ([object class] == [self.cocoaTentApp class])
+    {
         [[NSUserDefaults standardUserDefaults] setValue:[change valueForKey:@"new"] forKey:keyPath];
         //NSLog(@"saved %@ for %@", [change valueForKey:@"new"], keyPath);
         
@@ -437,6 +468,19 @@
         
         if ([keyPath isEqualToString:@"access_token"])
             [self start];
+    }
+    
+
+    if (object == self)
+    {
+
+        if ([keyPath isEqualToString:@"replyingTo"])
+        {
+            if ([change objectForKey:@"new"] != [NSNull null])
+                [self.cancelReplyButton setEnabled:YES];
+            else
+                [self.cancelReplyButton setEnabled:NO];
+        }
     }
 }
 
@@ -553,6 +597,9 @@
     //NSLog(@"note %@", notification);
     // cheat a bit, just assume it is the right text field :)
     [self.charsLeft setStringValue:[NSString stringWithFormat:@"%ld",256 - [[self.statusTextValue stringValue] length]]];
+    
+    if ([[self.statusTextValue stringValue] length] < 1)
+        [self cancelReply:nil];
 }
 #pragma mark -
 #pragma mark timeline collection view
@@ -592,6 +639,72 @@
     NSArray *part1 = [postType componentsSeparatedByString:@"/"];
     
     return [part1 objectAtIndex:5];
+}
+
+- (NSString *) expandShortUsername:(NSString *) username
+{
+    return [NSString stringWithFormat:@"https://%@.tent.is", username];
+}
+
+- (NSDictionary *) findPostInTimelineBasedOnSendingButton:(id) sendingButton
+{
+    // I'm cheating really badly here because I don't want implement
+    // the NSControllerView properly.  I'd be delighted if someone did though
+    NSView *theViewThisButtonIsOn = [sendingButton superview];
+    
+    NSString *postId = nil;
+    NSString *entity = nil;
+    NSString *content = nil;
+    
+    
+    NSLog(@"sub views %@", theViewThisButtonIsOn.subviews);
+    
+    // everything I want is inside of an NSBox, it'll be the first object
+    NSBox *theBox = [theViewThisButtonIsOn.subviews objectAtIndex:0];
+    
+    // search for the values we need to do a reply
+    // in this case, I know that the items I want to pull the info from
+    // are on a subview of "theBox" at index 1
+    for (id item in [[theBox.subviews objectAtIndex:1] subviews])
+    {
+        // there are elements on the view that aren't nstextfields,
+        // skip those
+        if ([item class] != [NSTextField class])
+            continue;
+        
+        if ([[item identifier] isEqualToString:@"post_id"])
+        {
+            postId = [item stringValue];
+        }
+        
+        if ([[item identifier] isEqualToString:@"entity"])
+        {
+            entity = [item stringValue];
+        }
+        
+        if ([[item identifier] isEqualToString:@"content"])
+        {
+            content = [item stringValue];
+        }
+    }
+    
+    NSLog(@"found entity - %@ %@", entity, postId);
+    
+    
+    // manually find the post being replied to in the timeline view
+    // this seriously is not the right way to do this
+    NSArray *timelineData = [self.timelineArrayController arrangedObjects];
+    NSDictionary *thePostWeFound = nil;
+    for (NSDictionary *post in self.timelineData)
+    {
+        if ([[[post valueForKey:@"entity"] string] isEqualToString:entity] && [[post valueForKey:@"post_id"] isEqualToString:postId])
+        {
+            thePostWeFound = [[timelineData objectAtIndex:[self.timelineData indexOfObject:post]] valueForKey:@"fullPost"];
+            
+        }
+    }
+    
+    return thePostWeFound;
 }
 
 @end
