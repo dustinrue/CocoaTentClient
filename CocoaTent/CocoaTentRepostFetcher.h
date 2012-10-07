@@ -35,8 +35,9 @@
 
 #import <Foundation/Foundation.h>
 #import "CocoaTent.h"
-
+#import "CocoaTentPostTypes.h"
 @class CocoaTentCommunication;
+
 
 @interface CocoaTentRepostFetcher : NSObject <CocoaTentDelegate>
 

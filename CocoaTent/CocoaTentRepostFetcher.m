@@ -66,6 +66,7 @@
 
 - (void) didReceiveRepostData:(NSDictionary *)repostData
 {
+    NSLog(@"got repost data %@", repostData);
     // update the already in place view with the repost data
     [self.post setContent:[repostData valueForKeyPath:@"content.text"]];
 }

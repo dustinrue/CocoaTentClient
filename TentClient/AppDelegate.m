@@ -257,6 +257,8 @@
     [self.statusMessage setStringValue:@"posted new status"];
     [self.statusTextValue setStringValue:@""];
     [self.charsLeft setStringValue:@"256"];
+    self.mentionList = nil;
+    self.replyingTo = nil;
 }
 
 - (IBAction)doReply:(id)sender
@@ -371,6 +373,10 @@
             entity = [item stringValue];
     }
     
+    NSLog(@"found post_id %@ for entity %@", postId, entity);
+    
+    // we should have the post_id and entity from the form, now we search
+    // the timeline for matching data
     NSArray *timelineData = [self.timelineArrayController arrangedObjects];
     
     for (NSDictionary *post in self.timelineData)
@@ -382,10 +388,6 @@
         }
     }
     
-    /*
-
-     */
-    
     
     [self.statusMessage setStringValue:[NSString stringWithFormat:@"reposting %@ - %@", [entity substringFromIndex:8] , postId]];
     
@@ -394,7 +396,7 @@
     repost.repostedPostId = [repostMentionData valueForKey:@"id"];
 
     NSLog(@"repost data %@", [repost dictionary]);
-    [self.cocoaTent newPost:repost];
+    //[self.cocoaTent newPost:repost];
 }
 
 - (void) receivedProfileData:(NSNotification *) notification

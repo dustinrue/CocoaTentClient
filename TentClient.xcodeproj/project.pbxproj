@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA1368821620EE1700D754B0 /* NSScrollViewScrollKiller.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1368811620EE1700D754B0 /* NSScrollViewScrollKiller.m */; };
 		DA2134D7161BAF6600733F82 /* CocoaTentMention.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134D6161BAF6600733F82 /* CocoaTentMention.m */; };
 		DA2134DB161BB23C00733F82 /* CocoaTentEssay.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134DA161BB23C00733F82 /* CocoaTentEssay.m */; };
 		DA2134DE161BB8AB00733F82 /* CocoaTentPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2134DD161BB8AB00733F82 /* CocoaTentPhoto.m */; };
@@ -66,6 +67,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DA1368801620EE1700D754B0 /* NSScrollViewScrollKiller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScrollViewScrollKiller.h; sourceTree = "<group>"; };
+		DA1368811620EE1700D754B0 /* NSScrollViewScrollKiller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScrollViewScrollKiller.m; sourceTree = "<group>"; };
 		DA2134D5161BAF6600733F82 /* CocoaTentMention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentMention.h; path = CocoaTent/CocoaTentMention.h; sourceTree = "<group>"; };
 		DA2134D6161BAF6600733F82 /* CocoaTentMention.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentMention.m; path = CocoaTent/CocoaTentMention.m; sourceTree = "<group>"; };
 		DA2134D9161BB23C00733F82 /* CocoaTentEssay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentEssay.h; path = CocoaTent/CocoaTentEssay.h; sourceTree = "<group>"; };
@@ -238,6 +241,8 @@
 				DA511CF5160F716D00A814D7 /* Supporting Files */,
 				DA6BC4FF161A89D00044CF5D /* TimelineData.h */,
 				DA6BC500161A89D00044CF5D /* TimelineData.m */,
+				DA1368801620EE1700D754B0 /* NSScrollViewScrollKiller.h */,
+				DA1368811620EE1700D754B0 /* NSScrollViewScrollKiller.m */,
 			);
 			path = TentClient;
 			sourceTree = "<group>";
@@ -439,6 +444,7 @@
 				DA936F12161E734B00DF2016 /* CocoaTentCoreProfile.m in Sources */,
 				DA936F16161E74C300DF2016 /* CocoaTentBasicProfile.m in Sources */,
 				DADFBE73161F14CA00946C10 /* CocoaTentRepostFetcher.m in Sources */,
+				DA1368821620EE1700D754B0 /* NSScrollViewScrollKiller.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
