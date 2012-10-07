@@ -474,7 +474,7 @@
     if (object == self)
     {
 
-        if ([keyPath isEqualToString:@"replyingTo"])
+        if ([keyPath isEqualToString:@"mentionList"])
         {
             if ([change objectForKey:@"new"] != [NSNull null])
                 [self.cancelReplyButton setEnabled:YES];
