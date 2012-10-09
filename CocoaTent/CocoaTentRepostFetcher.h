@@ -36,13 +36,16 @@
 #import <Foundation/Foundation.h>
 #import "CocoaTent.h"
 #import "CocoaTentPostTypes.h"
+
 @class CocoaTentCommunication;
+@class CocoaTentEntity;
 
 
 @interface CocoaTentRepostFetcher : NSObject <CocoaTentDelegate>
 
 @property (strong) CocoaTent *cocoaTent;
 @property (strong) CocoaTentApp *cocoaTentApp;
+@property (strong) CocoaTentEntity *tentEntity;
 @property (strong) CocoaTentCommunication *cocoaTentCommunication;
 
 @property (strong) NSString *post_id;

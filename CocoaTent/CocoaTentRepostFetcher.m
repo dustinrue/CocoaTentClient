@@ -9,7 +9,8 @@
 #import "CocoaTentRepostFetcher.h"
 #import "CocoaTent.h"
 #import "CocoaTentCommunication.h"
-#import "CocoaTentApp.h"
+#import "CocoaTentEntity.h"
+#import "CocoaTentCoreProfile.h"
 #import "AFJSONRequestOperation.h"
 
 /*
@@ -47,11 +48,15 @@
     self.post = post;
     self.post_id = post_id;
     
-    self.cocoaTentApp = [[CocoaTentApp alloc] init];
+    CocoaTentCoreProfile *coreProfile = [[CocoaTentCoreProfile alloc] init];
     
-    self.cocoaTentApp.tentEntity = entity;
+    coreProfile.entity = entity;
+    
+    self.tentEntity = [[CocoaTentEntity alloc] init];
+    
+    self.tentEntity.core = coreProfile;
 
-    self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
+    self.cocoaTent = [[CocoaTent alloc] initWithEntity:self.tentEntity];
     
     [self.cocoaTent setDelegate:self];
     
@@ -60,7 +65,7 @@
 
 - (void) cocoaTentIsReady
 {
-    NSLog(@"cocoaTent is ready in %@ going to %@", [self class], self.cocoaTentApp.tentEntity);
+    NSLog(@"cocoaTent is ready in %@ going to %@", [self class], [self.tentEntity.core valueForKey:@"entity"]);
     [self.cocoaTent getPostWithId:self.post_id];
 }
 
