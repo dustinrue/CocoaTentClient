@@ -94,19 +94,8 @@
     
 	[[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     
+    // create an object that represents us
     self.cocoaTentApp = [[CocoaTentApp alloc] init];
-    
-    // get a core profile object
-    CocoaTentCoreProfile *coreProfile = [[CocoaTentCoreProfile alloc] init];
-    
-    // set the entity URL property
-    coreProfile.entity = [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntity"];
-    
-    // get an entity object
-    self.cocoaTentEntity = [[CocoaTentEntity alloc] init];
-    
-    // set the core propertly to the coreProfile object;
-    self.cocoaTentEntity.core = coreProfile;
     
     // some of this data should be stored in KeyChain and NOT in a plain text file
     [self.cocoaTentApp setName:[[NSUserDefaults standardUserDefaults] valueForKey:@"name"]];
@@ -165,16 +154,35 @@
         [alert runModal];
         return;
     }
-
-    if (self.cocoaTentApp.access_token)
-        [self.registerAppButton setEnabled:NO];
     
-    [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
-    [self.saveButton setEnabled:NO];
-    [self.tentEntityURLTextField setEnabled:NO];
+    
+
+    
+    /**
+     This routine will create a core profile object that we can pass to
+     a Cocoa Tent object so it can begin the discover process.  The discover
+     process will get the rest of our profile information automatically.
+     
+     This demonstrates that the tent entity URL is the smallest amount of
+     information we need to interact with a tent server.  To make authorized
+     requests we must also store mac_key, mac_key_id and access_token to
+     some persistent store.
+     */
+    CocoaTentCoreProfile *coreProfile = [[CocoaTentCoreProfile alloc] init];
+    
+    // set the entity URL property
+    coreProfile.entity = self.cocoaTentApp.tentEntity;
+    
+    // get an entity object
+    self.cocoaTentEntity = [[CocoaTentEntity alloc] init];
+    
+    // set the core property to the coreProfile object;
+    self.cocoaTentEntity.core = coreProfile;
+
 
     self.cocoaTent = [[CocoaTent alloc] initWithEntity:self.cocoaTentEntity];
-
+    
+    self.cocoaTent.cocoaTentApp = self.cocoaTentApp;
     [self.cocoaTent setDelegate:self];
     [self.statusMessage setStringValue:@"discovering API root"];
     [self.cocoaTent discover];
@@ -579,8 +587,16 @@
     else
     {
         
+        // Our CocoaTent object reports that it is ready, we now tell it about ourself
+        // so that it is aware of our authorization data
         
-        //[self.cocoaTent pushProfileInfo:cp];
+        if (self.cocoaTentApp.access_token)
+            [self.registerAppButton setEnabled:NO];
+        
+        [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
+        [self.saveButton setEnabled:NO];
+        [self.tentEntityURLTextField setEnabled:NO];
+
         [self.cocoaTent getUserProfile];
         [self getPosts:nil];
     }

@@ -162,7 +162,6 @@
     
     // on app startup, we use the user's Tent Entity URL and then discover
     // there their API root is, we'll switch to that later
-    NSLog(@"thing %@", self.entity);
     NSDictionary *coreProfile = [self.entity.core dictionary];
     NSURL *tentEntityUrl = [NSURL URLWithString:[coreProfile valueForKeyPath:@"entity"]];
     
@@ -217,7 +216,6 @@
         self.entity.basic = basicProfile;
         self.entity.core = coreProfile;
     
-        NSLog(@"entity looks like %@", [self.entity dictionary]);
         if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo)])
             [self.delegate didReceiveBasicInfo];
         
@@ -329,6 +327,7 @@
 #pragma mark -
 #pragma mark User Profile
 - (void) getUserProfile {
+    NSLog(@"I know this %@", self.cocoaTentApp.mac_key);
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:@"profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"didReceiveProfileData" object:nil userInfo:JSON];
         ;
