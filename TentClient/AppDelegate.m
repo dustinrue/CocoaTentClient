@@ -159,9 +159,9 @@
 
     
     /**
-     This routine will create a core profile object that we can pass to
-     a Cocoa Tent object so it can begin the discover process.  The discover
-     process will get the rest of our profile information automatically.
+     This routine will create a entity object consisting of just the core profile
+     that we can pass to a Cocoa Tent object so it can begin the discover process.  
+     The discover process will get the rest of our profile information automatically.
      
      This demonstrates that the tent entity URL is the smallest amount of
      information we need to interact with a tent server.  To make authorized
@@ -182,6 +182,9 @@
 
     self.cocoaTent = [[CocoaTent alloc] initWithEntity:self.cocoaTentEntity];
     
+    // as mentioned above, to make authorized requests we need to tell cocoatent what our
+    // authorization parameters are.  We do this with a Cocoa Tent App object which in this case
+    // was populated via our NSUserDefaults plist file.
     self.cocoaTent.cocoaTentApp = self.cocoaTentApp;
     [self.cocoaTent setDelegate:self];
     [self.statusMessage setStringValue:@"discovering API root"];
