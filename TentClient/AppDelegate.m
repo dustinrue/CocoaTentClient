@@ -14,6 +14,7 @@
 #import <AutoHyperlinks/AutoHyperlinks.h>
 #import "NSString+hmac_sha_256.h"
 #import "CocoaTentCoreProfile.h"
+#import "CocoaTentEntity.h"
 #import "CocoaTentPostTypes.h"
 
 @implementation AppDelegate
@@ -95,7 +96,17 @@
     
     self.cocoaTentApp = [[CocoaTentApp alloc] init];
     
-
+    // get a core profile object
+    CocoaTentCoreProfile *coreProfile = [[CocoaTentCoreProfile alloc] init];
+    
+    // set the entity URL property
+    coreProfile.entity = [[NSUserDefaults standardUserDefaults] valueForKey:@"tentEntity"];
+    
+    // get an entity object
+    self.cocoaTentEntity = [[CocoaTentEntity alloc] init];
+    
+    // set the core propertly to the coreProfile object;
+    self.cocoaTentEntity.core = coreProfile;
     
     // some of this data should be stored in KeyChain and NOT in a plain text file
     [self.cocoaTentApp setName:[[NSUserDefaults standardUserDefaults] valueForKey:@"name"]];
@@ -162,7 +173,7 @@
     [self.saveButton setEnabled:NO];
     [self.tentEntityURLTextField setEnabled:NO];
 
-    self.cocoaTent = [[CocoaTent alloc] initWithApp:self.cocoaTentApp];
+    self.cocoaTent = [[CocoaTent alloc] initWithEntity:self.cocoaTentEntity];
 
     [self.cocoaTent setDelegate:self];
     [self.statusMessage setStringValue:@"discovering API root"];
@@ -535,6 +546,7 @@
             tld.client = client;
             tld.post_id = [post valueForKey:@"id"];
             tld.fullPost = post;
+            tld.avatar = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:@"http://dr49qsqhb5y4j.cloudfront.net/default1.png"]];
             
             if ([[post valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
                 NSLog(@"a post from me of type %@", [post valueForKey:@"type"]);

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kCocoaTentBasicProfile @"https://tent.io/types/info/basic/v0.1.0"
+
 @interface CocoaTentBasicProfile : NSObject
 
 @property (strong) NSString *name;
@@ -16,7 +18,9 @@
 @property (strong) NSString *location;
 @property (strong) NSString *gender;
 @property (strong) NSString *bio;
+@property (strong) NSArray  *permissions;
 
+- (id) initWithDictionary:(NSDictionary *) dictionary;
 + (NSString *) profileType;
 - (NSString *) profileType;
 - (NSMutableDictionary *) dictionary;

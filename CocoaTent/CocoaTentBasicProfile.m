@@ -7,8 +7,36 @@
 //
 
 #import "CocoaTentBasicProfile.h"
+#import "CocoaTentEntityPermission.h"
 
 @implementation CocoaTentBasicProfile
+
+- (id) initWithDictionary:(NSDictionary *) dictionary
+{
+    self = [super init];
+    
+    if (!self)
+        return self;
+    
+    NSArray *allKeys = [dictionary allKeys];
+    
+    for (NSString *key in allKeys)
+    {
+        // permissions property is an array of Cocoa Tent Permissions
+        if ([key isEqualToString:@"permissions"])
+        {
+            NSMutableArray *permArray = [NSMutableArray arrayWithCapacity:0];
+            for (NSString *permKey in [dictionary valueForKey:key])
+                [permArray addObject:[[CocoaTentEntityPermission alloc] initWithDictionary:[dictionary valueForKey:key]]];
+                 
+            [self setValue:permArray forKey:key];
+        }
+        else
+            [self setValue:[dictionary valueForKey:key] forKey:key];
+    }
+    
+    return self;
+}
 
 + (NSString *) profileType
 {
@@ -23,6 +51,7 @@
 - (NSMutableDictionary *) dictionary
 {
     NSMutableDictionary *dictionaryOfPropertyValues = [NSMutableDictionary dictionary];
+
     
     if (self.name)
         [dictionaryOfPropertyValues setValue:self.name forKey:@"name"];
@@ -41,6 +70,18 @@
     
     if (self.bio)
         [dictionaryOfPropertyValues setValue:self.bio forKey:@"bio"];
+    
+    if (self.permissions)
+    {
+        NSMutableArray *perms = [NSMutableArray arrayWithCapacity:0];
+        for (CocoaTentEntityPermission *perm in self.permissions)
+        {
+            [perms addObject:[perm dictionary]];
+        }
+    
+        [dictionaryOfPropertyValues setValue:perms forKey:@"permissions"];
+    }
+    
     
     return dictionaryOfPropertyValues;
 }

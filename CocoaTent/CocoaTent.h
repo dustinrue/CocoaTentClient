@@ -35,6 +35,7 @@
 @class CocoaTentApp;
 @class CocoaTentCommunication;
 @class CocoaTentPost;
+@class CocoaTentEntity;
 
 // use a delegate system to alert the app of changes, would it be
 // better to use blocks here?
@@ -72,6 +73,7 @@
 @interface CocoaTent : NSObject
 
 @property (strong) CocoaTentApp *cocoaTentApp;
+@property (strong) CocoaTentEntity *entity;
 @property (strong) CocoaTentCommunication *cocoaTentCommunication;
 
 // together, the following two properties define the last, unique
@@ -89,6 +91,9 @@
 // and pass it in as you create a CocoaTent object.  
 - (id) initWithApp:(CocoaTentApp *) cocoaTentApp;
 
+// When talking to someone elses tent server (getting reposts, profile, etc)
+// use initWithEntity
+- (id) initWithEntity:(CocoaTentEntity *) entity;
 
 /*
  *

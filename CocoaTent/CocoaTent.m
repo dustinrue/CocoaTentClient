@@ -44,8 +44,9 @@
 #import "NSArray+Reverse.h"
 
 #import "CocoaTentProfile.h"
-#import "CocoaTentCoreProfile.h"
+#import "CocoaTentEntity.h"
 #import "CocoaTentBasicProfile.h"
+#import "CocoaTentCoreProfile.h"
 #import "CocoaTentRepostFetcher.h"
 #import "CocoaTentPostTypes.h"
 
@@ -67,7 +68,8 @@
 
 @implementation CocoaTent
 
-- (id) initWithApp:(CocoaTentApp *) cocoaTentApp {
+- (id) initWithApp:(CocoaTentApp *) cocoaTentApp
+{
     self = [super init];
     
     if (!self)
@@ -78,6 +80,20 @@
     
     [self registerForURLScheme];
 
+    return self;
+}
+
+- (id) initWithEntity:(CocoaTentEntity *) entity
+{
+    self = [super init];
+    
+    if (!self)
+        return self;
+    
+    self.entity = entity;
+    
+    [self registerForURLScheme];
+    
     return self;
 }
 
@@ -114,7 +130,6 @@
 
 - (void) switchToTentEntityServerAddress:(NSURL *)server
 {
-    //server = [NSURL URLWithString:@"https://controlplane.tent.is/tent"];
     NSLog(@"switching to %@", server);
     [self removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication];
     [self createCocoaTentCommunicationObjectWithBaseURL:server];
@@ -141,20 +156,21 @@
 #pragma mark -
 #pragma mark Discover
 /**
- After initWithApp, run this to discover the proper server address
+ After initWithEntity, run this to discover the proper server address
  */
 - (void) discover {
     
     // on app startup, we use the user's Tent Entity URL and then discover
     // there their API root is, we'll switch to that later
-    NSURL *tentEntityUrl = [NSURL URLWithString:self.cocoaTentApp.tentEntity];
+    NSLog(@"thing %@", self.entity);
+    NSDictionary *coreProfile = [self.entity.core dictionary];
+    NSURL *tentEntityUrl = [NSURL URLWithString:[coreProfile valueForKeyPath:@"entity"]];
     
     [self createCocoaTentCommunicationObjectWithBaseURL:tentEntityUrl];
     
 
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithoutLeadingSlash:@"" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        //NSLog(@"got %@", [[response allHeaderFields] valueForKey:@"Link"]);
         [self getEntityURL:[self parseAPIRootURL:[[response allHeaderFields] valueForKey:@"Link"]]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
@@ -181,12 +197,27 @@
     // AFJSONRequestOperation would appear to deal with this by magic and build the request
     // appropriately so this *will* build a proper request.
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:profileURL HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+
+        NSDictionary *basicDictionary = [JSON valueForKey:kCocoaTentBasicProfile];
+        NSDictionary *coreDictionary  = [JSON valueForKey:kCocoaTentCoreProfile];
+
+        CocoaTentBasicProfile *basicProfile;
+        CocoaTentCoreProfile  *coreProfile;
+        @try {
+            basicProfile = [[CocoaTentBasicProfile alloc] initWithDictionary:basicDictionary];
+            coreProfile  = [[CocoaTentCoreProfile alloc] initWithDictionary:coreDictionary];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"failed to get profile info for the entity, most likely because the tent server is not compliant with version 0.1.0");
+            @throw exception;
+        }
+
         
         // TODO: remove the hardcoded bits here
-        self.cocoaTentApp.basicInfo = [JSON valueForKey:@"https://tent.io/types/info/basic/v0.1.0"];
-        self.cocoaTentApp.coreInfo = [JSON valueForKey:@"https://tent.io/types/info/core/v0.1.0"];
+        self.entity.basic = basicProfile;
+        self.entity.core = coreProfile;
     
-        
+        NSLog(@"entity looks like %@", [self.entity dictionary]);
         if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo)])
             [self.delegate didReceiveBasicInfo];
         
@@ -194,7 +225,7 @@
             [self.delegate didReceiveCoreInfo];
         
         // TODO: deal with multiple servers
-        [self switchToTentEntityServerAddress:[NSURL URLWithString:[[self.cocoaTentApp.coreInfo valueForKey:@"servers"] objectAtIndex:0]]];
+        [self switchToTentEntityServerAddress:[NSURL URLWithString:[[self.entity.core valueForKey:@"servers"] objectAtIndex:0]]];
              
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSLog(@"failed to get something, \nrequest:\n%@\nreponse\n%@\nJSON\n%@ on URL: %@", [request allHTTPHeaderFields], [response allHeaderFields], JSON, [request URL]);
@@ -309,16 +340,28 @@
     [operation start];
 }
 
+
 - (void) pushProfileInfo:(id) profile
 {
-
-    if (![profile respondsToSelector:@selector(profileType)])
+ 
+    // we might receive a full tent entity object which consists of
+    // a Basic Profile and Core Profile.  We'll build as many requests as
+    // required here
+    
+    NSArray *allKeys = [[profile dictionary] allKeys];
+    
+    for (NSString *key in allKeys)
     {
-        NSLog(@"I can only accept a Core Profile or Basic Profile object");
+        NSLog(@"pushing profile for key %@\n%@", key, [profile valueForKey:key]);
+    }
+    /*
+    NSString *type = [[[profile dictionary] allKeys] objectAtIndex:0];
+    
+    if (![type isEqualToString:kCocoaTentBasicProfile] && ![type isEqualToString:kCocoaTentCoreProfile])
+    {
+        NSLog(@"You need to send me a basic or core profile object");
         return;
     }
-    
-    NSString *type = [[profile profileType] urlEncoded];
     
     NSString *path = [NSString stringWithFormat:@"%@/%@", @"profile", type];
     
@@ -329,6 +372,7 @@
     }];
     
     [operation start];
+     */
 }
 
 #pragma mark -
@@ -448,7 +492,6 @@
 - (void) getRecentPosts
 {
     NSString *path = [NSString stringWithFormat:@"posts?since_id=%@&since_id_entity=%@", self.lastPostId, [self.lastEntityId urlEncoded]];
-    //NSString *path = [NSString stringWithFormat:@"posts?since_time=%@", self.lastPostTimeStamp];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"returned with %ld new results", [JSON count]);

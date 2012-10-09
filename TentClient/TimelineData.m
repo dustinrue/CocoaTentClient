@@ -10,5 +10,15 @@
 
 @implementation TimelineData
 
-
+- (id) init
+{
+    self = [super init];
+    
+    if (!self)
+        return self;
+    
+    self.avatar = [[NSImage alloc] init];
+    
+    return self;
+}
 @end

@@ -17,11 +17,15 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (strong) CocoaTent *cocoaTent;
 @property (strong) CocoaTentApp *cocoaTentApp;
+@property (strong) CocoaTentEntity *cocoaTentEntity;
 @property (weak) NSMutableArray *timelineData;
 @property (strong) NSTimer *timelineDataRefreshTimer;
 
 @property (strong) NSArray *mentionList;
 @property (strong) NSDictionary *replyingTo;
+
+// will keep a list of entities keyed off of their entity URL
+@property (strong) NSMutableDictionary *knownEntities;
 
 
 @property (strong) id testing;

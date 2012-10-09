@@ -66,14 +66,13 @@
 
 - (void) didReceiveRepostData:(NSDictionary *)repostData
 {
-    NSLog(@"got repost data %@", repostData);
     // update the already in place view with the repost data
     [self.post setContent:[repostData valueForKeyPath:@"content.text"]];
 }
 
 - (void) communicationError:(NSError *)error
 {
-    [self.post setContent:[NSString stringWithFormat:@"Failed to get repost data %@", error]];
+    [self.post setContent:[NSString stringWithFormat:@"Failed to fetch repost data"]];
 }
 
 // implemented just to keep the compiler happy
@@ -90,5 +89,10 @@
 - (void) didSubmitNewPost
 {
     
+}
+
+- (void) didReceiveBasicInfo
+{
+
 }
 @end

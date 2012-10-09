@@ -14,6 +14,7 @@
 @property (strong) NSAttributedString *content;
 @property (strong) NSString *client;
 @property (strong) NSString *post_id;
+@property (strong) NSImage *avatar;
 
 @property (strong) id fullPost;
 
