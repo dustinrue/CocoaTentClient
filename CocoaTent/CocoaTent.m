@@ -275,7 +275,7 @@
                         self.cocoaTentCommunication.state,
                         [[self.cocoaTentApp.scopes allKeys] componentsJoinedByString:@","]];
     
-    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", [[self.cocoaTentApp.coreInfo valueForKey:@"servers"] objectAtIndex:0], @"oauth/authorize", params];
+    NSString *fullParams = [NSString stringWithFormat:@"%@/%@?%@", [[self.entity.core valueForKey:@"servers"] objectAtIndex:0], @"oauth/authorize", params];
     
     NSURL *url = [NSURL URLWithString:fullParams];
     
