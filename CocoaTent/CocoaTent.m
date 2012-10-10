@@ -216,11 +216,11 @@
         self.entity.basic = basicProfile;
         self.entity.core = coreProfile;
     
-        if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo)])
-            [self.delegate didReceiveBasicInfo];
+        if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo:)])
+            [self.delegate didReceiveBasicInfo:basicProfile];
         
-        if ([self.delegate respondsToSelector:@selector(didReceiveCoreInfo)])
-            [self.delegate didReceiveCoreInfo];
+        if ([self.delegate respondsToSelector:@selector(didReceiveCoreInfo:)])
+            [self.delegate didReceiveCoreInfo:coreProfile];
         
         // TODO: deal with multiple servers
         [self switchToTentEntityServerAddress:[NSURL URLWithString:[[self.entity.core valueForKey:@"servers"] objectAtIndex:0]]];
@@ -327,9 +327,13 @@
 #pragma mark -
 #pragma mark User Profile
 - (void) getUserProfile {
-    NSLog(@"I know this %@", self.cocoaTentApp.mac_key);
+    
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:@"profile" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"didReceiveProfileData" object:nil userInfo:JSON];
+        if ([self.delegate respondsToSelector:@selector(didReceiveBasicInfo:)])
+        {
+            [self.delegate didReceiveBasicInfo:[[CocoaTentBasicProfile alloc] initWithDictionary:[JSON valueForKey:kCocoaTentBasicProfile]]];
+        }
         ;
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];

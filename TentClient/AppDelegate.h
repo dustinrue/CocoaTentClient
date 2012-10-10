@@ -27,6 +27,9 @@
 // will keep a list of entities keyed off of their entity URL
 @property (strong) NSMutableDictionary *knownEntities;
 
+// keeps a list of items being retrieved
+@property (strong) NSMutableArray *retrievers;
+
 
 @property (strong) id testing;
 
@@ -59,6 +62,7 @@
 
 @property (weak) IBOutlet NSTextField *charsLeft;
 
+- (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(id) timelineObject;
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;
 

@@ -16,6 +16,7 @@
 #import "CocoaTentCoreProfile.h"
 #import "CocoaTentEntity.h"
 #import "CocoaTentPostTypes.h"
+#import "AvatarGrabber.h"
 
 @implementation AppDelegate
 
@@ -587,6 +588,8 @@
             tld.fullPost = post;
             tld.avatar = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:@"http://dr49qsqhb5y4j.cloudfront.net/default1.png"]];
             
+            
+            
             // determine reply/mention info
             for (NSDictionary *mention in [post valueForKey:@"mentions"])
             {
@@ -620,6 +623,10 @@
                 
                 tld.content = [[NSAttributedString alloc] initWithString:@"Retrieving repost data..."];
             }
+            
+            // grab the avatar if it is available
+            AvatarGrabber *aGrabber = [[AvatarGrabber alloc] init];
+            [aGrabber getAvatarForEntity:[post valueForKey:@"entity"] forTimelineObject:tld];
          
             [newTimelineData insertObject:tld atIndex:0];
         }
@@ -632,6 +639,8 @@
     [self startTimelineRefreshTimer];
 
 }
+
+
 
 - (void) cocoaTentIsReady
 {

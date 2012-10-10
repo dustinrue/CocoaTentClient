@@ -36,6 +36,8 @@
 @class CocoaTentCommunication;
 @class CocoaTentPost;
 @class CocoaTentEntity;
+@class CocoaTentBasicProfile;
+@class CocoaTentCoreProfile;
 
 // use a delegate system to alert the app of changes, would it be
 // better to use blocks here?
@@ -64,8 +66,8 @@
 @optional
 - (void) didReceiveAppId:(NSString *)app_id;
 - (void) didReceiveAccessToken:(NSString *)access_token;
-- (void) didReceiveBasicInfo;
-- (void) didReceiveCoreInfo;
+- (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile;
+- (void) didReceiveCoreInfo:(CocoaTentCoreProfile *) cocoaTentCoreProfile;
 - (void) didReceiveRepostData:(NSDictionary *) repostData;
 
 @end
