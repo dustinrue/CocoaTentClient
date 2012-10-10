@@ -29,7 +29,7 @@
 
 #import "CocoaTentPost.h"
 
-#define kCocoaTentStatusType = @"https://tent.io/types/post/status/v0.1.0"
+#define kCocoaTentStatusType @"https://tent.io/types/post/status/v0.1.0"
 
 @interface CocoaTentStatus : CocoaTentPost
 

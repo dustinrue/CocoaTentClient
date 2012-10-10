@@ -425,8 +425,20 @@
     
     // store the entity and postId so we can put that into the content
     // of this repost
-    repost.repostedEntity = [fullPost valueForKey:@"entity"];
-    repost.repostedPostId = [fullPost valueForKey:@"id"];
+    
+    // we have to determine if the post is a repost or not, it is dealt
+    // with a bit differently than other post types
+    if ([[fullPost valueForKey:@"type"] isEqual:kCocoaTentRepostType])
+    {
+        repost.repostedEntity = [fullPost valueForKeyPath:@"content.entity"];
+        repost.repostedPostId = [fullPost valueForKeyPath:@"content.id"];
+    }
+    else
+    {
+        repost.repostedEntity = [fullPost valueForKey:@"entity"];
+        repost.repostedPostId = [fullPost valueForKey:@"id"];
+    }
+    
     NSLog(@"postId %@", postId);
     repostMentionData = [fullPost valueForKey:@"mentions"];
     
@@ -517,7 +529,7 @@
     if ([postData count] > 0)
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
     
-    NSLog(@"posts %@", postData);
+    //NSLog(@"posts %@", postData);
     NSMutableArray *newTimelineData = nil;
     
     if (self.timelineData)
@@ -529,7 +541,7 @@
     for (NSDictionary *post in postData)
     {
         // TODO: don't filter here, instead setup the poller to ask for a configured list of post types
-        if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/status/v0.1.0"] || [[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
+        if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentStatusType] || [[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
         {
             
             NSString *client = [NSString stringWithFormat:@"Via: %@ (%@)",[post valueForKeyPath:@"app.name"], [self getSimplePostTypeText:[post valueForKey:@"type"]]];
@@ -562,7 +574,7 @@
             if ([[post valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
                 NSLog(@"a post from me of type %@", [post valueForKey:@"type"]);
             
-            if ([[post valueForKeyPath:@"type"] isEqualToString:@"https://tent.io/types/post/repost/v0.1.0"])
+            if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
             {
                 [self.cocoaTent fetchRepostDataFor:[post valueForKeyPath:@"content.entity"] withID:[post valueForKeyPath:@"content.id"] forPost:tld];
                 
@@ -589,9 +601,6 @@
     }
     else
     {
-        
-        // Our CocoaTent object reports that it is ready, we now tell it about ourself
-        // so that it is aware of our authorization data
         
         if (self.cocoaTentApp.access_token)
             [self.registerAppButton setEnabled:NO];
