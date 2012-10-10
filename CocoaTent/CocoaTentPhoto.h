@@ -29,6 +29,8 @@
 
 #import "CocoaTentPost.h"
 
+#define kCocoaTentPhotoType @"https://tent.io/types/post/photo/v0.1.0"
+
 /*
  *   Photo is the post type for sharing pictures. The file itself is attached to the post. Applications can add EXIF data, tags, and a caption to describe the issue, plus a list of albums that include the photo.
  */

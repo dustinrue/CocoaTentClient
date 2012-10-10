@@ -38,7 +38,7 @@
     if (!self)
         return self;
     
-    self.type = @"https://tent.io/types/post/album/v0.1.0";
+    self.type = kCocoaTentAlbumType;
     
     return self;
 }

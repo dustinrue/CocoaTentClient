@@ -33,6 +33,8 @@
 #define kCocoaTentProfileActionUpdate @"update"
 #define kCocoaTentProfileActionDelete @"delete"
 
+#define kCocoaTentProfileType @"https://tent.io/types/post/profile/v0.1.0"
+
 
 @interface CocoaTentProfile : CocoaTentPost
 /*

@@ -29,6 +29,8 @@
 
 #import "CocoaTentPost.h"
 
+#define kCocoaTentAlbumType @"https://tent.io/types/post/album/v0.1.0"
+
 @interface CocoaTentAlbum : CocoaTentPost
 
 /*

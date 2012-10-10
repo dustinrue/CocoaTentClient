@@ -29,6 +29,8 @@
 
 #import "CocoaTentPost.h"
 
+#define kCocoaTentEssayType @"https://tent.io/types/post/essay/v0.1.0"
+
 @interface CocoaTentEssay : CocoaTentPost
 
 /*

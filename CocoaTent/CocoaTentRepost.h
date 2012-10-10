@@ -29,6 +29,8 @@
 
 #import "CocoaTentPost.h"
 
+#define kCocoaTentRepostType @"https://tent.io/types/post/repost/v0.1.0"
+
 @interface CocoaTentRepost : CocoaTentPost
 /*
    https://tent.io/types/post/repost/v0.1.0

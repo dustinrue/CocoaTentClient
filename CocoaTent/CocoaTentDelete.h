@@ -29,6 +29,8 @@
 
 #import "CocoaTentPost.h"
 
+#define kCocoaTentDeleteType @"https://tent.io/types/post/delete/v0.1.0"
+
 @interface CocoaTentDelete : CocoaTentPost
 /*
  Delete
