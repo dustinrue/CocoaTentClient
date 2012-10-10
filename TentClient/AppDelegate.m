@@ -525,6 +525,10 @@
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
+    BOOL postMentionsMe   = NO;
+    BOOL postRepliesToMe  = NO;
+    NSString *isInReplyTo = @"";
+    
     
     if ([postData count] > 0)
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
@@ -544,15 +548,27 @@
         if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentStatusType] || [[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
         {
             
-            NSString *client = [NSString stringWithFormat:@"Via: %@ (%@)",[post valueForKeyPath:@"app.name"], [self getSimplePostTypeText:[post valueForKey:@"type"]]];
+            NSString *client = [NSString stringWithFormat:@"Via: %@",[post valueForKeyPath:@"app.name"]];
             
+            
+            NSMutableParagraphStyle *rightAlign = [[NSMutableParagraphStyle alloc] init];
+            [rightAlign setAlignment:NSRightTextAlignment];
+            
+            NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys: 
+                                        rightAlign, NSParagraphStyleAttributeName, nil];
+
+            
+            NSAttributedString *clientAS = [[NSAttributedString alloc] initWithString:client attributes:attributes];
             NSString *rawEntity = nil;
             // Build a sort a nice title for the post
-            if ([[self getSimplePostTypeText:[post valueForKey:@"type"]] isEqualToString:@"status"])
+            if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentStatusType])
+            {
                 rawEntity = [NSString stringWithFormat:@"%@ says:", [post valueForKeyPath:@"entity"]];
-            
-            else if ([[self getSimplePostTypeText:[post valueForKey:@"type"]] isEqualToString:@"repost"])
-                rawEntity = [NSString stringWithFormat:@"%@ reposted:", [post valueForKeyPath:@"entity"]];
+            }
+            else if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentRepostType])
+            {
+                rawEntity = [NSString stringWithFormat:@"%@ reposted a %@ by %@:", [post valueForKeyPath:@"entity"], [self getSimplePostTypeText:[post valueForKey:@"type"]], [post valueForKeyPath:@"content.entity"]];
+            }
             
             NSString *rawContent = ([post valueForKeyPath:@"content.text"]) ? [post valueForKeyPath:@"content.text"]:@"";
             
@@ -566,13 +582,37 @@
             TimelineData *tld = [[TimelineData alloc] init];
             tld.entity = entity;
             tld.content = content;
-            tld.client = client;
+            tld.client = clientAS;
             tld.post_id = [post valueForKey:@"id"];
             tld.fullPost = post;
             tld.avatar = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:@"http://dr49qsqhb5y4j.cloudfront.net/default1.png"]];
             
+            // determine reply/mention info
+            for (NSDictionary *mention in [post valueForKey:@"mentions"])
+            {
+                if ([[mention valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
+                {
+                    postMentionsMe = YES;
+                    if ([mention objectForKey:@"post"])
+                    {
+                        postRepliesToMe = YES;
+                        AHHyperlinkScanner *mentionedEntityScanner = [[AHHyperlinkScanner alloc] initWithString:[NSString stringWithFormat:@"In reply to: %@",  [mention valueForKey:@"entity"]] usingStrictChecking:NO];
+                        NSAttributedString *mentionedEntity = [mentionedEntityScanner linkifiedString];
+                        tld.inReplyTo = mentionedEntity;
+                    }
+                }
+                else if ([mention objectForKey:@"post"] && [mention objectForKey:@"entity"])
+                {
+                    AHHyperlinkScanner *mentionedEntityScanner = [[AHHyperlinkScanner alloc] initWithString:[NSString stringWithFormat:@"In reply to: %@",  [mention valueForKey:@"entity"]] usingStrictChecking:NO];
+                    NSAttributedString *mentionedEntity = [mentionedEntityScanner linkifiedString];
+                    tld.inReplyTo = mentionedEntity;
+                }
+            }
+            
             if ([[post valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
+            {
                 NSLog(@"a post from me of type %@", [post valueForKey:@"type"]);
+            }
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
             {

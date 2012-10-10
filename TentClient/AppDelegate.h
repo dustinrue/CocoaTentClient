@@ -54,6 +54,7 @@
 @property (weak) IBOutlet NSButton *saveButton;
 @property (weak) IBOutlet NSArrayController *timelineArrayController;
 @property (unsafe_unretained) IBOutlet NSCollectionViewItem *timelineCollectionViewItem;
+@property (unsafe_unretained) IBOutlet NSTextView *magicTest;
 
 
 @property (weak) IBOutlet NSTextField *charsLeft;
