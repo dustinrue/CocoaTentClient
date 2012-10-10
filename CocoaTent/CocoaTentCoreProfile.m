@@ -28,7 +28,7 @@
  */
 
 #import "CocoaTentCoreProfile.h"
-#import "CocoaTentEntityPermission.h"
+#import "CocoaTentPermission.h"
 
 @implementation CocoaTentCoreProfile
 
@@ -48,7 +48,7 @@
         {
             NSMutableArray *permArray = [NSMutableArray arrayWithCapacity:0];
             for (NSString *permKey in [dictionary valueForKey:key])
-                [permArray addObject:[[CocoaTentEntityPermission alloc] initWithDictionary:[dictionary valueForKey:key]]];
+                [permArray addObject:[[CocoaTentPermission alloc] initWithDictionary:[dictionary valueForKey:key]]];
             
             [self setValue:permArray forKey:key];
         }
@@ -85,7 +85,7 @@
     if (self.permissions)
     {
         NSMutableArray *perms = [NSMutableArray arrayWithCapacity:0];
-        for (CocoaTentEntityPermission *perm in self.permissions)
+        for (CocoaTentPermission *perm in self.permissions)
         {
             [perms addObject:[perm dictionary]];
         }

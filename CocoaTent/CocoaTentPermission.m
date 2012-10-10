@@ -1,5 +1,5 @@
 //
-//  CocoaTentEntityPermission.h
+//  CocoaTentEntityPermission.m
 //  TentClient
 //
 //  Created by Dustin Rue on 10/7/12.
@@ -27,15 +27,37 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#import "CocoaTentPermission.h"
 
-@interface CocoaTentEntityPermission : NSObject
+@implementation CocoaTentPermission
 
-@property (strong) NSDictionary *entities;
-@property (strong) NSArray      *groups;
-@property (assign) NSString     *public;
+- (id) initWithDictionary:(NSDictionary *) dictionary
+{
+    self = [super init];
+    
+    if (!self)
+        return self;
+    
+    for (NSString *key in [dictionary allKeys])
+    {
+        [self setValue:[dictionary valueForKey:key] forKey:key];
+    }
+    return self;
+}
 
-- (id) initWithDictionary:(NSDictionary *) dictionary;
-- (NSDictionary *) dictionary;
+- (NSDictionary *) dictionary
+{
+    NSMutableDictionary *dictionaryOfPropertyValues = [NSMutableDictionary dictionary];
+    
+    if (self.entities)
+        [dictionaryOfPropertyValues setValue:self.entities forKey:@"entities"];
+    
+    if (self.groups)
+        [dictionaryOfPropertyValues setValue:self.groups forKey:@"groups"];
+    
+    if (self.public)
+        [dictionaryOfPropertyValues setValue:self.public forKey:@"public"];
 
+    return dictionaryOfPropertyValues;
+}
 @end
