@@ -43,11 +43,15 @@
 												 name:NSUserDefaultsDidChangeNotification
 											   object:nil];
     
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didCreateOperation:)
+                                                 name:@"com.dustinrue.CocoaTent.didBuildOperation"
+                                               object:nil];
 
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionaryWithCapacity:1];
 
     
+    self.operationCounter = 0;
     // default app information. Typically you wouldn't set all of these via NSUserDefaults
     // because this would allow a user to override values by editing the preferences file
     // for this app.
@@ -133,6 +137,7 @@
     
     if (self.cocoaTentApp.tentEntity)
         [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
+    
     
     [self.statusMessage setStringValue:@"starting up"];
     [self.charsLeft setStringValue:@"256"];
@@ -483,12 +488,12 @@
 
 - (void) receivedProfileData:(NSNotification *) notification
 {
-    NSLog(@"got profile data %@", [notification userInfo]);
+    //NSLog(@"got profile data %@", [notification userInfo]);
 }
 
 - (void) dataReceiveFailure:(NSNotification *) notification
 {
-    NSLog(@"failed to get some data");
+    NSLog(@"failed to get some data %@", [notification userInfo]);
 }
 
 - (void) userDefaultsChanged:(NSNotification *) notification
@@ -808,6 +813,11 @@
     }
     
     return thePostWeFound;
+}
+
+- (void) didCreateOperation:(NSNotification *)notification
+{
+    self.operationCounter++;
 }
 
 @end

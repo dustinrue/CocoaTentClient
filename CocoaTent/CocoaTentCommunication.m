@@ -90,7 +90,7 @@
 
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
 
-    NSLog(@"making request to %@ with baseURL %@", [request URL], self.baseURL);
+    //NSLog(@"making request to %@ with baseURL %@", [request URL], self.baseURL);
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
     [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
     
@@ -173,7 +173,7 @@
     }
     else
     {
-        NSLog(@"not a signed request");
+        //NSLog(@"not a signed request");
     }
     
     if (httpBody)
@@ -182,7 +182,7 @@
         [request setValue:self.tentMimeType forHTTPHeaderField:@"content-type"];
     }
     
-    NSLog(@"building operation for %@", [request URL]);
+    //NSLog(@"building operation for %@", [request URL]);
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         success(request, response, JSON);
         ;
@@ -192,6 +192,8 @@
     
     if (!operation)
         NSLog(@"returning a NULL operation!");
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.dustinrue.CocoaTent.didBuildOperation" object:nil];
     return operation;
 }
 

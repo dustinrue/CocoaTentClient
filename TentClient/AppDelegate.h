@@ -30,6 +30,9 @@
 // keeps a list of items being retrieved
 @property (strong) NSMutableArray *retrievers;
 
+// keeps a counter of the number of communication operations created
+@property (assign) int operationCounter;
+
 
 @property (strong) id testing;
 
@@ -65,5 +68,6 @@
 - (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(id) timelineObject;
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;
+- (void) didCreateOperation:(NSNotification *) notification;
 
 @end
