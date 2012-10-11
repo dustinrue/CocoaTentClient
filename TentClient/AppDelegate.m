@@ -349,10 +349,27 @@
     
     NSMutableArray *currentMentionList = [[fullPost valueForKey:@"mentions"] mutableCopy];
     
-    // now we need to add this post to the list
-    [currentMentionList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                   [fullPost valueForKey:@"entity"], @"entity",
-                                   [fullPost valueForKey:@"id"], @"post", nil]];
+    // the mention list might contain a reply, we strip that out because you can
+    // only reply to a single post, but you can mention many people.
+    
+    NSMutableArray *mentionListMinusPostStanza = [NSMutableArray arrayWithCapacity:0];
+    
+    for (NSMutableDictionary *mention in currentMentionList)
+    {
+        // remove ourselves from the mention list
+        if (![[mention valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
+        {
+            [mentionListMinusPostStanza addObject:[NSDictionary dictionaryWithObjectsAndKeys:[mention valueForKey:@"entity"], @"entity", nil]];
+        }
+    }
+    
+    currentMentionList = mentionListMinusPostStanza;
+    
+    // now we need to add this post to the top of the list so that it matches
+    [currentMentionList insertObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                      [fullPost valueForKey:@"entity"], @"entity",
+                                      [fullPost valueForKey:@"id"], @"post", nil]
+                             atIndex:0];
     
     // set a helpful status message alerting the user of what postID we're reposting and for what entity
     [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [[fullPost valueForKey:@"entity"] substringFromIndex:8] , [fullPost valueForKey:@"id"]]];
@@ -561,7 +578,8 @@
             
             NSAttributedString *clientAS = [[NSAttributedString alloc] initWithString:client attributes:attributes];
             NSString *rawEntity = nil;
-            // Build a sort a nice title for the post
+            
+            // Build a sort of nice title for the post
             if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentStatusType])
             {
                 rawEntity = [NSString stringWithFormat:@"%@ says:", [post valueForKeyPath:@"entity"]];
@@ -612,10 +630,6 @@
                 }
             }
             
-            if ([[post valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
-            {
-                NSLog(@"a post from me of type %@", [post valueForKey:@"type"]);
-            }
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
             {
