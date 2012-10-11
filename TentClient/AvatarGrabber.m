@@ -38,8 +38,8 @@
 
 - (void) cocoaTentIsReady
 {
-    NSLog(@"cocoaTent is ready in %@ going to %@", [self class], [self.tentEntity.core valueForKey:@"entity"]);
-    [self.cocoaTent getUserProfile];
+    // we don't care about that cocoa tent is ready because the discover will grab the profile information
+    // which is what we're interested in here
 }
 
 - (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile
