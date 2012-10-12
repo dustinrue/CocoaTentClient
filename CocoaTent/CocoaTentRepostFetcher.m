@@ -65,19 +65,24 @@
 
 - (void) cocoaTentIsReady
 {
-    NSLog(@"cocoaTent is ready in %@ going to %@", [self class], [self.tentEntity.core valueForKey:@"entity"]);
+    //NSLog(@"cocoaTent is ready in %@ going to %@", [self class], [self.tentEntity.core valueForKey:@"entity"]);
     [self.cocoaTent getPostWithId:self.post_id];
 }
 
 - (void) didReceiveRepostData:(NSDictionary *)repostData
 {
     // update the already in place view with the repost data
+    // shouldn't be here at all
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
     [self.post setContent:[repostData valueForKeyPath:@"content.text"]];
+#endif
 }
 
 - (void) communicationError:(NSError *)error
 {
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
     [self.post setContent:[NSString stringWithFormat:@"Failed to fetch repost data"]];
+#endif
 }
 
 // implemented just to keep the compiler happy

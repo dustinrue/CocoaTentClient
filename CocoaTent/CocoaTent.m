@@ -78,7 +78,9 @@
     
     self.cocoaTentApp = cocoaTentApp;
     
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
     [self registerForURLScheme];
+#endif
 
     return self;
 }
@@ -92,7 +94,10 @@
     
     self.entity = entity;
     
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
     [self registerForURLScheme];
+
+#endif
     
     return self;
 }
@@ -106,10 +111,12 @@
     [self.cocoaTentCommunication setMac_key_id:self.cocoaTentApp.mac_key_id];
     [self.cocoaTentCommunication setAccess_token:self.cocoaTentApp.access_token];
     
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
     __weak CocoaTent *reachabilityDelegate = self;
     [self.cocoaTentCommunication setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         [reachabilityDelegate reachabilityStatusHasChanged:(AFNetworkReachabilityStatus) status];
     }];
+#endif
     
     // if they change, we need to be notified
     [self.cocoaTentCommunication addObserver:self forKeyPath:@"mac_key"       options:NSKeyValueObservingOptionNew context:nil];
@@ -125,12 +132,11 @@
     [self.cocoaTentCommunication removeObserver:self forKeyPath:@"mac_key_id"];
     [self.cocoaTentCommunication removeObserver:self forKeyPath:@"access_token"];
     
-    [self.cocoaTentCommunication setReachabilityStatusChangeBlock:nil];
+    //[self.cocoaTentCommunication setReachabilityStatusChangeBlock:nil];
 }
 
 - (void) switchToTentEntityServerAddress:(NSURL *)server
 {
-    NSLog(@"switching to %@", server);
     [self removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication];
     [self createCocoaTentCommunicationObjectWithBaseURL:server];
     
@@ -138,19 +144,22 @@
 }
 
 
-
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)registerForURLScheme
 {
+
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 }
+#endif
 
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
     NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
     
     // blindly assume that we've received an authorization code
     [self saveAuthorizationCodeFromAuthorizationURL:url];
 }
-
+#endif
 
 
 #pragma mark -
@@ -281,7 +290,10 @@
     NSURL *url = [NSURL URLWithString:fullParams];
     
     NSLog(@"opening URL %@", url);
+    
+#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
 	[[NSWorkspace sharedWorkspace] openURL:url];
+#endif
 }
 
 
@@ -503,7 +515,7 @@
     NSString *path = [NSString stringWithFormat:@"posts?since_id=%@&since_id_entity=%@", self.lastPostId, [self.lastEntityId urlEncoded]];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"returned with %ld new results", [JSON count]);
+        //NSLog(@"returned with %ld new results", [JSON count]);
         if ([JSON count] > 0)
         {
             //NSLog(@"finished getting posts, sending %@", JSON);
@@ -547,10 +559,12 @@
     [repostFetcher fetchRepostDataFor:entity withID:post_id forPost:post];
 }
 
+#ifdef _SYSTEMCONFIGURATION_H
 - (void) reachabilityStatusHasChanged:(AFNetworkReachabilityStatus) status
 {
-    NSLog(@"reachability changed with %i", status);
+    //NSLog(@"reachability changed with %i", status);
 }
+#endif
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     
