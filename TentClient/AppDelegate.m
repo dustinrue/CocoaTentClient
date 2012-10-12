@@ -18,6 +18,7 @@
 #import "CocoaTentPostTypes.h"
 #import "AvatarGrabber.h"
 
+
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -343,7 +344,7 @@
     
     NSDictionary *fullPost = nil;
     
-    fullPost = [self findPostInTimelineBasedOnSendingButton:sender];
+    fullPost = [sender valueForKey:@"fullPost"];
     
     NSLog(@"fullPost %@", fullPost);
     
@@ -443,7 +444,7 @@
  
     
     // find the information of the post being reposted
-    fullPost = [self findPostInTimelineBasedOnSendingButton:sender];
+    fullPost = [sender valueForKey:@"fullPost"];
     NSLog(@"fullPost %@", fullPost);
     
     // store the entity and postId so we can put that into the content
@@ -484,6 +485,17 @@
     [self.statusTextValue setStringValue:@""];
     self.replyingTo = nil;
     self.mentionList = nil;
+}
+
+- (IBAction)showPreferences:(id)sender {
+    
+    
+    [NSApp beginSheet:self.preferencesWindow
+       modalForWindow:self.window
+        modalDelegate:self
+       didEndSelector:@selector(didEnd)
+          contextInfo:nil];
+    NSLog(@"huh");
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
@@ -548,6 +560,7 @@
 // CocoaTent delegate methods
 -(void) didReceiveNewPost:(id)postType withPostData:(id)postData
 {
+    NSLog(@"parsing posts");
     BOOL postMentionsMe   = NO;
     BOOL postRepliesToMe  = NO;
     NSString *isInReplyTo = @"";
@@ -563,7 +576,7 @@
         newTimelineData = self.timelineData;
     else
         newTimelineData = [NSMutableArray arrayWithCapacity:0];
-        
+    
     
     for (NSDictionary *post in postData)
     {
@@ -577,9 +590,9 @@
             NSMutableParagraphStyle *rightAlign = [[NSMutableParagraphStyle alloc] init];
             [rightAlign setAlignment:NSRightTextAlignment];
             
-            NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys: 
+            NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                         rightAlign, NSParagraphStyleAttributeName, nil];
-
+            
             
             NSAttributedString *clientAS = [[NSAttributedString alloc] initWithString:client attributes:attributes];
             NSString *rawEntity = nil;
@@ -645,18 +658,19 @@
             
             // grab the avatar if it is available
             AvatarGrabber *aGrabber = [[AvatarGrabber alloc] init];
-            [aGrabber getAvatarForEntity:[post valueForKey:@"entity"] forTimelineObject:tld];
-         
+            [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
+            //[aGrabber getAvatarForEntity:[post valueForKey:@"entity"] forTimelineObject:tld];
+            
             [newTimelineData insertObject:tld atIndex:0];
         }
     }
-  
+    
     self.timelineData = newTimelineData;
-
-
+    
+    
     [self.statusMessage setStringValue:@"timeline updated"];
     [self startTimelineRefreshTimer];
-
+    NSLog(@"done parsing posts");
 }
 
 

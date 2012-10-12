@@ -46,6 +46,7 @@
 - (IBAction)doReply:(id)sender;
 - (IBAction)doRepost:(id)sender;
 - (IBAction)cancelReply:(id)sender;
+- (IBAction)showPreferences:(id)sender;
 
 @property (weak) IBOutlet NSButton *cancelReplyButton;
 @property (weak) IBOutlet NSTextField *followEntityValue;
@@ -61,6 +62,9 @@
 @property (weak) IBOutlet NSArrayController *timelineArrayController;
 @property (unsafe_unretained) IBOutlet NSCollectionViewItem *timelineCollectionViewItem;
 @property (unsafe_unretained) IBOutlet NSTextView *magicTest;
+@property (weak) IBOutlet NSWindow *preferencesWindow;
+
+
 
 
 @property (weak) IBOutlet NSTextField *charsLeft;

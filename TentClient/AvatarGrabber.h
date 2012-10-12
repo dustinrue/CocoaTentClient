@@ -17,6 +17,7 @@
 @property (strong) CocoaTentEntity *tentEntity;
 @property (strong) id timelineObject;
 
+- (void) getAvatarInBackground:(id) info;
 - (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(TimelineData *) timelineObject;
 
 @end

@@ -15,6 +15,13 @@
 
 @implementation AvatarGrabber
 
+- (void) getAvatarInBackground:(id) info
+{
+    NSString *entity = [info valueForKey:@"entity"];
+    TimelineData * timelineObject = [info valueForKey:@"timelineObject"];
+    [self getAvatarForEntity:entity forTimelineObject:timelineObject];
+}
+
 - (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(TimelineData *) timelineObject
 {
     
