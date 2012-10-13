@@ -17,6 +17,7 @@
 #import "CocoaTentEntity.h"
 #import "CocoaTentPostTypes.h"
 #import "AvatarGrabber.h"
+#import "NSArray+Reverse.h"
 
 
 @implementation AppDelegate
@@ -554,17 +555,13 @@
 }
 
 #pragma mark -
-#pragma mark CocoaTent delegate methods
+#pragma mark Post Handling
 
-
-// CocoaTent delegate methods
--(void) didReceiveNewPost:(id)postData
+- (void) newStatusPost:(id) postData
 {
-    NSLog(@"parsing posts");
     BOOL postMentionsMe   = NO;
     BOOL postRepliesToMe  = NO;
-    NSString *isInReplyTo = @"";
-    
+    NSDictionary *post = postData;
     
     if ([postData count] > 0)
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
@@ -578,8 +575,8 @@
         newTimelineData = [NSMutableArray arrayWithCapacity:0];
     
     
-    for (NSDictionary *post in postData)
-    {
+   // for (NSDictionary *post in postData)
+   // {
         // TODO: don't filter here, instead setup the poller to ask for a configured list of post types
         if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentStatusType] || [[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
         {
@@ -659,23 +656,69 @@
             // grab the avatar if it is available
             AvatarGrabber *aGrabber = [[AvatarGrabber alloc] init];
             [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
-            //[aGrabber getAvatarForEntity:[post valueForKey:@"entity"] forTimelineObject:tld];
             
             [newTimelineData insertObject:tld atIndex:0];
         }
-    }
+    //}
     
     self.timelineData = newTimelineData;
     
     
     [self.statusMessage setStringValue:@"timeline updated"];
+
+}
+
+- (void) deleteStatusPost:(id) postData
+{
+    TimelineData *entryToDelete = nil;
+    @synchronized(self)
+    {
+        NSMutableArray *currentTimeLine = self.timelineData;
+        
+        for (TimelineData *tld in currentTimeLine)
+        {
+            if ([[tld.fullPost valueForKey:@"entity"] isEqualToString:[postData valueForKey:@"entity"]] &&
+                [[tld.fullPost valueForKey:@"id"] isEqualToString:[postData valueForKeyPath:@"content.id"]])
+            {
+                entryToDelete = tld;
+                NSLog(@"found record");
+                break;
+            }
+        }
+        [currentTimeLine removeObject:entryToDelete];
+        self.timelineData = currentTimeLine;
+    }
+    
+
+}
+
+#pragma mark -
+#pragma mark CocoaTent delegate methods
+
+
+// CocoaTent delegate methods
+-(void) didReceiveNewPost:(id)postData
+{
+    postData = [postData reversedArray];
+    // decide what type of post we've received
+    for (NSDictionary *post in postData)
+    {
+        NSLog(@"type %@", [post valueForKey:@"type"]);
+        if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentStatusType])
+            [self newStatusPost:post];
+        
+        if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentRepostType])
+            [self newStatusPost:post];
+        
+        if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentDeleteType])
+            [self deleteStatusPost:post];
+    }
+    
     [self startTimelineRefreshTimer];
-    NSLog(@"done parsing posts");
 }
 
 - (void) didReceiveRepostData:(NSDictionary *)userInfo
 {
-    //NSLog(@"repost %@", userInfo);
     TimelineData *tld = [userInfo objectForKey:@"timelineItem"];
     
     tld.content = [[userInfo objectForKey:@"postData"] valueForKeyPath:@"content.text"];

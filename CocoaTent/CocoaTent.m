@@ -41,7 +41,6 @@
 #import "NSString+Random.h"
 #import "CocoaTentPost.h"
 #import "NSString+URLEncoding.h"
-#import "NSArray+Reverse.h"
 
 #import "CocoaTentProfile.h"
 #import "CocoaTentEntity.h"
@@ -514,7 +513,7 @@
     NSString *path = [NSString stringWithFormat:@"posts?since_id=%@&since_id_entity=%@", self.lastPostId, [self.lastEntityId urlEncoded]];
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        //NSLog(@"returned with %ld new results", [JSON count]);
+        
         if ([JSON count] > 0)
         {
             //NSLog(@"finished getting posts, sending %@", JSON);
@@ -523,8 +522,7 @@
             self.lastPostTimeStamp = [[JSON objectAtIndex:0] valueForKey:@"published_at"];
             
         }
-        // TODO: don't reverse the array here, the client should make that decision
-        [self.delegate didReceiveNewPost:[JSON reversedArray]];
+        [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         //NSLog(@"failed to get posts");
         [self.delegate communicationError:error];
@@ -532,6 +530,8 @@
     
     [operation start];
 }
+
+
 
 - (void) clearLastPostCounters
 {

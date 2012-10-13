@@ -90,7 +90,7 @@
 
     NSMutableURLRequest *request = [self requestWithMethod:method path:path parameters:nil];
 
-    //NSLog(@"making request to %@ with baseURL %@", [request URL], self.baseURL);
+    NSLog(@"making request to %@ with baseURL %@", [request URL], self.baseURL);
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
     [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
 

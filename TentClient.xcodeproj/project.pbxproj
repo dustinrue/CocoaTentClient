@@ -48,6 +48,7 @@
 		DAB0754C16121EDF0079BE7D /* CocoaTent.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB0754816121EDF0079BE7D /* CocoaTent.m */; };
 		DABE31FA162517F7004E683E /* TimelineView.m in Sources */ = {isa = PBXBuildFile; fileRef = DABE31F9162517F7004E683E /* TimelineView.m */; };
 		DABE31FE162521C1004E683E /* AvatarGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = DABE31FD162521C1004E683E /* AvatarGrabber.m */; };
+		DABFFF4C16290660005A2146 /* NSArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = DABFFF4B16290660005A2146 /* NSArray+Reverse.m */; };
 		DAC3A01716169B8700188E73 /* CocoaTentCommunication.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */; };
 		DADABDD5161B5C9A00189BC6 /* AutoHyperlinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */; };
 		DADABDEA161B5E0900189BC6 /* AutoHyperlinks.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */; };
@@ -154,6 +155,8 @@
 		DABE31F9162517F7004E683E /* TimelineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineView.m; sourceTree = "<group>"; };
 		DABE31FC162521C1004E683E /* AvatarGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvatarGrabber.h; sourceTree = "<group>"; };
 		DABE31FD162521C1004E683E /* AvatarGrabber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AvatarGrabber.m; sourceTree = "<group>"; };
+		DABFFF4A16290660005A2146 /* NSArray+Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Reverse.h"; sourceTree = "<group>"; };
+		DABFFF4B16290660005A2146 /* NSArray+Reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Reverse.m"; sourceTree = "<group>"; };
 		DAC3A01516169B8700188E73 /* CocoaTentCommunication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentCommunication.h; path = CocoaTent/CocoaTentCommunication.h; sourceTree = "<group>"; };
 		DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentCommunication.m; path = CocoaTent/CocoaTentCommunication.m; sourceTree = "<group>"; };
 		DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutoHyperlinks.framework; sourceTree = "<group>"; };
@@ -246,6 +249,7 @@
 		DA511CF4160F716D00A814D7 /* TentClient */ = {
 			isa = PBXGroup;
 			children = (
+				DABFFF481629063E005A2146 /* Categories */,
 				DA511D00160F716D00A814D7 /* AppDelegate.h */,
 				DA511D01160F716D00A814D7 /* AppDelegate.m */,
 				DABE31FC162521C1004E683E /* AvatarGrabber.h */,
@@ -340,6 +344,15 @@
 				DAB0754216121EDF0079BE7D /* JSONKit.m */,
 			);
 			name = JSONKit;
+			sourceTree = "<group>";
+		};
+		DABFFF481629063E005A2146 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				DABFFF4A16290660005A2146 /* NSArray+Reverse.h */,
+				DABFFF4B16290660005A2146 /* NSArray+Reverse.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		DAEE051816129642008CABF5 /* Categories */ = {
@@ -469,6 +482,7 @@
 				DA68938C1622019000E13F1A /* CocoaTentPermission.m in Sources */,
 				DABE31FA162517F7004E683E /* TimelineView.m in Sources */,
 				DABE31FE162521C1004E683E /* AvatarGrabber.m in Sources */,
+				DABFFF4C16290660005A2146 /* NSArray+Reverse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
