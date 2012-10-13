@@ -43,6 +43,23 @@
     return self;
 }
 
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if (!self)
+        return self;
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"types"])
+        self.types = [dictionary valueForKeyPath:@"content.types"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"action"])
+        self.action = [dictionary valueForKeyPath:@"content.action"];
+    
+    return self;
+        
+}
+
 - (NSMutableDictionary *)dictionary
 {
     NSDictionary *content = [NSDictionary dictionary];

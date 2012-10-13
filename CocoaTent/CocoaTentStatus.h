@@ -38,6 +38,8 @@
 // NSArray with lat/lon?
 @property (strong) NSArray *location;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *)dictionary;
 - (NSMutableDictionary *)dictionary;
 
 @end

@@ -31,6 +31,7 @@
 
 @implementation CocoaTentAlbum
 
+
 - (id) init
 {
     self = [super init];
@@ -39,6 +40,28 @@
         return self;
     
     self.type = kCocoaTentAlbumType;
+    
+    return self;
+}
+
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if (!self)
+        return self;
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"title"])
+        self.title = [dictionary valueForKeyPath:@"content.title"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"description"])
+        self.description = [dictionary valueForKeyPath:@"content.description"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"photos"])
+        self.photos = [dictionary valueForKeyPath:@"content.photos"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"cover"])
+        self.cover = [dictionary valueForKeyPath:@"content.cover"];
     
     return self;
 }

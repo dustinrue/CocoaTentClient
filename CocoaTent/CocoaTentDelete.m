@@ -43,6 +43,16 @@
     return self;
 }
 
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"id"])
+        self.post_id = [dictionary valueForKeyPath:@"content.id"];
+    
+    return self;
+}
+
 - (NSMutableDictionary *) dictionary
 {
     NSMutableDictionary *dictionaryOfPropertyValues = [super dictionary];

@@ -43,6 +43,29 @@
     return self;
 }
 
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if (!self)
+        return self;
+    
+    /*
+     @property (strong) NSString *text;
+     
+     // NSArray with lat/lon?
+     @property (strong) NSArray *location;
+     */
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"text"])
+        self.text = [dictionary valueForKeyPath:@"content.text"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"location"])
+        self.location = [dictionary valueForKeyPath:@"content.location"];
+    
+    return self;
+}
+
 - (NSMutableDictionary *)dictionary
 {
     NSDictionary *content = [NSDictionary dictionaryWithObjectsAndKeys:

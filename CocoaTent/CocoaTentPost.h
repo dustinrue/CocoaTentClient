@@ -74,6 +74,7 @@
 @property (strong) NSString *views;
 @property (strong) CocoaTentPermission *permissions;
 
+- (id) initWithDictionary:(NSDictionary *) dictionary;
 - (NSMutableDictionary *)dictionary;
 
 @end

@@ -43,6 +43,29 @@
     return self;
 }
 
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if (!self)
+        return self;
+
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"caption"])
+        self.caption = [dictionary valueForKeyPath:@"content.caption"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"albums"])
+        self.albums = [dictionary valueForKeyPath:@"content.albums"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"tags"])
+        self.tags = [dictionary valueForKeyPath:@"content.tags"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"exif"])
+        self.exif = [dictionary valueForKeyPath:@"content.exif"];
+    
+    return self;
+}
+
 - (NSMutableDictionary *)dictionary
 {
     NSDictionary *content = [NSDictionary dictionary];

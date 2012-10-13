@@ -44,4 +44,8 @@
 @property (strong) NSString *repostedEntity;
 @property (strong) NSString *repostedPostId;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (NSMutableDictionary *) dictionary;
+
 @end

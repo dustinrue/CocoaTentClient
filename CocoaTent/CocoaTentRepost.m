@@ -43,6 +43,22 @@
     return self;
 }
 
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if (!self)
+        return self;
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"entity"])
+        self.repostedEntity = [dictionary valueForKeyPath:@"content.entity"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"id"])
+        self.repostedPostId = [dictionary valueForKeyPath:@"content.id"];
+    
+    return self;
+}
+
 - (NSMutableDictionary *)dictionary
 {
     NSMutableDictionary *content = [NSMutableDictionary dictionary];

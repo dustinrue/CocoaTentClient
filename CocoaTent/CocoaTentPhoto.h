@@ -48,4 +48,8 @@
 @property (strong) NSArray  *tags;
 @property (strong) NSDictionary *exif;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (NSMutableDictionary *) dictionary;
+
 @end

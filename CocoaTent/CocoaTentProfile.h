@@ -49,4 +49,8 @@
 @property (strong) NSArray *types;
 @property (strong) NSString *action;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (NSMutableDictionary *) dictionary;
+
 @end

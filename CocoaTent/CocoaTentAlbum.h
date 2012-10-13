@@ -50,4 +50,8 @@ cover       Optional	String	The Post ID of a photo that should be used as the co
 @property (strong) NSArray  *photos;
 @property (strong) NSString *cover;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *) dictionary;
+- (NSMutableDictionary *) dictionary;
+
 @end

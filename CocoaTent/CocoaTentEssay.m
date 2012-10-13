@@ -43,6 +43,28 @@
     return self;
 }
 
+- (id) initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super initWithDictionary:dictionary];
+    
+    if (!self)
+        return self;
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"title"])
+        self.title = [dictionary valueForKeyPath:@"content.title"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"excerpt"])
+        self.excerpt = [dictionary valueForKeyPath:@"content.excerpt"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"body"])
+        self.body = [dictionary valueForKeyPath:@"content.body"];
+    
+    if ([[dictionary objectForKey:@"content"] objectForKey:@"tags"])
+        self.tags = [dictionary valueForKeyPath:@"content.tags"];
+    
+    return self;
+}
+
 - (NSMutableDictionary *)dictionary
 {
     NSDictionary *content = [NSDictionary dictionary];

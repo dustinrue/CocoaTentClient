@@ -44,4 +44,8 @@
 
 @property (strong) NSString *post_id;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (NSMutableDictionary *) dictionary;
+
 @end

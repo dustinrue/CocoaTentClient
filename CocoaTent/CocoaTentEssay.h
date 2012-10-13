@@ -44,4 +44,8 @@
 @property (strong) NSString *body;
 @property (strong) NSArray  *tags;
 
+- (id) init;
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (NSMutableDictionary *) dictionary;
+
 @end
