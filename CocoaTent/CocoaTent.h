@@ -48,7 +48,12 @@
 // has been received
 
 // TODO: provide the sender
-- (void) didReceiveNewPost:(id)postType withPostData:(id)postData;
+- (void) didReceiveNewPost:(id)postData;
+
+// userinfo will contain whatever you passed in for "fetchRepostData"
+// plus the repost data
+- (void) didReceiveRepostData:(NSDictionary *) userInfo;
+
 - (void) didSubmitNewPost;
 - (void) didUpdateProfile:(id) sender;
 
@@ -68,7 +73,6 @@
 - (void) didReceiveAccessToken:(NSString *)access_token;
 - (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile;
 - (void) didReceiveCoreInfo:(CocoaTentCoreProfile *) cocoaTentCoreProfile;
-- (void) didReceiveRepostData:(NSDictionary *) repostData;
 
 @end
 
@@ -122,7 +126,7 @@
 - (void) getPosts;
 - (void) getPostWithId:(NSString *)post_id;
 - (void) clearLastPostCounters;
-- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post;
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forSender:(id) sender context:(id)context;
 
 // gets the most recent posts since the last time
 // or gets all posts if there isn't a "since_id" value

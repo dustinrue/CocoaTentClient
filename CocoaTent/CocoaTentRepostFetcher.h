@@ -44,13 +44,13 @@
 @interface CocoaTentRepostFetcher : NSObject <CocoaTentDelegate>
 
 @property (strong) CocoaTent *cocoaTent;
-@property (strong) CocoaTentApp *cocoaTentApp;
 @property (strong) CocoaTentEntity *tentEntity;
 @property (strong) CocoaTentCommunication *cocoaTentCommunication;
 
 @property (strong) NSString *post_id;
-@property (strong) id post;
+@property (strong) id context;
+@property (strong) id sender;
 
-- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post;
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forSender:(id) sender context:(id)context;
 
 @end

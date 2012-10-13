@@ -93,7 +93,7 @@
     //NSLog(@"making request to %@ with baseURL %@", [request URL], self.baseURL);
     NSSet *acceptableContentType = [NSSet setWithObject:self.tentMimeType];
     [AFJSONRequestOperation addAcceptableContentTypes:acceptableContentType];
-    
+
     if (isSigned)
     {
         /*
@@ -194,6 +194,8 @@
         NSLog(@"returning a NULL operation!");
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.dustinrue.CocoaTent.didBuildOperation" object:nil];
+    
+
     return operation;
 }
 

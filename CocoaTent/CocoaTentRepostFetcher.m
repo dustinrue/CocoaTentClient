@@ -43,10 +43,12 @@
 
 @implementation CocoaTentRepostFetcher
 
-- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forSender:(id) sender context:(id)context
 {
-    self.post = post;
+    self.context = context;
+    self.sender  = sender;
     self.post_id = post_id;
+    
     
     CocoaTentCoreProfile *coreProfile = [[CocoaTentCoreProfile alloc] init];
     
@@ -65,24 +67,21 @@
 
 - (void) cocoaTentIsReady
 {
-    //NSLog(@"cocoaTent is ready in %@ going to %@", [self class], [self.tentEntity.core valueForKey:@"entity"]);
+    // we're now "attached" to the entities server, so we do
+    // an unauthorized request to get a specific post id
     [self.cocoaTent getPostWithId:self.post_id];
 }
 
-- (void) didReceiveRepostData:(NSDictionary *)repostData
+- (void) didReceiveRepostData:(NSDictionary *) userInfo
 {
-    // update the already in place view with the repost data
-    // shouldn't be here at all
-#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
-    [self.post setContent:[repostData valueForKeyPath:@"content.text"]];
-#endif
+
 }
 
 - (void) communicationError:(NSError *)error
 {
-#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
-    [self.post setContent:[NSString stringWithFormat:@"Failed to fetch repost data"]];
-#endif
+
+    [self.sender communicationError:error];
+
 }
 
 // implemented just to keep the compiler happy
@@ -91,9 +90,17 @@
     
 }
 
-- (void) didReceiveNewPost:(id)postType withPostData:(id)postData
+- (void) didReceiveNewPost:(id)postData
 {
     
+    NSMutableDictionary *userInfo = [self.context mutableCopy];
+    
+    [userInfo setValue:postData forKey:@"postData"];
+    
+    self.context = userInfo;
+
+    [self.sender didReceiveRepostData:self.context];
+
 }
 
 - (void) didSubmitNewPost

@@ -465,7 +465,7 @@
 {
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:@"posts" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"finished getting posts, sending to %@", self.delegate);
-        [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
+        [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         //NSLog(@"failed to get posts");
         [self.delegate communicationError:error];
@@ -480,8 +480,7 @@
     
 //    NSLog(@"going to %@ %@", self.cocoaTentApp.tentEntity, path);
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        if ([self.delegate respondsToSelector:@selector(didReceiveRepostData:)])
-            [self.delegate didReceiveRepostData:JSON];
+        [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         //NSLog(@"failed to get something, \nrequest:\n%@\nreponse\n%@\n on URL: %@", [request allHTTPHeaderFields], [response allHeaderFields], [request URL]);
         [self.delegate communicationError:error];
@@ -500,7 +499,7 @@
         {
             NSLog(@"finished getting posts, sending to %@", self.delegate);
             self.lastPostId = [[JSON objectAtIndex:0] valueForKey:@"id"];
-            [self.delegate didReceiveNewPost:@"posts" withPostData:JSON];
+            [self.delegate didReceiveNewPost:JSON];
         }
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         //NSLog(@"failed to get posts");
@@ -524,7 +523,8 @@
             self.lastPostTimeStamp = [[JSON objectAtIndex:0] valueForKey:@"published_at"];
             
         }
-        [self.delegate didReceiveNewPost:@"posts" withPostData:[JSON reversedArray]];
+        // TODO: don't reverse the array here, the client should make that decision
+        [self.delegate didReceiveNewPost:[JSON reversedArray]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         //NSLog(@"failed to get posts");
         [self.delegate communicationError:error];
@@ -552,11 +552,11 @@
     [operation start];
 }
 
-- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forPost:(id)post 
+- (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forSender:(id) sender context:(id)context
 {
     CocoaTentRepostFetcher *repostFetcher = [[CocoaTentRepostFetcher alloc] init];
     
-    [repostFetcher fetchRepostDataFor:entity withID:post_id forPost:post];
+    [repostFetcher fetchRepostDataFor:entity withID:post_id forSender:sender context:context];
 }
 
 #ifdef _SYSTEMCONFIGURATION_H

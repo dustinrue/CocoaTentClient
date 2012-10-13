@@ -558,7 +558,7 @@
 
 
 // CocoaTent delegate methods
--(void) didReceiveNewPost:(id)postType withPostData:(id)postData
+-(void) didReceiveNewPost:(id)postData
 {
     NSLog(@"parsing posts");
     BOOL postMentionsMe   = NO;
@@ -604,7 +604,7 @@
             }
             else if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentRepostType])
             {
-                rawEntity = [NSString stringWithFormat:@"%@ reposted a %@ by %@:", [post valueForKeyPath:@"entity"], [self getSimplePostTypeText:[post valueForKey:@"type"]], [post valueForKeyPath:@"content.entity"]];
+                rawEntity = [NSString stringWithFormat:@"%@ reposted %@:", [post valueForKeyPath:@"entity"], [post valueForKeyPath:@"content.entity"]];
             }
             
             NSString *rawContent = ([post valueForKeyPath:@"content.text"]) ? [post valueForKeyPath:@"content.text"]:@"";
@@ -651,7 +651,7 @@
             
             if ([[post valueForKeyPath:@"type"] isEqualToString:kCocoaTentRepostType])
             {
-                [self.cocoaTent fetchRepostDataFor:[post valueForKeyPath:@"content.entity"] withID:[post valueForKeyPath:@"content.id"] forPost:tld];
+                [self.cocoaTent fetchRepostDataFor:[post valueForKeyPath:@"content.entity"] withID:[post valueForKeyPath:@"content.id"] forSender:self context:[NSDictionary dictionaryWithObjectsAndKeys:tld, @"timelineItem", nil]];
                 
                 tld.content = [[NSAttributedString alloc] initWithString:@"Retrieving repost data..."];
             }
@@ -671,6 +671,14 @@
     [self.statusMessage setStringValue:@"timeline updated"];
     [self startTimelineRefreshTimer];
     NSLog(@"done parsing posts");
+}
+
+- (void) didReceiveRepostData:(NSDictionary *)userInfo
+{
+    //NSLog(@"repost %@", userInfo);
+    TimelineData *tld = [userInfo objectForKey:@"timelineItem"];
+    
+    tld.content = [[userInfo objectForKey:@"postData"] valueForKeyPath:@"content.text"];
 }
 
 
