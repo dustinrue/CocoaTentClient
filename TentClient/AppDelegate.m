@@ -621,7 +621,10 @@
             tld.fullPost = post;
             tld.avatar = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:@"http://dr49qsqhb5y4j.cloudfront.net/default1.png"]];
             
-            
+            if ([[post valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
+                tld.isMine = YES;
+            else
+                tld.isMine = NO;
             
             // determine reply/mention info
             for (NSDictionary *mention in [post valueForKey:@"mentions"])
@@ -690,6 +693,23 @@
     }
     
 
+}
+
+- (void) deletePost:(id) postData
+{
+    NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+    CocoaTentDelete *delete = [[CocoaTentDelete alloc] init];
+    
+    [delete setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
+    [delete setPublished_at:[NSNumber numberWithInt: timestamp]];
+    [delete setLicenses:@[@"http://creativecommons.org/licenses/by/3.0/"]];
+    [delete setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
+    [delete setPost_id:[[postData valueForKey:@"fullPost"] valueForKey:@"id"]];
+    
+    //NSLog(@"delete %@", [delete dictionary]);
+    [self.cocoaTent newPost:delete];
+    
+    
 }
 
 #pragma mark -

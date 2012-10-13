@@ -45,10 +45,11 @@
 
 - (NSMutableDictionary *) dictionary
 {
-    NSMutableDictionary *dictionaryOfPropertyValues = [NSMutableDictionary dictionary];
+    NSMutableDictionary *dictionaryOfPropertyValues = [super dictionary];
     
-    if (self.entity)
-        [dictionaryOfPropertyValues setValue:self.entity forKey:@"entity"];
+    
+    if (self.post_id)
+        [dictionaryOfPropertyValues setValue:[NSDictionary dictionaryWithObject:self.post_id forKey:@"id"] forKey:@"content"];
 
     
     return dictionaryOfPropertyValues;
