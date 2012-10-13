@@ -563,9 +563,6 @@
     BOOL postRepliesToMe  = NO;
     NSDictionary *post = postData;
     
-    if ([postData count] > 0)
-        [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
-    
     //NSLog(@"posts %@", postData);
     NSMutableArray *newTimelineData = nil;
     
@@ -720,6 +717,10 @@
 -(void) didReceiveNewPost:(id)postData
 {
     postData = [postData reversedArray];
+    
+    if ([postData count] > 0)
+        [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
+    
     // decide what type of post we've received
     for (NSDictionary *post in postData)
     {
