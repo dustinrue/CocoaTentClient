@@ -29,6 +29,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class CocoaTentPermission;
+
 @interface CocoaTentPost : NSObject
 
 /*
@@ -70,7 +72,7 @@
 // it is not necessary for a client to set this, the server will override it anyway
 @property (strong) NSDictionary *app;
 @property (strong) NSString *views;
-@property (strong) NSDictionary *permissions;
+@property (strong) CocoaTentPermission *permissions;
 
 - (NSMutableDictionary *)dictionary;
 
