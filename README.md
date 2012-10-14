@@ -1,3 +1,8 @@
+NOTICE
+======
+Cocoa Tent Client, and especially the library that powers it, is under heavy development.  If you want to try Cocoa Tent Client I encourage you to download a binary version that will be in some working state.  You can find binaries at https://github.com/dustinrue/CocoaTentClient/downloads.
+
+
 Cocoa Tent Client
 =================
 Cocoa Tent Client is very simple application that exists to assist in the building of an Objective-C based
