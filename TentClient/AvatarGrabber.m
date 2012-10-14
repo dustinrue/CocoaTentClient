@@ -43,7 +43,7 @@
     [ct discover];
 }
 
-- (void) cocoaTentIsReady
+- (void) cocoaTentIsReady:(id) sender
 {
     // we don't care about that cocoa tent is ready because the discover will grab the profile information
     // which is what we're interested in here

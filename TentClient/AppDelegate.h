@@ -8,9 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "CocoaTent.h"
+#import "FollowingsWindowController.h"
 
 @class CocoaTent;
 @class CocoaTentApp;
+@class FollowingsWindowController;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate,CocoaTentDelegate,NSTextFieldDelegate>
 
@@ -33,6 +35,9 @@
 // keeps a counter of the number of communication operations created
 @property (assign) int operationCounter;
 
+// Followings Window
+@property (strong) FollowingsWindowController *followingsWindowController;
+@property (strong) NSWindow *followsWindow;
 
 @property (strong) id testing;
 
@@ -47,6 +52,8 @@
 - (IBAction)doRepost:(id)sender;
 - (IBAction)cancelReply:(id)sender;
 - (IBAction)showPreferences:(id)sender;
+- (IBAction)showFollowingsWindow:(id)sender;
+- (IBAction)showFollowersWindow:(id)sender;
 
 @property (weak) IBOutlet NSButton *cancelReplyButton;
 @property (weak) IBOutlet NSTextField *followEntityValue;

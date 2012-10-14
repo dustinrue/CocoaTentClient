@@ -193,6 +193,8 @@
     if (!operation)
         NSLog(@"returning a NULL operation!");
     
+    // fire a notification that an operation has been built, can be used to keep track of
+    // the number of operations performed.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.dustinrue.CocoaTent.didBuildOperation" object:nil];
     
 

@@ -39,6 +39,7 @@
 @class CocoaTentBasicProfile;
 @class CocoaTentCoreProfile;
 
+
 // use a delegate system to alert the app of changes, would it be
 // better to use blocks here?
 @protocol CocoaTentDelegate <NSObject>
@@ -59,7 +60,7 @@
 
 // this lets you know that the communication layer is ready to start
 // doing work
-- (void) cocoaTentIsReady;
+- (void) cocoaTentIsReady:(id) sender;
 
 // would be used to tell the delegate that communication layer
 // error has occurred
@@ -115,6 +116,7 @@
 #pragma mark -
 #pragma mark Mention Finder
 - (NSArray *) findMentionsInPostContent:(NSString *)content;
++ (NSArray *) findMentionsInPostContent:(NSString *)content;
 
 #pragma mark -
 #pragma mark User Profile
@@ -128,7 +130,8 @@
 - (void) clearLastPostCounters;
 - (void) fetchRepostDataFor:(NSString *)entity withID:(NSString *)post_id forSender:(id) sender context:(id)context;
 
-// gets the most recent posts since the last time
+
+// gets the most recent posts since the last time the method was called
 // or gets all posts if there isn't a "since_id" value
 - (void) getRecentPosts;
 
@@ -136,5 +139,6 @@
 - (void) getPostsSince:(NSString *)post_id;
 
 - (void) newPost:(id)post;
+
 
 @end

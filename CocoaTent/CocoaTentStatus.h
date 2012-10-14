@@ -31,6 +31,8 @@
 
 #define kCocoaTentStatusType @"https://tent.io/types/post/status/v0.1.0"
 
+@class CocoaTentEntity;
+
 @interface CocoaTentStatus : CocoaTentPost
 
 @property (strong) NSString *text;
@@ -39,7 +41,14 @@
 @property (strong) NSArray *location;
 
 - (id) init;
+- (id) initWithReplyTo:(NSDictionary *) post withEntity:(CocoaTentEntity *) entity;
 - (id) initWithDictionary:(NSDictionary *)dictionary;
 - (NSMutableDictionary *)dictionary;
+
+
+// builds the proper mention stanza for when reposting a post.  You can
+// simply assign the value returned to the "mentions" property of your
+// repost object.
+- (NSDictionary *) buildMentionListForRepostOf:(id) post;
 
 @end

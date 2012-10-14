@@ -130,8 +130,6 @@
     [self.cocoaTentCommunication removeObserver:self forKeyPath:@"mac_key"];
     [self.cocoaTentCommunication removeObserver:self forKeyPath:@"mac_key_id"];
     [self.cocoaTentCommunication removeObserver:self forKeyPath:@"access_token"];
-    
-    //[self.cocoaTentCommunication setReachabilityStatusChangeBlock:nil];
 }
 
 - (void) switchToTentEntityServerAddress:(NSURL *)server
@@ -139,7 +137,7 @@
     [self removeObserversAndStopReachabilityStatusUpdatesForCocoaTentCommunication];
     [self createCocoaTentCommunicationObjectWithBaseURL:server];
     
-    [self.delegate cocoaTentIsReady];
+    [self.delegate cocoaTentIsReady:self];
 }
 
 
@@ -433,8 +431,13 @@
  */
 - (NSArray *) findMentionsInPostContent:(NSString *)content
 {
-    NSMutableArray *explodedOnTent = [[content componentsSeparatedByString:@"^"] mutableCopy];
+    return [CocoaTent findMentionsInPostContent:content];
+}
 
++ (NSArray *) findMentionsInPostContent:(NSString *)content
+{
+    NSMutableArray *explodedOnTent = [[content componentsSeparatedByString:@"^"] mutableCopy];
+    
     NSMutableArray *mentionList = [NSMutableArray arrayWithCapacity:0];
     
     if ([explodedOnTent count] == 0)

@@ -65,7 +65,7 @@
     [self.cocoaTent discover];
 }
 
-- (void) cocoaTentIsReady
+- (void) cocoaTentIsReady:(id) sender
 {
     // we're now "attached" to the entities server, so we do
     // an unauthorized request to get a specific post id

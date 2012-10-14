@@ -18,6 +18,7 @@
 #import "CocoaTentPostTypes.h"
 #import "AvatarGrabber.h"
 #import "NSArray+Reverse.h"
+#import "FollowingsWindowController.h"
 
 
 @implementation AppDelegate
@@ -334,88 +335,21 @@
 
 - (IBAction)doReply:(id)sender
 {
-
-    // I'm cheating really badly here because I don't want implement
-    // the NSControllerView properly.  I'd be delighted if someone did though 
+    // TODO: this client app should have all of these objects/properties ready to
+    // go already
     
-    NSString *postId = nil;
-    NSString *entity = nil;
-    NSMutableArray *mentionListArray = nil;
-    NSString *mentionList = @"";
+    CocoaTentCoreProfile *core = [[CocoaTentCoreProfile alloc] init];
+    core.entity = self.cocoaTentApp.tentEntity;
+    CocoaTentEntity *myEntity = [[CocoaTentEntity alloc] init];
+    myEntity.core = core;
+    CocoaTentStatus *test = [[CocoaTentStatus alloc] initWithReplyTo:[sender valueForKey:@"fullPost"] withEntity:myEntity];
     
-    NSDictionary *fullPost = nil;
-    
-    fullPost = [sender valueForKey:@"fullPost"];
-    
-    NSLog(@"fullPost %@", fullPost);
-    
-    
-    // we have the full, original post, lets pull anything that was mentioned
-    // in it and store it for our reply, this keeps any conversations linked
-    // properly
-    
-    NSMutableArray *currentMentionList = [[fullPost valueForKey:@"mentions"] mutableCopy];
-    
-    // the mention list might contain a reply, we strip that out because you can
-    // only reply to a single post, but you can mention many people.
-    
-    NSMutableArray *mentionListMinusPostStanza = [NSMutableArray arrayWithCapacity:0];
-    
-    for (NSMutableDictionary *mention in currentMentionList)
-    {
-        // remove ourselves from the mention list
-        if (![[mention valueForKey:@"entity"] isEqualToString:self.cocoaTentApp.tentEntity])
-        {
-            [mentionListMinusPostStanza addObject:[NSDictionary dictionaryWithObjectsAndKeys:[mention valueForKey:@"entity"], @"entity", nil]];
-        }
-    }
-    
-    currentMentionList = mentionListMinusPostStanza;
-    
-    // now we need to add this post to the top of the list so that it matches
-    [currentMentionList insertObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                      [fullPost valueForKey:@"entity"], @"entity",
-                                      [fullPost valueForKey:@"id"], @"post", nil]
-                             atIndex:0];
-    
-    // set a helpful status message alerting the user of what postID we're reposting and for what entity
-    [self.statusMessage setStringValue:[NSString stringWithFormat:@"replying to %@ - %@", [[fullPost valueForKey:@"entity"] substringFromIndex:8] , [fullPost valueForKey:@"id"]]];
-    
-    // build the username for the entity we are replying too, not sure
-    // what the proper way to do this is, but this seems to be the
-    // "normal" format on tent.is
-    NSArray *explodedOnPeriod = [[fullPost valueForKey:@"entity"] componentsSeparatedByString:@"."];
-    NSString *username = [[explodedOnPeriod objectAtIndex:0] substringFromIndex:8];
-    
-    
-    // this could now be build based off of the mentions array we pulled from
-    // but I wrote this first and it works
-    mentionListArray = [[self.cocoaTent findMentionsInPostContent:[fullPost valueForKeyPath:@"content.text"]] mutableCopy];
-    
-    if ([mentionListArray count] > 0)
-    {
-        for (NSDictionary *mention in mentionListArray)
-        {
-            // don't include our own name in the reply list, that's already in the mention list, no need to include it in
-            // the text of the post as well
-            if (![[mention valueForKey:@"entity"] isEqualToString:[self getShortUsernameFromEntityURL:self.cocoaTentApp.tentEntity]])
-                mentionList = [NSString stringWithFormat:@"^%@ %@", [mention valueForKey:@"entity"], mentionList];
-        }
-        
-
-    }
-    [self.statusTextValue setStringValue:[NSString stringWithFormat:@"^%@ %@", username, mentionList]];
+    [self.statusTextValue setStringValue:test.text];
     [self.statusTextValue becomeFirstResponder];
     [[self.statusTextValue currentEditor] setSelectedRange:NSMakeRange([[self.statusTextValue stringValue] length], 0)];
-    [mentionListArray removeAllObjects];
-    
-    [mentionListArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                entity, @"entity",
-                                postId, @"post", nil]];
-    
-    self.mentionList = currentMentionList;
-     
 
+    self.mentionList = test.mentions;
+    
 }
 
 /**
@@ -496,7 +430,19 @@
         modalDelegate:self
        didEndSelector:@selector(didEnd)
           contextInfo:nil];
-    NSLog(@"huh");
+}
+
+- (IBAction)showFollowingsWindow:(id)sender {
+    
+   
+    if (!self.followingsWindowController)
+        self.followingsWindowController = [[FollowingsWindowController alloc] initWithWindowNibName:@"FollowingsWindowController"];
+    
+
+    [self.followingsWindowController showWindow:self];
+}
+
+- (IBAction)showFollowersWindow:(id)sender {
 }
 
 - (void) receivedProfileData:(NSNotification *) notification
@@ -748,7 +694,7 @@
 
 
 
-- (void) cocoaTentIsReady
+- (void) cocoaTentIsReady:(id) sender
 {
     if (!self.cocoaTentApp.access_token)
     {

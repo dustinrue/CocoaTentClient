@@ -50,6 +50,8 @@
 		DABE31FE162521C1004E683E /* AvatarGrabber.m in Sources */ = {isa = PBXBuildFile; fileRef = DABE31FD162521C1004E683E /* AvatarGrabber.m */; };
 		DABFFF4C16290660005A2146 /* NSArray+Reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = DABFFF4B16290660005A2146 /* NSArray+Reverse.m */; };
 		DAC3A01716169B8700188E73 /* CocoaTentCommunication.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */; };
+		DAD365CF162A3D6600A2757D /* FollowingsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD365CD162A3D6600A2757D /* FollowingsWindowController.m */; };
+		DAD365D0162A3D6600A2757D /* FollowingsWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD365CE162A3D6600A2757D /* FollowingsWindowController.xib */; };
 		DADABDD5161B5C9A00189BC6 /* AutoHyperlinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */; };
 		DADABDEA161B5E0900189BC6 /* AutoHyperlinks.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */; };
 		DADFBE73161F14CA00946C10 /* CocoaTentRepostFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = DADFBE72161F14CA00946C10 /* CocoaTentRepostFetcher.m */; };
@@ -159,6 +161,9 @@
 		DABFFF4B16290660005A2146 /* NSArray+Reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Reverse.m"; sourceTree = "<group>"; };
 		DAC3A01516169B8700188E73 /* CocoaTentCommunication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentCommunication.h; path = CocoaTent/CocoaTentCommunication.h; sourceTree = "<group>"; };
 		DAC3A01616169B8700188E73 /* CocoaTentCommunication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentCommunication.m; path = CocoaTent/CocoaTentCommunication.m; sourceTree = "<group>"; };
+		DAD365CC162A3D6600A2757D /* FollowingsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingsWindowController.h; sourceTree = "<group>"; };
+		DAD365CD162A3D6600A2757D /* FollowingsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowingsWindowController.m; sourceTree = "<group>"; };
+		DAD365CE162A3D6600A2757D /* FollowingsWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FollowingsWindowController.xib; sourceTree = "<group>"; };
 		DADABDD4161B5C9A00189BC6 /* AutoHyperlinks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutoHyperlinks.framework; sourceTree = "<group>"; };
 		DADFBE71161F14CA00946C10 /* CocoaTentRepostFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaTentRepostFetcher.h; path = CocoaTent/CocoaTentRepostFetcher.h; sourceTree = "<group>"; };
 		DADFBE72161F14CA00946C10 /* CocoaTentRepostFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaTentRepostFetcher.m; path = CocoaTent/CocoaTentRepostFetcher.m; sourceTree = "<group>"; };
@@ -255,6 +260,9 @@
 				DABE31FC162521C1004E683E /* AvatarGrabber.h */,
 				DABE31FD162521C1004E683E /* AvatarGrabber.m */,
 				DA511D03160F716D00A814D7 /* MainMenu.xib */,
+				DAD365CC162A3D6600A2757D /* FollowingsWindowController.h */,
+				DAD365CD162A3D6600A2757D /* FollowingsWindowController.m */,
+				DAD365CE162A3D6600A2757D /* FollowingsWindowController.xib */,
 				DA1368801620EE1700D754B0 /* NSScrollViewScrollKiller.h */,
 				DA1368811620EE1700D754B0 /* NSScrollViewScrollKiller.m */,
 				DA511CF5160F716D00A814D7 /* Supporting Files */,
@@ -432,6 +440,7 @@
 				DA511CFF160F716D00A814D7 /* Credits.rtf in Resources */,
 				DA511D05160F716D00A814D7 /* MainMenu.xib in Resources */,
 				DAB01BA41619410E003868E0 /* README.md in Resources */,
+				DAD365D0162A3D6600A2757D /* FollowingsWindowController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +492,7 @@
 				DABE31FA162517F7004E683E /* TimelineView.m in Sources */,
 				DABE31FE162521C1004E683E /* AvatarGrabber.m in Sources */,
 				DABFFF4C16290660005A2146 /* NSArray+Reverse.m in Sources */,
+				DAD365CF162A3D6600A2757D /* FollowingsWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
