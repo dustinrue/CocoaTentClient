@@ -140,7 +140,7 @@
     if (self.cocoaTentApp.tentEntity)
         [self.tentEntityURLTextField setStringValue:self.cocoaTentApp.tentEntity];
     
-    
+
     [self.statusMessage setStringValue:@"starting up"];
     [self.charsLeft setStringValue:@"256"];
     [self start];
@@ -655,6 +655,7 @@
             
             // grab the avatar if it is available
             AvatarGrabber *aGrabber = [[AvatarGrabber alloc] init];
+
             [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
             
             [newTimelineData insertObject:tld atIndex:0];
@@ -722,9 +723,9 @@
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
     
     // decide what type of post we've received
+    NSLog(@"parsing");
     for (NSDictionary *post in postData)
     {
-        NSLog(@"type %@", [post valueForKey:@"type"]);
         if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentStatusType])
             [self newStatusPost:post];
         
@@ -734,7 +735,7 @@
         if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentDeleteType])
             [self deleteStatusPost:post];
     }
-    
+    NSLog(@"done parsing");
     [self startTimelineRefreshTimer];
 }
 

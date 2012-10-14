@@ -67,7 +67,12 @@
     
 }
 
-- (void) didReceiveNewPost:(id)postType withPostData:(id)postData
+- (void) didReceiveNewPost:(id)postData
+{
+    
+}
+
+- (void) didReceiveRepostData:(NSDictionary *)userInfo
 {
     
 }

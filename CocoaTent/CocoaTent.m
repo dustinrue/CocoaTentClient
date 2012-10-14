@@ -466,7 +466,6 @@
         NSLog(@"finished getting posts, sending to %@", self.delegate);
         [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        //NSLog(@"failed to get posts");
         [self.delegate communicationError:error];
     }];
     
@@ -481,7 +480,6 @@
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        //NSLog(@"failed to get something, \nrequest:\n%@\nreponse\n%@\n on URL: %@", [request allHTTPHeaderFields], [response allHeaderFields], [request URL]);
         [self.delegate communicationError:error];
     }];
     
@@ -516,22 +514,49 @@
         
         if ([JSON count] > 0)
         {
-            //NSLog(@"finished getting posts, sending %@", JSON);
             self.lastPostId = [[JSON objectAtIndex:0] valueForKey:@"id"];
             self.lastEntityId = [[JSON objectAtIndex:0] valueForKey:@"entity"];
             self.lastPostTimeStamp = [[JSON objectAtIndex:0] valueForKey:@"published_at"];
             
         }
+
         [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         //NSLog(@"failed to get posts");
         [self.delegate communicationError:error];
     }];
-    
+
     [operation start];
 }
 
-
+// not entirely sure this is necessary, maybe CocoaTent should just pass
+// back the raw JSON and if the client wants to convert it to an object
+// they can?
+- (id) buildObjectForPost:(id)post
+{
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentAlbumType])
+        return [[CocoaTentAlbum alloc] initWithDictionary:post];
+    
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentDeleteType])
+        return [[CocoaTentDelete alloc] initWithDictionary:post];
+    
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentEssayType])
+        return [[CocoaTentEssay alloc] initWithDictionary:post];
+    
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentPhotoType])
+        return [[CocoaTentPhoto alloc] initWithDictionary:post];
+    
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentProfileType])
+        return [[CocoaTentProfile alloc] initWithDictionary:post];
+    
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentRepostType])
+        return [[CocoaTentRepost alloc] initWithDictionary:post];
+    
+    if ([[post valueForKey:@"type"] isEqualToString:kCocoaTentStatusType])
+        return [[CocoaTentStatus alloc] initWithDictionary:post];
+    
+    return post;
+}
 
 - (void) clearLastPostCounters
 {
