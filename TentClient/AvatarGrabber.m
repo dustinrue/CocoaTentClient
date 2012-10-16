@@ -12,6 +12,7 @@
 #import "CocoaTentEntity.h"
 #import "CocoaTentBasicProfile.h"
 #import "TimelineData.h"
+#import "AFImageRequestOperation.h"
 
 @implementation AvatarGrabber
 
@@ -51,9 +52,17 @@
 
 - (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile
 {
+    NSMutableURLRequest *avatarRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:cocoaTentBasicProfile.avatar_url]];
+    
+    AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:avatarRequest imageProcessingBlock:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image) {
+        [self.timelineObject setAvatar:image];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        NSLog(@"failed to get avatar image");
+    }];
     // this will cause the whole client to hang if the server doesn't response very quickly
-    NSImage *avatar = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:cocoaTentBasicProfile.avatar_url]];
-    [self.timelineObject setAvatar:avatar];
+
+    [operation start];
+    
 }
 
 - (void) communicationError:(NSError *)error
