@@ -178,8 +178,7 @@
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"HEAD" pathWithoutLeadingSlash:@"" HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self getEntityURL:[self parseAPIRootURL:[[response allHeaderFields] valueForKey:@"Link"]]];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -232,8 +231,7 @@
         [self switchToTentEntityServerAddress:[NSURL URLWithString:[[self.entity.core valueForKey:@"servers"] objectAtIndex:0]]];
              
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        //NSLog(@"failed to get something, \nrequest:\n%@\nreponse\n%@\nJSON\n%@ on URL: %@", [request allHTTPHeaderFields], [response allHeaderFields], JSON, [request URL]);
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -255,9 +253,7 @@
         [self saveResponseDataAndRedirectToAuthorizationURL:JSON];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        //NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -321,9 +317,7 @@
         [self savePermanentAccessToken:JSON];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        //NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -347,9 +341,7 @@
         }
         ;
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        //NSLog(@"failure, %@", error);
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -399,9 +391,7 @@
         NSLog(@"got followings %@", JSON);
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
-        //NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -418,7 +408,7 @@
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithoutLeadingSlash:@"followings" HTTPBody:followingInfo sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"worked %@", JSON);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"failed \nrequest: %@\n%@\n\nresponse: %@\n\nJSON: %@\n\n error: %@", [request allHTTPHeaderFields], [request HTTPBody], [response allHeaderFields], JSON, error);
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -469,7 +459,7 @@
         NSLog(@"finished getting posts, sending to %@", self.delegate);
         [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -483,7 +473,7 @@
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:NO success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -502,8 +492,7 @@
             [self.delegate didReceiveNewPost:JSON];
         }
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        //NSLog(@"failed to get posts");
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];
@@ -525,8 +514,7 @@
 
         [self.delegate didReceiveNewPost:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        //NSLog(@"failed to get posts");
-        [self.delegate communicationError:error];
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
 
     [operation start];
@@ -574,7 +562,7 @@
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"POST" pathWithoutLeadingSlash:@"posts" HTTPBody:[post dictionary] sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         [self.delegate didSubmitNewPost];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"failed with\n%@\n%@\n%@", [request allHTTPHeaderFields], [response allHeaderFields], JSON);
+        [self.delegate communicationError:error request:request response:response json:JSON];
     }];
     
     [operation start];

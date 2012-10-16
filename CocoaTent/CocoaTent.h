@@ -64,7 +64,7 @@
 
 // would be used to tell the delegate that communication layer
 // error has occurred
-- (void) communicationError:(NSError *)error;
+- (void) communicationError:(NSError *) error request:(NSURLRequest *)request  response:(NSHTTPURLResponse *)response json:(id) JSON;
 
 
 // these are optional, you should either implement these
