@@ -357,18 +357,17 @@
  */
 - (IBAction)doRepost:(id)sender
 {
-    // the post id of the post being reposted
-    NSString *postId = nil;
-    
-    // if the repost carries mention data, include that with the repost
-    NSArray *repostMentionData = nil;
-    
-    // the full post as found by
     NSDictionary *fullPost = nil;
     
+    // TODO: this client app should have all of these objects/properties ready to
+    // go already
+    CocoaTentCoreProfile *core = [[CocoaTentCoreProfile alloc] init];
+    core.entity = self.cocoaTentApp.tentEntity;
+    CocoaTentEntity *myEntity = [[CocoaTentEntity alloc] init];
+    myEntity.core = core;
     
-    
-    CocoaTentRepost *repost = [[CocoaTentRepost alloc] init];
+    fullPost = [sender valueForKey:@"fullPost"];
+    CocoaTentRepost *repost = [[CocoaTentRepost alloc] initWithRepost:fullPost withEntity:myEntity];
     
     NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
     
@@ -377,7 +376,7 @@
     [repost setEntity:[self.cocoaTentApp.coreInfo valueForKey:@"entity"]];
     [repost setPermissions:[NSDictionary dictionaryWithObjectsAndKeys:@"true", @"public", nil]];
  
-    
+    /*
     // find the information of the post being reposted
     fullPost = [sender valueForKey:@"fullPost"];
     NSLog(@"fullPost %@", fullPost);
@@ -410,7 +409,7 @@
     if (repostMentionData)
         repost.mentions = repostMentionData;
     
-
+     */
 
     //NSLog(@"repost data %@", [repost dictionary]);
     [self.cocoaTent newPost:repost];

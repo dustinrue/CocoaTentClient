@@ -51,9 +51,9 @@
 
 - (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile
 {
-    // update the already in place view with the repost data
-    //NSLog(@"avatar url is %@", cocoaTentBasicProfile.avatar_url);
-    [self.timelineObject setAvatar:[[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:cocoaTentBasicProfile.avatar_url]]];
+    // this will cause the whole client to hang if the server doesn't response very quickly
+    NSImage *avatar = [[NSImage alloc] initWithContentsOfURL:[NSURL URLWithString:cocoaTentBasicProfile.avatar_url]];
+    [self.timelineObject setAvatar:avatar];
 }
 
 - (void) communicationError:(NSError *)error

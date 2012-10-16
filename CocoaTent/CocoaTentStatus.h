@@ -45,10 +45,4 @@
 - (id) initWithDictionary:(NSDictionary *)dictionary;
 - (NSMutableDictionary *)dictionary;
 
-
-// builds the proper mention stanza for when reposting a post.  You can
-// simply assign the value returned to the "mentions" property of your
-// repost object.
-- (NSDictionary *) buildMentionListForRepostOf:(id) post;
-
 @end

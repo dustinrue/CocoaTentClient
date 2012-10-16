@@ -28,6 +28,8 @@
  */
 
 #import "CocoaTentRepost.h"
+#import "CocoaTentEntity.h"
+#import "CocoaTentCoreProfile.h"
 
 @implementation CocoaTentRepost
 
@@ -55,6 +57,45 @@
     
     if ([[dictionary objectForKey:@"content"] objectForKey:@"id"])
         self.repostedPostId = [dictionary valueForKeyPath:@"content.id"];
+    
+    return self;
+}
+
+- (id) initWithRepost:(NSDictionary *)post withEntity:(CocoaTentEntity *) entity
+{
+    self = [super initWithDictionary:post];
+ 
+    
+    if (!self)
+        return self;
+    
+    // we do NOT want to post an id but super is going to set it based on
+    // on the incoming post, get rid of it here
+    
+    self.post_id = nil;
+    
+    self.type = kCocoaTentRepostType;
+    
+    self.entity = [entity.core valueForKey:@"entity"];
+    
+    // store the entity and postId so we can put that into the content
+    // of this repost
+    
+    // we have to determine if the post is a repost or not, it is dealt
+    // with a bit differently than other post types
+    if ([[post valueForKey:@"type"] isEqual:kCocoaTentRepostType])
+    {
+        self.repostedEntity = [post valueForKeyPath:@"content.entity"];
+        self.repostedPostId = [post valueForKeyPath:@"content.id"];
+    }
+    else
+    {
+        self.repostedEntity = [post valueForKey:@"entity"];
+        self.repostedPostId = [post valueForKey:@"id"];
+    }
+    
+    if ([post objectForKey:@"mentions"])
+        self.mentions = [post valueForKey:@"mentions"];
     
     return self;
 }

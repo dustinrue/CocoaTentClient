@@ -31,6 +31,8 @@
 
 #define kCocoaTentRepostType @"https://tent.io/types/post/repost/v0.1.0"
 
+@class CocoaTentEntity;
+
 @interface CocoaTentRepost : CocoaTentPost
 /*
    https://tent.io/types/post/repost/v0.1.0
@@ -46,18 +48,7 @@
 
 - (id) init;
 - (id) initWithDictionary:(NSDictionary *)dictionary;
+- (id) initWithRepost:(NSDictionary *)post withEntity:(CocoaTentEntity *) entity;
 - (NSMutableDictionary *) dictionary;
-
-// builds the proper mention stanza for a post reply.  Depending on the post type the
-// returned dictionary will contain up to two keys.  'mentions' will be the mentions
-// data you need to set the "mentions" property of your new post.  'replyText' will
-// be provided on appropriate post types and will contain the list of entities
-// mentioned so you can include it in your reponse text (visible to the user)
-- (NSDictionary *) buildMentionListForReplyTo:(id) post;
-
-// builds the proper mention stanza for when reposting a post.  You can
-// simply assign the value returned to the "mentions" property of your
-// repost object.
-- (NSDictionary *) buildMentionListForRepostOf:(id) post;
 
 @end

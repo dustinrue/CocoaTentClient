@@ -29,6 +29,8 @@
 
 #import "CocoaTentPost.h"
 #import "CocoaTentPermission.h"
+#import "CocoaTentEntity.h"
+#import "CocoaTentCoreProfile.h"
 
 @implementation CocoaTentPost
 
@@ -112,6 +114,71 @@
         [dictionaryOfPropertyValues setValue:self.type forKey:@"type"];
     
     return dictionaryOfPropertyValues;
+}
+
+- (id) initWithReplyTo:(NSDictionary *) post withEntity:(CocoaTentEntity *) entity
+{
+    self = [super init];
+    
+    if (!self)
+        return self;
+    
+    self.entity = [entity.core valueForKey:@"entity"];
+
+    return self;
+}
+
+- (NSDictionary *) buildMentionListForReplyTo:(id)post
+{
+    NSMutableArray *currentMentionList = [[post valueForKey:@"mentions"] mutableCopy];
+    
+    // the mention list might contain a reply, we strip that out because you can
+    // only reply to a single post, but you can mention many people.
+    
+    NSMutableArray *mentionListMinusPostStanza = [NSMutableArray arrayWithCapacity:0];
+    
+    for (NSMutableDictionary *mention in currentMentionList)
+    {
+        // remove ourselves from the mention list
+        if (![[mention valueForKey:@"entity"] isEqualToString:self.entity])
+        {
+            [mentionListMinusPostStanza addObject:[NSDictionary dictionaryWithObjectsAndKeys:[mention valueForKey:@"entity"], @"entity", nil]];
+        }
+    }
+    
+    currentMentionList = mentionListMinusPostStanza;
+    
+    // now we need to add this post, where "this post" is the post being replied to,
+    // to the top of the list so that it matches
+    [currentMentionList insertObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                      [post valueForKey:@"entity"], @"entity",
+                                      [post valueForKey:@"id"], @"post", nil]
+                             atIndex:0];
+    
+    
+    
+    // build the reply text which will consist of all the usernames
+    // that were mentioned
+    
+    NSString *replyToText = @"";
+    
+    NSEnumerator *reverseEnumeratedMentionList = [currentMentionList reverseObjectEnumerator];
+    
+    for (NSDictionary *mention in reverseEnumeratedMentionList)
+    {
+        // build the username for the entity we are mentioning too, not sure
+        // what the proper way to do this is, but this seems to be the
+        // "normal" format on tent.is
+        NSArray *explodedOnPeriod = [[mention valueForKey:@"entity"] componentsSeparatedByString:@"."];
+        NSString *username = [[explodedOnPeriod objectAtIndex:0] substringFromIndex:8];
+        replyToText = [NSString stringWithFormat:@"^%@ %@", username, replyToText];
+        
+    }
+
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            currentMentionList, @"mentions",
+            replyToText, @"replyText", nil];
+    
 }
 
 @end

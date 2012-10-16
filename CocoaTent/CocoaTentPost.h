@@ -30,6 +30,7 @@
 #import <Foundation/Foundation.h>
 
 @class CocoaTentPermission;
+@class CocoaTentEntity;
 
 @interface CocoaTentPost : NSObject
 
@@ -74,7 +75,9 @@
 @property (strong) NSString *views;
 @property (strong) CocoaTentPermission *permissions;
 
+- (id) initWithReplyTo:(NSDictionary *) post withEntity:(CocoaTentEntity *) entity;
 - (id) initWithDictionary:(NSDictionary *) dictionary;
 - (NSMutableDictionary *)dictionary;
+- (NSDictionary *) buildMentionListForReplyTo:(id)post;
 
 @end
