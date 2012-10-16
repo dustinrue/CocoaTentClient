@@ -77,10 +77,10 @@
 
 }
 
-- (void) communicationError:(NSError *)error
+- (void) communicationError:(NSError *) error request:(NSURLRequest *)request  response:(NSHTTPURLResponse *)response json:(id) JSON;
 {
 
-    [self.sender communicationError:error];
+    [self.sender communicationError:error request:request response:response json:JSON];
 
 }
 
