@@ -65,7 +65,7 @@
     
 }
 
-- (void) communicationError:(NSError *)error
+- (void) communicationError:(NSError *) error request:(NSURLRequest *)request  response:(NSHTTPURLResponse *)response json:(id) JSON;
 {
     //[self.post setContent:[NSString stringWithFormat:@"Failed to fetch repost data"]];
 }

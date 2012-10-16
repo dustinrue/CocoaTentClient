@@ -724,7 +724,8 @@
 {
     [self.statusMessage setStringValue:@"Updated profile successfully"];
 }
-- (void) communicationError:(NSError *)error
+
+- (void) communicationError:(NSError *) error request:(NSURLRequest *)request  response:(NSHTTPURLResponse *)response json:(id) JSON
 {
     [self.statusMessage setStringValue:@"failed to perform last operation"];
 }

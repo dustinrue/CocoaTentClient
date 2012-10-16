@@ -76,7 +76,7 @@
 
 @property (weak) IBOutlet NSTextField *charsLeft;
 
-- (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(id) timelineObject;
+//- (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(id) timelineObject;
 - (void) receivedProfileData:(NSNotification *) notification;
 - (void) dataReceiveFailure:(NSNotification *) notification;
 - (void) didCreateOperation:(NSNotification *) notification;
