@@ -25,6 +25,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [self signTest];
     // the example tent client communicates back to us via notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appInfoDidChange:)
@@ -851,6 +852,31 @@
 - (void) didCreateOperation:(NSNotification *)notification
 {
     self.operationCounter++;
+}
+
+- (void) signTest
+{
+    /*
+    1350446572
+    82C6442A5B2F4750BD4AF7D693D81FE1947980000FAB78044BDD8
+    GET
+    /tent/posts
+    dustinrue.tent.is
+    443
+     
+     52f319a5f185e6a0adf7d51f67a6ef70
+     a:2d32483f
+     */
+    NSString *normalizedRequestString = [NSString stringWithFormat:@"%d\n%@\n%@\n%@\n%@\n%@\n\n",
+                                     1350446718,
+                                     @"AF01A441BD8B4E66A79A83363963ECC6949250000FAD98369D41E",
+                                     @"GET",
+                                     @"/tent/posts",
+                                     @"dustinrue.tent.is",
+                                         @"443"];
+
+NSLog(@"results %@", [normalizedRequestString hmac_sha_256:@"52f319a5f185e6a0adf7d51f67a6ef70"]);
+
 }
 
 @end
