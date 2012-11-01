@@ -25,7 +25,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [self signTest];
+    //[self signTest];
     // the example tent client communicates back to us via notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appInfoDidChange:)
@@ -665,6 +665,7 @@
 {
     postData = [postData reversedArray];
     
+    NSLog(@"post data %@", postData);
     if ([postData count] > 0)
         [self issueNotificationWithTitle:@"New Tent Messages" andMessage:[NSString stringWithFormat:@"Received %ld new messages", [postData count]]];
     

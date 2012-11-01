@@ -500,7 +500,11 @@
 
 - (void) getRecentPosts
 {
-    NSString *path = [NSString stringWithFormat:@"posts?since_id=%@&since_id_entity=%@", self.lastPostId, [self.lastEntityId urlEncoded]];
+    NSString *path = nil;
+    if (self.lastPostId)
+        path = [NSString stringWithFormat:@"posts?since_id=%@&since_id_entity=%@", self.lastPostId, [self.lastEntityId urlEncoded]];
+    else
+        path = @"posts";
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         
