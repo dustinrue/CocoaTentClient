@@ -20,8 +20,13 @@
 @property (strong) CocoaTent *cocoaTent;
 @property (strong) CocoaTentApp *cocoaTentApp;
 @property (strong) CocoaTentEntity *cocoaTentEntity;
+
+// timeline
 @property (weak) NSMutableArray *timelineData;
+@property (strong) NSMutableArray *timelineMentions;
+@property (strong) NSMutableArray *timelineFeed;
 @property (strong) NSTimer *timelineDataRefreshTimer;
+@property (strong) id timelineToDisplay;
 
 @property (strong) NSArray *mentionList;
 @property (strong) NSDictionary *replyingTo;
@@ -42,6 +47,8 @@
 // Followings data
 @property (strong) NSArray *followingsData;
 @property (strong) NSDictionary *followingsKeyedOnEntityURL;
+
+
 
 @property (strong) id testing;
 
@@ -74,6 +81,7 @@
 @property (unsafe_unretained) IBOutlet NSCollectionViewItem *timelineCollectionViewItem;
 @property (unsafe_unretained) IBOutlet NSTextView *magicTest;
 @property (weak) IBOutlet NSWindow *preferencesWindow;
+- (IBAction)feedSelectorIBAction:(id)sender;
 
 
 

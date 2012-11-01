@@ -134,6 +134,7 @@
     
     [self addObserver:self forKeyPath:@"replyingTo" options:NSKeyValueObservingOptionNew context:nil];
     [self addObserver:self forKeyPath:@"mentionList" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"timelineToDisplay" options:NSKeyValueObservingOptionNew context:nil];
     
     self.replyingTo = nil;
     self.mentionList = nil;
@@ -491,12 +492,17 @@
     if (object == self)
     {
 
+        NSLog(@"changing %@\n%@", keyPath, [change valueForKey:@"new"]);
         if ([keyPath isEqualToString:@"mentionList"])
         {
             if ([change objectForKey:@"new"] != [NSNull null])
                 [self.cancelReplyButton setEnabled:YES];
             else
                 [self.cancelReplyButton setEnabled:NO];
+        }
+        else if ([keyPath isEqualToString:@"timelineToDisplay"])
+        {
+            [self refreshTimeline];
         }
     }
 }
@@ -511,12 +517,13 @@
     NSDictionary *post = postData;
     
     //NSLog(@"posts %@", postData);
-    NSMutableArray *newTimelineData = nil;
+    NSMutableArray *newTimelineFeed = nil;
+    NSMutableArray *newTimelineMentions = nil;
     
-    if (self.timelineData)
-        newTimelineData = self.timelineData;
+    if (self.timelineFeed)
+        newTimelineFeed = self.timelineFeed;
     else
-        newTimelineData = [NSMutableArray arrayWithCapacity:0];
+        newTimelineFeed = [NSMutableArray arrayWithCapacity:0];
     
     
    // for (NSDictionary *post in postData)
@@ -621,15 +628,53 @@
                 [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
             }
             
-            [newTimelineData insertObject:tld atIndex:0];
+            [newTimelineFeed insertObject:tld atIndex:0];
+            
+            if (postMentionsMe)
+            {
+                NSLog(@"post mentions me!");
+                if (self.timelineMentions)
+                    newTimelineMentions = self.timelineMentions;
+                else
+                    newTimelineMentions = [NSMutableArray arrayWithCapacity:0];
+                
+                [newTimelineMentions insertObject:tld atIndex:0];
+                self.timelineMentions = newTimelineMentions;
+                NSLog(@"lerp %@", newTimelineMentions);
+            }
+            
         }
     //}
     
-    self.timelineData = newTimelineData;
+    
+    
+    self.timelineFeed = newTimelineFeed;
+    [self refreshTimeline];
     
     
     [self.statusMessage setStringValue:@"timeline updated"];
 
+}
+
+- (void) switchTimelineTo:(NSMutableArray *) timelineData
+{
+    self.timelineData = timelineData;
+}
+
+- (void) refreshTimeline
+{
+    if ([self.timelineToDisplay intValue] == 0)
+    {
+        self.timelineData = self.timelineFeed;
+    }
+    else if ([self.timelineToDisplay intValue] == 1)
+    {
+        self.timelineData = self.timelineFeed;
+    }
+    else if ([self.timelineToDisplay intValue] == 2)
+    {
+        self.timelineData = self.timelineMentions;
+    }
 }
 
 - (void) deleteStatusPost:(id) postData
@@ -917,4 +962,6 @@ NSLog(@"results %@", [normalizedRequestString hmac_sha_256:@"52f319a5f185e6a0adf
 
 }
 
+- (IBAction)feedSelectorIBAction:(id)sender {
+}
 @end
