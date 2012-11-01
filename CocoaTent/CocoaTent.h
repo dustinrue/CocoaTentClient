@@ -74,6 +74,7 @@
 - (void) didReceiveAccessToken:(NSString *)access_token;
 - (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile;
 - (void) didReceiveCoreInfo:(CocoaTentCoreProfile *) cocoaTentCoreProfile;
+- (void) didReceiveFollowingsData:(NSArray *) cocoaTentFollowingsData;
 
 @end
 

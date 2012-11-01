@@ -52,6 +52,7 @@
 
 - (void) didReceiveBasicInfo:(CocoaTentBasicProfile *)cocoaTentBasicProfile
 {
+
     NSMutableURLRequest *avatarRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:cocoaTentBasicProfile.avatar_url]];
     
     AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:avatarRequest imageProcessingBlock:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image) {
@@ -63,6 +64,20 @@
 
     [operation start];
     
+}
+
+- (void) getAvatarAtURL:(NSString *)avatarURL forTimelineObject:(TimelineData *)timelineObject
+{
+    NSMutableURLRequest *avatarRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:avatarURL]];
+    
+    AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:avatarRequest imageProcessingBlock:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSImage *image) {
+        [timelineObject setAvatar:image];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        NSLog(@"failed to get avatar image");
+    }];
+    // this will cause the whole client to hang if the server doesn't response very quickly
+    
+    [operation start];
 }
 
 - (void) communicationError:(NSError *) error request:(NSURLRequest *)request  response:(NSHTTPURLResponse *)response json:(id) JSON;

@@ -14,6 +14,7 @@
 #import <AutoHyperlinks/AutoHyperlinks.h>
 #import "NSString+hmac_sha_256.h"
 #import "CocoaTentCoreProfile.h"
+#import "CocoaTentBasicProfile.h"
 #import "CocoaTentEntity.h"
 #import "CocoaTentPostTypes.h"
 #import "AvatarGrabber.h"
@@ -598,11 +599,27 @@
                 
                 tld.content = [[NSAttributedString alloc] initWithString:@"Retrieving repost data..."];
             }
-            
+
             // grab the avatar if it is available
             AvatarGrabber *aGrabber = [[AvatarGrabber alloc] init];
-
-            [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
+            
+            if ([self.followingsKeyedOnEntityURL objectForKey:[post valueForKey:@"entity"]])
+            {
+                // we follow this person...we might already have their avatar URL
+                NSDictionary *entityProfile = [[[self.followingsKeyedOnEntityURL valueForKey:[post valueForKey:@"entity"]] valueForKey:@"profile"] valueForKey:kCocoaTentBasicProfile];
+                
+                if ([entityProfile objectForKey:@"avatar_url"])
+                {
+                    [aGrabber getAvatarAtURL:[entityProfile valueForKey:@"avatar_url"] forTimelineObject:tld];
+                }
+                else
+                    [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
+                
+            }
+            else
+            {
+                [aGrabber performSelectorInBackground:@selector(getAvatarInBackground:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:[post valueForKey:@"entity"], @"entity", tld, @"timelineObject", nil]];
+            }
             
             [newTimelineData insertObject:tld atIndex:0];
         }
@@ -712,6 +729,7 @@
         [self.tentEntityURLTextField setEnabled:NO];
 
         [self.cocoaTent getUserProfile];
+        [self.cocoaTent getFollowings];
         [self getPosts:nil];
     }
 }
@@ -725,6 +743,21 @@
 - (void) didUpdateProfile:(id)sender
 {
     [self.statusMessage setStringValue:@"Updated profile successfully"];
+}
+
+- (void) didReceiveFollowingsData:(NSArray *)cocoaTentFollowingsData
+{
+    self.followingsData = cocoaTentFollowingsData;
+    
+    NSMutableDictionary *newFollowingsKeyedOnEntityURL = [NSMutableDictionary dictionaryWithCapacity:[self.followingsData count]];
+    
+    for (NSDictionary *following in self.followingsData)
+    {
+        [newFollowingsKeyedOnEntityURL setValue:following forKey:[following valueForKey:@"entity"]];
+    }
+    
+    self.followingsKeyedOnEntityURL = newFollowingsKeyedOnEntityURL;
+    NSLog(@"followings %@", self.followingsKeyedOnEntityURL);
 }
 
 - (void) communicationError:(NSError *) error request:(NSURLRequest *)request  response:(NSHTTPURLResponse *)response json:(id) JSON

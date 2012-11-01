@@ -388,8 +388,9 @@
 {
     
     AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:@"followings" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"got followings %@", JSON);
-        
+
+        if ([self.delegate respondsToSelector:@selector(didReceiveFollowingsData:)])
+            [self.delegate didReceiveFollowingsData:JSON];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [self.delegate communicationError:error request:request response:response json:JSON];
     }];

@@ -19,5 +19,6 @@
 
 - (void) getAvatarInBackground:(id) info;
 - (void) getAvatarForEntity:(NSString *) entity forTimelineObject:(TimelineData *) timelineObject;
+- (void) getAvatarAtURL:(NSString *) avatarURL forTimelineObject:(TimelineData *) timelineObject;
 
 @end

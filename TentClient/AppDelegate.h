@@ -39,6 +39,10 @@
 @property (strong) FollowingsWindowController *followingsWindowController;
 @property (strong) NSWindow *followsWindow;
 
+// Followings data
+@property (strong) NSArray *followingsData;
+@property (strong) NSDictionary *followingsKeyedOnEntityURL;
+
 @property (strong) id testing;
 
 - (IBAction)saveTentEntityURL:(id)sender;
