@@ -325,8 +325,8 @@
     // clear out the mentionList and replyingTo properties
     self.mentionList = nil;
     self.replyingTo = nil;
-    //NSLog(@"post %@", [post dictionary]);
-    [self.cocoaTent newPost:post];
+    NSLog(@"post %@", [post dictionary]);
+    //[self.cocoaTent newPost:post];
     
     [self.statusMessage setStringValue:@"posted new status"];
     [self.statusTextValue setStringValue:@""];
@@ -786,6 +786,10 @@
 
 - (NSString *) expandShortUsername:(NSString *) username
 {
+    if ([[username substringToIndex:8] isEqualToString:@"https://"] || [[username substringToIndex:7] isEqualToString:@"http://"])
+        return username;
+    
+    // TODO: maybe autocomplete via who we follow or who follows us
     return [NSString stringWithFormat:@"https://%@.tent.is", username];
 }
 

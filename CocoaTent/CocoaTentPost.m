@@ -140,6 +140,7 @@
     for (NSMutableDictionary *mention in currentMentionList)
     {
         // remove ourselves from the mention list
+        // TODO: this can "fail" if the entity URL has a trailing slash, fix that
         if (![[mention valueForKey:@"entity"] isEqualToString:self.entity])
         {
             [mentionListMinusPostStanza addObject:[NSDictionary dictionaryWithObjectsAndKeys:[mention valueForKey:@"entity"], @"entity", nil]];
