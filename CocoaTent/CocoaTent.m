@@ -415,6 +415,49 @@
     [operation start];
 }
 
+
+
+- (void) unfollowEntity:(NSString *)entityName
+{
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"GET" pathWithoutLeadingSlash:@"followings" HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        bool FOUND = NO;
+        NSArray *entities = [JSON valueForKeyPath:@"entity"];
+        NSArray *tent_ids = [JSON valueForKeyPath:@"id"];
+        for (int i = 0; i < [entities count]; i++){
+            NSString *entity = [entities objectAtIndex:i];
+            NSString *tentid = [tent_ids objectAtIndex:i];
+            if ([entity isEqualToString:entityName]) {
+                FOUND = YES;
+                [self unfollowTentID:tentid];
+            }
+        }
+        if (FOUND) {
+            NSLog(@"Found entity and id to unfollow, OK.");
+        } else {
+            NSLog(@"Did not find entity and id to unfollow.  Show NOT FOLLOWING message.");
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveDataFailure" object:nil];
+        NSLog(@"failure, %@ \n\nwith request %@", error, [request allHTTPHeaderFields]);
+    }];
+    
+    [operation start];
+}
+
+-(void) unfollowTentID:(NSString *)tent_id
+{
+    NSString *path = [NSString stringWithFormat:@"followings/%@", tent_id];
+    
+    AFJSONRequestOperation *operation = [self.cocoaTentCommunication newJSONRequestOperationWithMethod:@"DELETE" pathWithoutLeadingSlash:path HTTPBody:nil sign:YES success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        
+        NSLog(@"unfollow succeeded!");
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSLog(@"unfollow failed");
+    }];
+    [operation start];
+}
+
+
 #pragma mark -
 #pragma mark Mention Finder
 /**
